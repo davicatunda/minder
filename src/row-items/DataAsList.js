@@ -22,6 +22,9 @@ function DataAsList<T: { }> (props: Props<T>): Node {
             const setValue = (newValue) => setParentValue({ ...node, [key]: newValue });
             switch (typeof value) {
               case 'string':
+                if (isDate(value)) {
+                  return <DateRowItem name={key} value={new Date(value)} setValue={setValue} />;
+                };
                 return <StringRowItem name={key} value={value} setValue={setValue} />;
               case 'number':
                 return <NumberRowItem name={key} value={value} setValue={setValue} />;
@@ -29,9 +32,6 @@ function DataAsList<T: { }> (props: Props<T>): Node {
                 return <BooleanRowItem name={key} value={value} setValue={setValue} />;
               case 'object':
               default:
-                if (value instanceof Date) {
-                  return <DateRowItem name={key} value={value} setValue={setValue} />;
-                };
                 if (value instanceof Array) {
                   return <DataAsList node={value} setParentValue={setValue} />;
                 };
@@ -44,10 +44,17 @@ function DataAsList<T: { }> (props: Props<T>): Node {
         </li>
       ))}
       {node instanceof Array && (
-        <AddListRowItem onAddItem={() => setParentValue([...node, null])} />
+        <li>
+          <AddListRowItem onAddItem={() => setParentValue([...node, null])} />
+        </li>
       )}
     </ul>
   );
+}
+
+function isDate(value: string): boolean {
+  const regex = RegExp(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/);
+  return regex.test(value);
 }
 
 export default DataAsList;
