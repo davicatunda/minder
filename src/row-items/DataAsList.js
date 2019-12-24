@@ -7,6 +7,7 @@ import StringRowItem from './StringRowItem';
 import BooleanRowItem from './BooleanRowItem';
 import NumberRowItem from './NumberRowItem';
 import DateRowItem from './DateRowItem';
+import AddListRowItem from './AddListRowItem';
 
 type Props<T> = { node: T, setParentValue: T => void };
 function DataAsList<T: { }> (props: Props<T>): Node {
@@ -42,7 +43,9 @@ function DataAsList<T: { }> (props: Props<T>): Node {
           }()}
         </li>
       ))}
-      {node instanceof Array && <li>add one more</li>}
+      {node instanceof Array && (
+        <AddListRowItem onAddItem={() => setParentValue([...node, null])} />
+      )}
     </ul>
   );
 }
