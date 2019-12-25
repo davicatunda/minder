@@ -9,15 +9,33 @@ import NumberRowItem from './NumberRowItem';
 import DateRowItem from './DateRowItem';
 import AddListRowItem from './AddListRowItem';
 import NullRowItem from './NullRowItem';
+import RowItemName from './RowItemName';
 
 type Props<T> = { node: T, setParentValue: T => void };
 function DataAsList<T: { }> (props: Props<T>): Node {
   const { node, setParentValue } = props;
   return (
     <ul>
-      {Object.keys(node).map((key: string) => (
-        <li key={key}>
-          {`[${key}]: `}
+      {Object.keys(node).map((key: string, index) => (
+        <li key={index /** TODO: replace with uid */}>
+          {!(node instanceof Array) && (
+            <RowItemName
+              name={key}
+              setName={(name) => {
+                const newNode = Object.keys(node).reduce((accumulator, currentKey) => {
+                  const isKeyBeingRenamed = currentKey === key;
+                  if (isKeyBeingRenamed) {
+                    accumulator[name] = node[currentKey];
+                  } else {
+                    accumulator[currentKey] = node[currentKey];
+                  }
+                  return accumulator;
+                }, {});
+                // $FlowFixMe T should accept 1 property rename.
+                setParentValue(newNode);
+              }}
+            />
+          )}
           {function () {
             const value = node[key];
             const setValue = node instanceof Array ?
@@ -46,11 +64,20 @@ function DataAsList<T: { }> (props: Props<T>): Node {
           }()}
         </li>
       ))}
-      {node instanceof Array && (
-        <li>
-          <AddListRowItem onAddItem={() => setParentValue([...node, null])} />
-        </li>
-      )}
+      <li>
+        <AddListRowItem
+          onAddItem={() => {
+            if (node instanceof Array) {
+              return setParentValue([...node, null]);
+            }
+            const lastField = Object.keys(node).reverse().find(key => (
+              RegExp(/field:[0-9]+/).test(key)
+            ));
+            const index = lastField ? Number(lastField.split(':')[1]) : 0;
+            return setParentValue({ ...node, [`field:${index + 1}`]: null });
+          }}
+        />
+      </li>
     </ul>
   );
 }
