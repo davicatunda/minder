@@ -8,7 +8,7 @@ type Props = {
 
 function AddListRowItem(props: Props): Node {
   return (
-    <li><button onClick={props.onAddItem}> + </button></li>
+    <button onClick={props.onAddItem}> + </button>
   );
 }
 

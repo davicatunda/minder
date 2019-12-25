@@ -8,6 +8,7 @@ import BooleanRowItem from './BooleanRowItem';
 import NumberRowItem from './NumberRowItem';
 import DateRowItem from './DateRowItem';
 import AddListRowItem from './AddListRowItem';
+import NullRowItem from './NullRowItem';
 
 type Props<T> = { node: T, setParentValue: T => void };
 function DataAsList<T: { }> (props: Props<T>): Node {
@@ -25,6 +26,9 @@ function DataAsList<T: { }> (props: Props<T>): Node {
                   index === Number(key) ? newValue : v
                 )) :
               (newValue) => setParentValue({ ...node, [key]: newValue });
+            if (value === null) {
+              return <NullRowItem name={key} setValue={setValue} />;
+            }
             switch (typeof value) {
               case 'string':
                 if (isDate(value)) {
@@ -37,9 +41,6 @@ function DataAsList<T: { }> (props: Props<T>): Node {
                 return <BooleanRowItem name={key} value={value} setValue={setValue} />;
               case 'object':
               default:
-                if (value === null) {
-                  return <StringRowItem name={key} value={""} setValue={setValue} />;
-                };
                 return <DataAsList node={value} setParentValue={setValue} />;
             }
           }()}
