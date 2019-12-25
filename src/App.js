@@ -10,27 +10,7 @@ import DataAsList from './row-items/DataAsList';
 import CreateIcon from './icons/CreateIcon';
 
 import { createKey, encrypt, decrypt } from './utils/encryption';
-
-const INITIAL_DATA = `{
-  "boolean": true,
-  "text": "text",
-  "number": 10,
-  "array": [
-    "zero",
-    "first",
-    "second",
-    "third",
-    "forth"
-  ],
-  "null": null,
-  "object2": {
-    "string": "test",
-    "null": null
-  },
-  "object": {
-    "prop": false
-  }
-}`;
+import STANDARD from './standard.alpha';
 
 function App(): Node {
   const [key, setKey] = useState(null);
@@ -71,7 +51,7 @@ function App(): Node {
     <div>
       <div
         style={{
-          maxWidth: 500,
+          maxWidth: 750,
           boxShadow: "rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px",
           borderRadius: 4,
           padding: 12,
@@ -115,7 +95,7 @@ function App(): Node {
           <div>
             <h2> Data </h2>
             <div style={{ display: "flex", justifyContent: "space-evenly", alignItems: 'center' }}>
-              <Button onClick={() => setDecodedData(INITIAL_DATA)}>
+              <Button onClick={() => setDecodedData(STANDARD)}>
                 <span style={{ display: "flex", marginRight: 8, height: 20, width: 20 }}>
                   <CreateIcon size={20} />
                 </span>

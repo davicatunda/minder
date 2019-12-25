@@ -12,7 +12,7 @@ import NullRowItem from './NullRowItem';
 import RowItemName from './RowItemName';
 const listStyle = {
   listStyle: "none",
-  paddingLeft: 24,
+  paddingLeft: 12,
   borderLeft: "1px solid #00000030",
   margin: "4px 0 8px 0",
 

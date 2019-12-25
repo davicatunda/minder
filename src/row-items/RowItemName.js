@@ -12,7 +12,7 @@ function RowItemName({ name, setName }: Props): Node {
   const [isEditing, setIsEditing] = useState(false);
   const commonStyle = {
     marginRight: 12,
-    width: 80,
+    width: 120,
     boxSizing: "border-box",
   };
   if (!isEditing) {
