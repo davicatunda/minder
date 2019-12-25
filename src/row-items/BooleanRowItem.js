@@ -17,6 +17,7 @@ function BooleanRowItem({ name, value, setValue }: Props): Node {
       name={name}
       onChange={(e) => setValue(!value)}
       value={value}
+      style={{ cursor: "pointer" }}
     />
   );
 }

@@ -13,8 +13,11 @@ function TextRowItem({ name, value, setValue }: Props): Node {
   const [isEditing, setIsEditing] = useState(false);
   if (!isEditing) {
     return (
-      <span onClick={() => setIsEditing(true)}>
-        {value}
+      <span
+        onClick={() => setIsEditing(true)}
+        style={{ minWidth: 40, display: "inline-block", cursor: "pointer" }}
+      >
+        {value === "" ? "?" : value}
       </span>
     );
   }

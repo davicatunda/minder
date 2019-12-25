@@ -69,7 +69,17 @@ function App(): Node {
 
   return (
     <div>
-      <div style={{ border: '1px solid black', maxWidth: 500 }}>
+      <div
+        style={{
+          maxWidth: 500,
+          boxShadow: "rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px",
+          borderRadius: 4,
+          padding: 12,
+        }}
+      >
+        <h1>
+          Primary
+        </h1>
         <div>
           <div>
             <h2> Key </h2>
@@ -133,7 +143,7 @@ function App(): Node {
             </div>
           </div>
         </div>
-        <div>
+        <div style={{ margin: 12 }}>
           {(decodedData) && (
             <DataAsList
               node={JSON.parse(decodedData)}

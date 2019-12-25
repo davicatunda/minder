@@ -13,7 +13,7 @@ function NumberRowItem({ name, value, setValue }: Props): Node {
   const [isEditing, setIsEditing] = useState(false);
   if (!isEditing) {
     return (
-      <span onClick={() => setIsEditing(true)}>
+      <span onClick={() => setIsEditing(true)} style={{ cursor: "pointer" }}>
         {value}
       </span>
     );
@@ -23,7 +23,7 @@ function NumberRowItem({ name, value, setValue }: Props): Node {
     <input
       type="number"
       name={name}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={(e) => !isNaN(e.target.value) && setValue(Number(e.target.value))}
       value={value}
       onBlur={() => setIsEditing(false)}
       ref={(input) => { input && input.focus() }}

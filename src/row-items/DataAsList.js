@@ -10,14 +10,27 @@ import DateRowItem from './DateRowItem';
 import AddListRowItem from './AddListRowItem';
 import NullRowItem from './NullRowItem';
 import RowItemName from './RowItemName';
+const listStyle = {
+  listStyle: "none",
+  paddingLeft: 24,
+  borderLeft: "1px solid #00000030",
+  margin: "4px 0 8px 0",
+
+};
+
+const listItemStyle = {
+  padding: 4,
+  display: "flex",
+  alignItems: "center",
+};
 
 type Props<T> = { node: T, setParentValue: T => void };
 function DataAsList<T: { }> (props: Props<T>): Node {
   const { node, setParentValue } = props;
   return (
-    <ul>
+    <ul style={listStyle}>
       {Object.keys(node).map((key: string, index) => (
-        <li key={index /** TODO: replace with uid */}>
+        <li style={listItemStyle} key={index /** TODO: replace with uid */}>
           {!(node instanceof Array) && (
             <RowItemName
               name={key}
@@ -64,7 +77,7 @@ function DataAsList<T: { }> (props: Props<T>): Node {
           }()}
         </li>
       ))}
-      <li>
+      <li style={listItemStyle}>
         <AddListRowItem
           onAddItem={() => {
             if (node instanceof Array) {
