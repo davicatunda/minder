@@ -16,9 +16,17 @@ const INITIAL_DATA = `{
   "text": "text",
   "number": 10,
   "array": [
+    "zero",
     "first",
-    "second"
+    "second",
+    "third",
+    "forth"
   ],
+  "null": null,
+  "object2": {
+    "string": "test",
+    "null": null
+  },
   "object": {
     "prop": false
   }

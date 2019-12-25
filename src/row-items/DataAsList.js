@@ -14,12 +14,17 @@ function DataAsList<T: { }> (props: Props<T>): Node {
   const { node, setParentValue } = props;
   return (
     <ul>
-      {Object.keys(node).map(key => (
+      {Object.keys(node).map((key: string) => (
         <li key={key}>
           {`[${key}]: `}
           {function () {
             const value = node[key];
-            const setValue = (newValue) => setParentValue({ ...node, [key]: newValue });
+            const setValue = node instanceof Array ?
+              (newValue) =>
+                setParentValue(node.map((v, index) =>
+                  index === Number(key) ? newValue : v
+                )) :
+              (newValue) => setParentValue({ ...node, [key]: newValue });
             switch (typeof value) {
               case 'string':
                 if (isDate(value)) {
@@ -32,9 +37,6 @@ function DataAsList<T: { }> (props: Props<T>): Node {
                 return <BooleanRowItem name={key} value={value} setValue={setValue} />;
               case 'object':
               default:
-                if (value instanceof Array) {
-                  return <DataAsList node={value} setParentValue={setValue} />;
-                };
                 if (value === null) {
                   return <StringRowItem name={key} value={""} setValue={setValue} />;
                 };
