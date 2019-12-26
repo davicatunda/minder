@@ -30,7 +30,7 @@ function DataAsList<T: { }> (props: Props<T>): Node {
   return (
     <ul style={listStyle}>
       {Object.keys(node).map((key: string, index) => (
-        <li style={listItemStyle} key={index /** TODO: replace with uid */}>
+        <li style={listItemStyle} key={key}>
           {!(node instanceof Array) && (
             <RowItemName
               name={key}
@@ -47,16 +47,18 @@ function DataAsList<T: { }> (props: Props<T>): Node {
                 // $FlowFixMe T should accept 1 property rename.
                 setParentValue(newNode);
               }}
+              isValid={(name) => name === key || node[name] === undefined}
             />
           )}
           {function () {
             const value = node[key];
-            const setValue = node instanceof Array ?
-              (newValue) =>
-                setParentValue(node.map((v, index) =>
-                  index === Number(key) ? newValue : v
-                )) :
-              (newValue) => setParentValue({ ...node, [key]: newValue });
+            const setValue = (newValue) => {
+              if (node instanceof Array) {
+                return setParentValue(node.map((v, ix) => ix === Number(key) ? newValue : v));
+              }
+              return setParentValue({ ...node, [key]: newValue });
+            }
+
             if (value === null) {
               return <NullRowItem name={key} setValue={setValue} />;
             }
