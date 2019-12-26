@@ -3,6 +3,8 @@
 import type { Node } from 'react';
 
 import React, { useState } from 'react';
+import ButtonIcon from '../components/ButtonIcon';
+import RemoveIcon from '../icons/RemoveIcon';
 
 type Props = {
   name: string,
@@ -19,18 +21,24 @@ function DateRowItem({ name, value, setValue }: Props): Node {
     );
   }
   return (
-    <input
-      type="date"
-      name={name}
-      onBlur={() => setIsEditing(false)}
-      onChange={(e) => setValue(value2date(e.target.value))}
-      value={date2value(value)}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          setIsEditing(false);
-        }
-      }}
-    />
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <input
+        type="date"
+        name={name}
+        onBlur={() => setIsEditing(false)}
+        onChange={(e) => setValue(value2date(e.target.value))}
+        value={date2value(value)}
+        ref={(input) => { input && input.focus() }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            setIsEditing(false);
+          }
+        }}
+      />
+      <ButtonIcon onMouseDown={() => setValue(undefined)}>
+        <RemoveIcon szie={20} />
+      </ButtonIcon>
+    </div>
   );
 }
 

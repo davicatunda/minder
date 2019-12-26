@@ -1,16 +1,17 @@
 import type { Node } from 'react';
 
 import React from 'react';
-import AddIcon from '../icons/AddIcon';
 
 type Props = {
-  onAddItem(): void,
+  children: Node,
+  onClick(): void,
+  onMouseDown(): void,
 };
 
-function AddListRowItem(props: Props): Node {
+function ButtonIcon(props: Props): Node {
   return (
     <button
-      onClick={props.onAddItem}
+      {...props}
       style={{
         background: "none",
         border: 0,
@@ -18,10 +19,8 @@ function AddListRowItem(props: Props): Node {
         margin: 0,
         cursor: "pointer",
       }}
-    >
-      <AddIcon size={20} />
-    </button>
+    />
   );
 }
 
-export default AddListRowItem;
+export default ButtonIcon;

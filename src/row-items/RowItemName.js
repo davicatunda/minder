@@ -30,6 +30,7 @@ function RowItemName({ name, setName, isValid }: Props): Node {
         style={{
           fontWeight: "bold",
           cursor: "pointer",
+          lineHeight: "28px",
           ...commonStyle,
         }}>
         {temporaryName === '' ? "?" : temporaryName}

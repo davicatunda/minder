@@ -7,9 +7,12 @@ import StringRowItem from './StringRowItem';
 import BooleanRowItem from './BooleanRowItem';
 import NumberRowItem from './NumberRowItem';
 import DateRowItem from './DateRowItem';
-import AddListRowItem from './AddListRowItem';
 import NullRowItem from './NullRowItem';
 import RowItemName from './RowItemName';
+import ButtonIcon from '../components/ButtonIcon';
+import AddIcon from '../icons/AddIcon';
+import RemoveIcon from '../icons/RemoveIcon';
+
 const listStyle = {
   listStyle: "none",
   paddingLeft: 12,
@@ -54,7 +57,11 @@ function DataAsList<T: { }> (props: Props<T>): Node {
             const value = node[key];
             const setValue = (newValue) => {
               if (node instanceof Array) {
-                return setParentValue(node.map((v, ix) => ix === Number(key) ? newValue : v));
+                return setParentValue(
+                  node
+                    .map((v, ix) => ix === Number(key) ? newValue : v)
+                    .filter(v => v !== undefined)
+                );
               }
               return setParentValue({ ...node, [key]: newValue });
             }
@@ -80,8 +87,8 @@ function DataAsList<T: { }> (props: Props<T>): Node {
         </li>
       ))}
       <li style={listItemStyle}>
-        <AddListRowItem
-          onAddItem={() => {
+        <ButtonIcon
+          onClick={() => {
             if (node instanceof Array) {
               return setParentValue([...node, null]);
             }
@@ -91,7 +98,14 @@ function DataAsList<T: { }> (props: Props<T>): Node {
             const index = lastField ? Number(lastField.split(':')[1]) : 0;
             return setParentValue({ ...node, [`field:${index + 1}`]: null });
           }}
-        />
+        >
+          <AddIcon size={20} />
+        </ButtonIcon>
+        {Object.keys(node).length === 0 && (
+          <ButtonIcon onClick={() => setParentValue(undefined)}>
+            <RemoveIcon size={20} />
+          </ButtonIcon>
+        )}
       </li>
     </ul>
   );

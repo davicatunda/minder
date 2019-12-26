@@ -2,15 +2,17 @@ import type { Node } from 'react';
 
 import React, { useState } from 'react';
 import CreateIcon from '../icons/CreateIcon';
+import RemoveIcon from '../icons/RemoveIcon';
+import ButtonIcon from '../components/ButtonIcon';
+
 type Value = number | boolean | string | Date;
 type Props = {
   name: string,
   setValue(Value): void,
 };
-
 function NullRowItem(props: Props): Node {
-  const [banana, setBanana] = useState(false);
-  if (banana) {
+  const [isSelectingType, setIsSelectingType] = useState(false);
+  if (isSelectingType) {
     return (
       <>
         <button onClick={() => props.setValue(false)}>checkbox</button>
@@ -24,18 +26,14 @@ function NullRowItem(props: Props): Node {
   }
 
   return (
-    <button
-      onClick={() => setBanana(true)}
-      style={{
-        background: "none",
-        border: 0,
-        padding: 0,
-        margin: 0,
-        cursor: "pointer",
-      }}
-    >
-      <CreateIcon size={20} />
-    </button>
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <ButtonIcon onClick={() => setIsSelectingType(true)}>
+        <CreateIcon size={20} />
+      </ButtonIcon>
+      <ButtonIcon onMouseDown={() => props.setValue(undefined)}>
+        <RemoveIcon szie={20} />
+      </ButtonIcon>
+    </div>
   );
 }
 
