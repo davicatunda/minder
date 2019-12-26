@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "0bdf8ef6f6eec089f61eb7f941bc51dd",
+    "revision": "7de5006e45a0bdbf4a6c02a80a0c1c56",
     "url": "/minder/index.html"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/minder/static/js/2.ae1473f6.chunk.js.LICENSE"
   },
   {
-    "revision": "e1c5b858cd3e2928c7df",
-    "url": "/minder/static/js/main.ca03043f.chunk.js"
+    "revision": "bc53be511e578ff747c1",
+    "url": "/minder/static/js/main.6be55c59.chunk.js"
   },
   {
     "revision": "439484b89b62424eafd7",

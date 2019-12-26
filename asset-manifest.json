@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/minder/static/js/main.ca03043f.chunk.js",
-    "main.js.map": "/minder/static/js/main.ca03043f.chunk.js.map",
+    "main.js": "/minder/static/js/main.6be55c59.chunk.js",
+    "main.js.map": "/minder/static/js/main.6be55c59.chunk.js.map",
     "runtime-main.js": "/minder/static/js/runtime-main.12207d5b.js",
     "runtime-main.js.map": "/minder/static/js/runtime-main.12207d5b.js.map",
     "static/js/2.ae1473f6.chunk.js": "/minder/static/js/2.ae1473f6.chunk.js",
     "static/js/2.ae1473f6.chunk.js.map": "/minder/static/js/2.ae1473f6.chunk.js.map",
     "index.html": "/minder/index.html",
-    "precache-manifest.276e3c018f75d9a767be966b38974266.js": "/minder/precache-manifest.276e3c018f75d9a767be966b38974266.js",
+    "precache-manifest.a453ef344150136c677819cedc18b8bd.js": "/minder/precache-manifest.a453ef344150136c677819cedc18b8bd.js",
     "service-worker.js": "/minder/service-worker.js",
     "static/js/2.ae1473f6.chunk.js.LICENSE": "/minder/static/js/2.ae1473f6.chunk.js.LICENSE"
   },
   "entrypoints": [
     "static/js/runtime-main.12207d5b.js",
     "static/js/2.ae1473f6.chunk.js",
-    "static/js/main.ca03043f.chunk.js"
+    "static/js/main.6be55c59.chunk.js"
   ]
 }
