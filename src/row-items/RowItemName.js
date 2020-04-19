@@ -1,20 +1,16 @@
-// @flow
-
-import type { Node } from 'react';
-
-import React, { useState } from 'react';
+import React, { useState, FunctionComponent, CSSProperties } from 'react';
 
 type Props = {
   name: string,
-  setName(string): void,
-  isValid(string): boolean,
+  setName(temporaryName: string): void,
+  isValid(temporaryName: string): boolean,
 };
-const commonStyle = {
+const commonStyle: CSSProperties = {
   marginRight: 12,
   width: 120,
   boxSizing: "border-box",
 };
-function RowItemName({ name, setName, isValid }: Props): Node {
+const RowItemName: FunctionComponent<Props> = ({ name, setName, isValid }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [temporaryName, setTemporaryName] = useState(name);
   const saveName = () => {

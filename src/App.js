@@ -1,7 +1,6 @@
 // @flow
 
-import React, { useState, useEffect } from 'react';
-import type { Node } from 'react';
+import React, { useState, useEffect, FunctionComponent } from 'react';
 
 import FileInput from './components/FileInput';
 import DownloadButton from './components/DownloadButton';
@@ -12,16 +11,16 @@ import CreateIcon from './icons/CreateIcon';
 import { createKey, encrypt, decrypt } from './utils/encryption';
 import STANDARD from './standard.alpha';
 
-function App(): Node {
-  const [key, setKey] = useState(null);
+const App: FunctionComponent<{}> = () => {
+  const [key, setKey] = useState<string | null>(null);
 
   // TODO deactive behavior while encrypting (cursor: progress)
   const [isEncrypting, setIsEncrypting] = useState(false);
-  const [encryptedData, setEncryptedData] = useState(null);
+  const [encryptedData, setEncryptedData] = useState<string | null>(null);
 
   // TODO deactive behavior while decrypting (cursor: progress)
   const [isDecrypting, setIsDecrypting] = useState(false);
-  const [decodedData, setDecodedData] = useState(null);
+  const [decodedData, setDecodedData] = useState<string | null>(null);
 
   // keep encoded data always decoded
   useEffect(() => {
@@ -73,7 +72,7 @@ function App(): Node {
               <FileInput
                 label="Upload key"
                 onChange={(e) => {
-                  const file = e.target.files[0];
+                  const file = e?.target?.files?.[0];
                   if (!file) return;
 
                   const reader = new FileReader();
@@ -104,7 +103,7 @@ function App(): Node {
               <FileInput
                 label="Upload data"
                 onChange={(e) => {
-                  const file = e.target.files[0];
+                  const file = e?.target?.files?.[0];
                   if (!file) {
                     return;
                   }
@@ -125,6 +124,7 @@ function App(): Node {
         </div>
         <div style={{ margin: 12 }}>
           {(decodedData) && (
+            // @ts-ignore workaround
             <DataAsList
               node={JSON.parse(decodedData)}
               setParentValue={(j) => {

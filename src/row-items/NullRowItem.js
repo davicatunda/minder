@@ -1,16 +1,14 @@
-import type { Node } from 'react';
-
-import React, { useState } from 'react';
+import React, { useState, FunctionComponent } from 'react';
 import CreateIcon from '../icons/CreateIcon';
 import RemoveIcon from '../icons/RemoveIcon';
 import ButtonIcon from '../components/ButtonIcon';
+import { Value } from '../row-items/DataAsList';
 
-type Value = number | boolean | string | Date;
 type Props = {
   name: string,
-  setValue(Value): void,
+  setValue(value: Value): void,
 };
-function NullRowItem(props: Props): Node {
+const NullRowItem: FunctionComponent<Props> = (props) => {
   const [isSelectingType, setIsSelectingType] = useState(false);
   if (isSelectingType) {
     return (
@@ -31,7 +29,7 @@ function NullRowItem(props: Props): Node {
         <CreateIcon size={20} />
       </ButtonIcon>
       <ButtonIcon onMouseDown={() => props.setValue(undefined)}>
-        <RemoveIcon szie={20} />
+        <RemoveIcon size={20} />
       </ButtonIcon>
     </div>
   );

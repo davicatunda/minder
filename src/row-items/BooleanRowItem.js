@@ -1,17 +1,13 @@
-// @flow
-
-import type { Node } from 'react';
-
-import React, { useState } from 'react';
+import React, { useState, FunctionComponent } from 'react';
 import ButtonIcon from '../components/ButtonIcon';
 import RemoveIcon from '../icons/RemoveIcon';
 
 type Props = {
   name: string,
   value: boolean,
-  setValue(boolean): void,
+  setValue(value: boolean | undefined): void,
 };
-function BooleanRowItem({ name, value, setValue }: Props): Node {
+const BooleanRowItem: FunctionComponent<Props> = ({ name, value, setValue }) => {
   const [isEditing, setIsEditing] = useState(false);
   if (!isEditing) {
     return (
@@ -27,13 +23,12 @@ function BooleanRowItem({ name, value, setValue }: Props): Node {
         checked={value}
         name={name}
         onChange={(e) => setValue(!value)}
-        value={value}
         ref={(input) => { input && input.focus() }}
         onBlur={() => setIsEditing(false)}
         style={{ cursor: "pointer" }}
       />
       <ButtonIcon onMouseDown={() => setValue(undefined)}>
-        <RemoveIcon szie={20} />
+        <RemoveIcon size={20} />
       </ButtonIcon>
     </div>
   );

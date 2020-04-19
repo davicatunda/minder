@@ -1,4 +1,3 @@
-// @flow
 /**
  * Set of methods used to encrypt and decrypt the data, all operating on base 64
  * TODO: remove redundant conversions for more direct mappings.

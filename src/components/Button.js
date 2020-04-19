@@ -1,15 +1,10 @@
-// @flow
+import React, { ReactNode, FunctionComponent, CSSProperties } from 'react';
 
-import type { Node } from 'react';
-
-import React from 'react';
-
-
-export const buttonStyle = {
+export const buttonStyle: CSSProperties = {
   border: 0,
   padding: "6px 16px",
   minWidth: 64,
-  boxSizing: "border-box",
+  boxSizing: 'border-box',
   boxShadow: `
     0px 3px 1px -2px rgba(0,0,0,0.2),
     0px 2px 2px 0px rgba(0,0,0,0.14),
@@ -27,7 +22,7 @@ export const buttonStyle = {
   backgroundColor: "#1976d2",
   cursor: "pointer",
 };
-const disableButtonStyle = {
+const disableButtonStyle: CSSProperties = {
   ...buttonStyle,
   backgroundColor: "#e0e0e0",
   cursor: "not-allowed",
@@ -35,10 +30,10 @@ const disableButtonStyle = {
 }
 type Props = {
   onClick?: () => void,
-  children: Node,
+  children: ReactNode,
   disabled?: boolean,
 };
-function Button(props: Props): Node {
+const Button: FunctionComponent<Props> = (props) => {
   if (props.disabled === true) {
     return (
       <button style={disableButtonStyle} disabled>

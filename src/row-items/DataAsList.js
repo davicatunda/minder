@@ -1,8 +1,4 @@
-// @flow
-
-import type { Node } from 'react';
-
-import React from 'react';
+import React, { ReactNode, CSSProperties } from 'react';
 import StringRowItem from './StringRowItem';
 import BooleanRowItem from './BooleanRowItem';
 import NumberRowItem from './NumberRowItem';
@@ -13,22 +9,29 @@ import ButtonIcon from '../components/ButtonIcon';
 import AddIcon from '../icons/AddIcon';
 import RemoveIcon from '../icons/RemoveIcon';
 
-const listStyle = {
+export type Value = number | boolean | string | Date | void | TreeNode[] | TreeNode;
+type TreeNode = {
+  [key: string]: Value,
+};
+
+const listStyle: CSSProperties = {
   listStyle: "none",
   paddingLeft: 12,
   borderLeft: "1px solid #00000030",
   margin: "4px 0 8px 0",
 
 };
-
-const listItemStyle = {
+const listItemStyle: CSSProperties = {
   padding: 4,
   display: "flex",
   alignItems: "center",
 };
 
-type Props<T> = { node: T, setParentValue: T => void };
-function DataAsList<T: { }> (props: Props<T>): Node {
+type Props<T> = {
+  node: T,
+  setParentValue: (newNode: T | undefined) => void,
+};
+const DataAsList: <T extends TreeNode>(props: Props<T>) => ReactNode = (props) => {
   const { node, setParentValue } = props;
   return (
     <ul style={listStyle}>
@@ -38,7 +41,7 @@ function DataAsList<T: { }> (props: Props<T>): Node {
             <RowItemName
               name={key}
               setName={(name) => {
-                const newNode = Object.keys(node).reduce((accumulator, currentKey) => {
+                const newNode = Object.keys(node).reduce((accumulator: TreeNode, currentKey) => {
                   const isKeyBeingRenamed = currentKey === key;
                   if (isKeyBeingRenamed) {
                     accumulator[name] = node[currentKey];
@@ -47,7 +50,7 @@ function DataAsList<T: { }> (props: Props<T>): Node {
                   }
                   return accumulator;
                 }, {});
-                // $FlowFixMe T should accept 1 property rename.
+                // @ts-ignore missing support for renames
                 setParentValue(newNode);
               }}
               isValid={(name) => name === key || node[name] === undefined}
@@ -55,20 +58,16 @@ function DataAsList<T: { }> (props: Props<T>): Node {
           )}
           {function () {
             const value = node[key];
-            const setValue = (newValue) => {
+            const setValue: (newValue: (typeof value)) => void = (newValue) => {
+              const newNode = Object.assign({}, node, { [key]: newValue })
               if (node instanceof Array) {
-                return setParentValue(
-                  node
-                    .map((v, ix) => ix === Number(key) ? newValue : v)
-                    .filter(v => v !== undefined)
-                );
+                const nodeAsArray = Object.values(newNode);
+                // @ts-ignore losing array<T> type
+                return setParentValue(nodeAsArray.filter(v => v !== undefined));
               }
-              return setParentValue({ ...node, [key]: newValue });
+              return setParentValue(newNode);
             }
 
-            if (value === null) {
-              return <NullRowItem name={key} setValue={setValue} />;
-            }
             switch (typeof value) {
               case 'string':
                 if (isDate(value)) {
@@ -81,6 +80,13 @@ function DataAsList<T: { }> (props: Props<T>): Node {
                 return <BooleanRowItem name={key} value={value} setValue={setValue} />;
               case 'object':
               default:
+                if (value instanceof Date) {
+                  return null;
+                }
+                if (value == null) {
+                  return <NullRowItem name={key} setValue={setValue} />;
+                }
+                // @ts-ignore DataAsList should take array
                 return <DataAsList node={value} setParentValue={setValue} />;
             }
           }()}
@@ -90,6 +96,7 @@ function DataAsList<T: { }> (props: Props<T>): Node {
         <ButtonIcon
           onClick={() => {
             if (node instanceof Array) {
+              // @ts-ignore losing array<T> type
               return setParentValue([...node, null]);
             }
             const lastField = Object.keys(node).reverse().find(key => (

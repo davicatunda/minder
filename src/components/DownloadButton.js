@@ -1,17 +1,13 @@
-// @flow
-
-import type { Node } from 'react';
-
-import React from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import DownloadIcon from '../icons/DownloadIcon';
 import Button, { buttonStyle } from './Button';
 
 type Props = {
   fileName: string,
-  data: ?string,
-  children: Node,
+  data: string | null,
+  children: ReactNode,
 };
-function DownloadButton(props: Props): Node {
+const DownloadButton: FunctionComponent<Props> = (props) => {
   if (props.data == null) {
     return (
       <Button disabled={true}>
@@ -36,16 +32,14 @@ function DownloadButton(props: Props): Node {
   }
 }
 
-function WithIcon({ children }: { children: Node }): Node {
-  return (
-    <>
-      <span style={{ display: "flex", marginRight: 8, height: 20, width: 20 }}>
-        <DownloadIcon size={20} />
-      </span>
-      {children}
-    </>
-  );
-}
+const WithIcon: FunctionComponent<{ children: ReactNode }> = ({ children }) => (
+  <>
+    <span style={{ display: "flex", marginRight: 8, height: 20, width: 20 }}>
+      <DownloadIcon size={20} />
+    </span>
+    {children}
+  </>
+);
 
 
 export default DownloadButton;

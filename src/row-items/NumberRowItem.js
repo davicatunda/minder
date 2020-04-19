@@ -1,17 +1,13 @@
-// @flow
-
-import type { Node } from 'react';
-
-import React, { useState } from 'react';
+import React, { useState, FunctionComponent } from 'react';
 import ButtonIcon from '../components/ButtonIcon';
 import RemoveIcon from '../icons/RemoveIcon';
 
 type Props = {
   name: string,
   value: number,
-  setValue(number): void,
+  setValue(value: number | undefined): void,
 };
-function NumberRowItem({ name, value, setValue }: Props): Node {
+const NumberRowItem: FunctionComponent<Props> = ({ name, value, setValue }) => {
   const [isEditing, setIsEditing] = useState(false);
   if (!isEditing) {
     return (
@@ -26,7 +22,7 @@ function NumberRowItem({ name, value, setValue }: Props): Node {
       <input
         type="number"
         name={name}
-        onChange={(e) => !isNaN(e.target.value) && setValue(Number(e.target.value))}
+        onChange={(e) => !isNaN(Number(e.target.value)) && setValue(Number(e.target.value))}
         value={value}
         onBlur={() => setIsEditing(false)}
         ref={(input) => { input && input.focus() }}
@@ -37,7 +33,7 @@ function NumberRowItem({ name, value, setValue }: Props): Node {
         }}
       />
       <ButtonIcon onMouseDown={() => setValue(undefined)}>
-        <RemoveIcon szie={20} />
+        <RemoveIcon size={20} />
       </ButtonIcon>
     </div>
   );

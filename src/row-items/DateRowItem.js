@@ -1,17 +1,13 @@
-// @flow
-
-import type { Node } from 'react';
-
-import React, { useState } from 'react';
+import React, { useState, FunctionComponent } from 'react';
 import ButtonIcon from '../components/ButtonIcon';
 import RemoveIcon from '../icons/RemoveIcon';
 
 type Props = {
   name: string,
   value: Date,
-  setValue(Date): void,
+  setValue(value: Date | undefined): void,
 };
-function DateRowItem({ name, value, setValue }: Props): Node {
+const DateRowItem: FunctionComponent<Props> = ({ name, value, setValue }) => {
   const [isEditing, setIsEditing] = useState(false);
   if (!isEditing) {
     return (
@@ -36,7 +32,7 @@ function DateRowItem({ name, value, setValue }: Props): Node {
         }}
       />
       <ButtonIcon onMouseDown={() => setValue(undefined)}>
-        <RemoveIcon szie={20} />
+        <RemoveIcon size={20} />
       </ButtonIcon>
     </div>
   );

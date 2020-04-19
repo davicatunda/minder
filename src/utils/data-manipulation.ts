@@ -1,9 +1,8 @@
-
 /**
  * ArrayBuffer to String UTF 16 and 8 helpers
  */
 export function arraybuffer2stringUTF16(buf: ArrayBuffer): string {
-  return String.fromCharCode.apply(null, new Uint16Array(buf));
+  return String.fromCharCode.apply(null, new Uint16Array(buf) as any);
 }
 
 export function string2arraybufferUTF16(str: string): ArrayBuffer {
@@ -16,7 +15,7 @@ export function string2arraybufferUTF16(str: string): ArrayBuffer {
 }
 
 export function arraybuffer2stringUTF8(buf: ArrayBuffer): string {
-  return String.fromCharCode.apply(null, new Uint8Array(buf));
+  return String.fromCharCode.apply(null, new Uint8Array(buf) as any);
 }
 
 export function string2arraybufferUTF8(str: string): ArrayBuffer {
@@ -51,7 +50,7 @@ export function base642arraybufferUTF16(str64: string): ArrayBuffer {
  * Base 64  <-> String UTF 16 and 8
  */
 
-function btoaUTF16(str: string): ArrayBuffer {
+function btoaUTF16(str: string): string {
   const aUTF16CodeUnits = new Uint16Array(str.length);
   Array.prototype.forEach.call(aUTF16CodeUnits, (_, idx, arr) => {
     arr[idx] = str.charCodeAt(idx);
@@ -68,7 +67,7 @@ function atobUTF16(str64: string): string {
   return arraybuffer2stringUTF16(aBinaryView.buffer);
 }
 
-function btoaUTF8(str: string): ArrayBuffer {
+function btoaUTF8(str: string): string {
   const aUTF8CodeUnits = new Uint8Array(str.length);
   Array.prototype.forEach.call(aUTF8CodeUnits, (_, idx, arr) => {
     arr[idx] = str.charCodeAt(idx);
