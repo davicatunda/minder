@@ -10,6 +10,7 @@ import {
 import loadable from "@loadable/component";
 
 const Profiles = loadable(() => import("./Profiles"));
+const Standard = loadable(() => import("./Standard"));
 
 const App: FunctionComponent<{}> = () => {
   return (
@@ -31,7 +32,7 @@ const App: FunctionComponent<{}> = () => {
             <Profiles />
           </Route>
           <Route path="/standard">
-            [WIP]
+            <Standard />
           </Route>
         </Switch>
       </div>
