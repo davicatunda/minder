@@ -1,10 +1,8 @@
 import React, { useState, FunctionComponent } from "react";
 import DataAsList from "./row-items/DataAsList";
 import STANDARD from "./standard.alpha";
-import { useQuery } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import Button from "./components/Button";
-import { useMutation } from "@apollo/react-hooks";
 import { useHistory } from "react-router-dom";
 
 const ADD_PROPOSAL = gql`
@@ -14,6 +12,9 @@ const ADD_PROPOSAL = gql`
     }
   }
 `;
+type AllProposalsResponse = {
+  proposals: Array<{ uuid: string }>;
+};
 const ALL_PROPOSALS = gql`
   {
     proposals {
@@ -34,7 +35,7 @@ const Standard: FunctionComponent<{}> = () => {
   const history = useHistory();
   const [addProposal] = useMutation(ADD_PROPOSAL);
   const [proposalData, setProposalData] = useState(SUGGESTED_PROPOSAL);
-  const { data } = useQuery(ALL_PROPOSALS);
+  const { data } = useQuery<AllProposalsResponse>(ALL_PROPOSALS);
   return (
     <div>
       <h2> Proposed API {0.1}</h2>
@@ -61,17 +62,14 @@ const Standard: FunctionComponent<{}> = () => {
       </Button>
       <h2> All Proposals </h2>
       <ul>
-        {
-          // @ts-ignore workaround
-          data?.proposals.map(({ uuid }) => (
-            <li>
-              Proposal {uuid}:
-              <Button onClick={() => history.push(`/proposal/${uuid}`)}>
-                Check it out
-              </Button>
-            </li>
-          ))
-        }
+        {data?.proposals.map(({ uuid }) => (
+          <li key={uuid}>
+            Proposal {uuid}:
+            <Button onClick={() => history.push(`/minder/proposal/${uuid}`)}>
+              Check it out
+            </Button>
+          </li>
+        ))}
       </ul>
     </div>
   );

@@ -73,8 +73,8 @@ const DataAsList: <T extends TreeNode>(props: Props<T>) => ReactNode = (
               const newNode = Object.assign({}, node, { [key]: newValue });
               if (node instanceof Array) {
                 const nodeAsArray = Object.values(newNode);
-                // @ts-ignore losing array<T> type
                 return setParentValue(
+                  // @ts-ignore losing array<T> type
                   nodeAsArray.filter((v) => v !== undefined),
                 );
               }
