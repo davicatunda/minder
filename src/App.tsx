@@ -11,6 +11,7 @@ import loadable from "@loadable/component";
 
 const Profiles = loadable(() => import("./Profiles"));
 const Standard = loadable(() => import("./Standard"));
+const Proposal = loadable(() => import("./Proposal"));
 
 const App: FunctionComponent<{}> = () => {
   return (
@@ -18,21 +19,24 @@ const App: FunctionComponent<{}> = () => {
       <div>
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/minder">Home</Link>
           </li>
           <li>
-            <Link to="/standard">Standard</Link>
+            <Link to="/minder/standard">Standard</Link>
           </li>
         </ul>
 
         <hr />
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/minder/">
             <Profiles />
           </Route>
-          <Route path="/standard">
+          <Route path="/minder/standard">
             <Standard />
+          </Route>
+          <Route path="/minder/proposal/:proposalId">
+            <Proposal />
           </Route>
         </Switch>
       </div>
