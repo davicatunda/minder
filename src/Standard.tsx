@@ -13,10 +13,18 @@ const ADD_PROPOSAL = gql`
   }
 `;
 type AllProposalsResponse = {
+  latestStandard: {
+    version: string;
+    data: string;
+  };
   proposals: Array<{ uuid: string }>;
 };
 const ALL_PROPOSALS = gql`
-  {
+  query StandardPage {
+    latestStandard {
+      version
+      data
+    }
     proposals {
       uuid
     }
@@ -36,11 +44,15 @@ const Standard: FunctionComponent<{}> = () => {
   const [addProposal] = useMutation(ADD_PROPOSAL);
   const [proposalData, setProposalData] = useState(SUGGESTED_PROPOSAL);
   const { data } = useQuery<AllProposalsResponse>(ALL_PROPOSALS);
+  if (data == null) {
+    return null;
+  }
+  const { latestStandard, proposals } = data;
   return (
     <div>
-      <h2> Proposed API {0.1}</h2>
+      <h2> Proposed API {latestStandard.version}</h2>
       <DataAsList
-        node={JSON.parse(STANDARD)}
+        node={JSON.parse(latestStandard.data)}
         // @ts-ignore workaround
         setParentValue={(str: Object) => null}
       />
@@ -62,7 +74,7 @@ const Standard: FunctionComponent<{}> = () => {
       </Button>
       <h2> All Proposals </h2>
       <ul>
-        {data?.proposals.map(({ uuid }) => (
+        {proposals.map(({ uuid }) => (
           <li key={uuid}>
             Proposal {uuid}:
             <Button onClick={() => history.push(`/minder/proposal/${uuid}`)}>

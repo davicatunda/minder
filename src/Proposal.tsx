@@ -5,19 +5,18 @@ import { useParams } from "react-router-dom";
 
 type ProposalResponse = {
   proposal: {
-    proposal: string;
+    data: string;
   };
 };
 const PROPOSAL = gql`
   query Proposal($uuid: String!) {
     proposal(uuid: $uuid) {
-      proposal
+      data
     }
   }
 `;
 const Proposal: FunctionComponent<{}> = () => {
   let { proposalId } = useParams();
-  console.log(proposalId);
   const { data } = useQuery<ProposalResponse>(PROPOSAL, {
     variables: { uuid: proposalId },
   });
@@ -27,9 +26,9 @@ const Proposal: FunctionComponent<{}> = () => {
   return (
     <div>
       <h3> Proposals {proposalId} </h3>
-      {isJSON(data.proposal.proposal) ? (
+      {isJSON(data.proposal.data) ? (
         <DataAsList
-          node={JSON.parse(data.proposal.proposal)}
+          node={JSON.parse(data.proposal.data)}
           // @ts-ignore workaround
           setParentValue={(str: Object) => null}
         />
