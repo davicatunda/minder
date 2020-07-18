@@ -1,27 +1,27 @@
 {
   "files": {
-    "static/js/0.2738e648.chunk.js": "/minder/static/js/0.2738e648.chunk.js",
-    "static/js/0.2738e648.chunk.js.map": "/minder/static/js/0.2738e648.chunk.js.map",
-    "main.js": "/minder/static/js/main.4f2b1ac0.chunk.js",
-    "main.js.map": "/minder/static/js/main.4f2b1ac0.chunk.js.map",
-    "runtime-main.js": "/minder/static/js/runtime-main.145985b8.js",
-    "runtime-main.js.map": "/minder/static/js/runtime-main.145985b8.js.map",
+    "static/js/0.f1c7c717.chunk.js": "/minder/static/js/0.f1c7c717.chunk.js",
+    "static/js/0.f1c7c717.chunk.js.map": "/minder/static/js/0.f1c7c717.chunk.js.map",
+    "main.js": "/minder/static/js/main.4427efc0.chunk.js",
+    "main.js.map": "/minder/static/js/main.4427efc0.chunk.js.map",
+    "runtime-main.js": "/minder/static/js/runtime-main.aa2d4ae2.js",
+    "runtime-main.js.map": "/minder/static/js/runtime-main.aa2d4ae2.js.map",
     "static/js/3.69f8a2bc.chunk.js": "/minder/static/js/3.69f8a2bc.chunk.js",
     "static/js/3.69f8a2bc.chunk.js.map": "/minder/static/js/3.69f8a2bc.chunk.js.map",
-    "static/js/4.dc4461f5.chunk.js": "/minder/static/js/4.dc4461f5.chunk.js",
-    "static/js/4.dc4461f5.chunk.js.map": "/minder/static/js/4.dc4461f5.chunk.js.map",
-    "static/js/5.f49bc3cc.chunk.js": "/minder/static/js/5.f49bc3cc.chunk.js",
-    "static/js/5.f49bc3cc.chunk.js.map": "/minder/static/js/5.f49bc3cc.chunk.js.map",
-    "static/js/6.6c274d19.chunk.js": "/minder/static/js/6.6c274d19.chunk.js",
-    "static/js/6.6c274d19.chunk.js.map": "/minder/static/js/6.6c274d19.chunk.js.map",
+    "static/js/4.52d40a9c.chunk.js": "/minder/static/js/4.52d40a9c.chunk.js",
+    "static/js/4.52d40a9c.chunk.js.map": "/minder/static/js/4.52d40a9c.chunk.js.map",
+    "static/js/5.9f605fa7.chunk.js": "/minder/static/js/5.9f605fa7.chunk.js",
+    "static/js/5.9f605fa7.chunk.js.map": "/minder/static/js/5.9f605fa7.chunk.js.map",
+    "static/js/6.e076bab2.chunk.js": "/minder/static/js/6.e076bab2.chunk.js",
+    "static/js/6.e076bab2.chunk.js.map": "/minder/static/js/6.e076bab2.chunk.js.map",
     "index.html": "/minder/index.html",
-    "precache-manifest.9d8b661b8293b6f6439cf1544dac125a.js": "/minder/precache-manifest.9d8b661b8293b6f6439cf1544dac125a.js",
+    "precache-manifest.c69b3f767c5a38eb0077c10856da3481.js": "/minder/precache-manifest.c69b3f767c5a38eb0077c10856da3481.js",
     "service-worker.js": "/minder/service-worker.js",
     "static/js/3.69f8a2bc.chunk.js.LICENSE.txt": "/minder/static/js/3.69f8a2bc.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.145985b8.js",
+    "static/js/runtime-main.aa2d4ae2.js",
     "static/js/3.69f8a2bc.chunk.js",
-    "static/js/main.4f2b1ac0.chunk.js"
+    "static/js/main.4427efc0.chunk.js"
   ]
 }
