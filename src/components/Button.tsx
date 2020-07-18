@@ -1,10 +1,10 @@
-import React, { ReactNode, FunctionComponent, CSSProperties } from 'react';
+import React, { ReactNode, FunctionComponent, CSSProperties } from "react";
 
 export const buttonStyle: CSSProperties = {
   border: 0,
   padding: "6px 16px",
   minWidth: 64,
-  boxSizing: 'border-box',
+  boxSizing: "border-box",
   boxShadow: `
     0px 3px 1px -2px rgba(0,0,0,0.2),
     0px 2px 2px 0px rgba(0,0,0,0.14),
@@ -27,11 +27,11 @@ const disableButtonStyle: CSSProperties = {
   backgroundColor: "#e0e0e0",
   cursor: "not-allowed",
   color: "rgba(0, 0, 0, 0.4)",
-}
+};
 type Props = {
-  onClick?: () => void,
-  children: ReactNode,
-  disabled?: boolean,
+  onClick?: () => void;
+  children: ReactNode;
+  disabled?: boolean;
 };
 const Button: FunctionComponent<Props> = (props) => {
   if (props.disabled === true) {
@@ -46,9 +46,6 @@ const Button: FunctionComponent<Props> = (props) => {
       {props.children}
     </button>
   );
-}
-
+};
 
 export default Button;
-
-

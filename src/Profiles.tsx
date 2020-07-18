@@ -1,15 +1,15 @@
 // @flow
 
-import React, { useState, useEffect, FunctionComponent } from 'react';
+import React, { useState, useEffect, FunctionComponent } from "react";
 
-import FileInput from './components/FileInput';
-import DownloadButton from './components/DownloadButton';
-import Button from './components/Button';
-import DataAsList from './row-items/DataAsList';
-import CreateIcon from './icons/CreateIcon';
+import FileInput from "./components/FileInput";
+import DownloadButton from "./components/DownloadButton";
+import Button from "./components/Button";
+import DataAsList from "./row-items/DataAsList";
+import CreateIcon from "./icons/CreateIcon";
 
-import { createKey, encrypt, decrypt } from './utils/encryption';
-import STANDARD from './standard.alpha';
+import { createKey, encrypt, decrypt } from "./utils/encryption";
+import STANDARD from "./standard.alpha";
 
 const Profiles: FunctionComponent<{}> = () => {
   const [key, setKey] = useState<string | null>(null);
@@ -51,20 +51,36 @@ const Profiles: FunctionComponent<{}> = () => {
       <div
         style={{
           maxWidth: 750,
-          boxShadow: "rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px",
+          boxShadow:
+            "rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px",
           borderRadius: 4,
           padding: 12,
         }}
       >
-        <h1>
-          Primary
-        </h1>
+        <h1>Primary</h1>
         <div>
           <div>
             <h2> Key </h2>
-            <div style={{ display: "flex", justifyContent: "space-evenly", alignItems: 'center' }}>
-              <Button onClick={() => { createKey().then(setKey); }}>
-                <span style={{ display: "flex", marginRight: 8, height: 20, width: 20 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-evenly",
+                alignItems: "center",
+              }}
+            >
+              <Button
+                onClick={() => {
+                  createKey().then(setKey);
+                }}
+              >
+                <span
+                  style={{
+                    display: "flex",
+                    marginRight: 8,
+                    height: 20,
+                    width: 20,
+                  }}
+                >
                   <CreateIcon size={20} />
                 </span>
                 Create Key
@@ -77,10 +93,10 @@ const Profiles: FunctionComponent<{}> = () => {
 
                   const reader = new FileReader();
                   reader.onloadend = () => {
-                    if (typeof reader.result === 'string') {
+                    if (typeof reader.result === "string") {
                       setKey(reader.result);
                     }
-                  }
+                  };
                   reader.readAsText(file);
                 }}
               />
@@ -93,13 +109,26 @@ const Profiles: FunctionComponent<{}> = () => {
 
           <div>
             <h2> Data </h2>
-            <div style={{ display: "flex", justifyContent: "space-evenly", alignItems: 'center' }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-evenly",
+                alignItems: "center",
+              }}
+            >
               <Button onClick={() => setDecodedData(STANDARD)}>
-                <span style={{ display: "flex", marginRight: 8, height: 20, width: 20 }}>
+                <span
+                  style={{
+                    display: "flex",
+                    marginRight: 8,
+                    height: 20,
+                    width: 20,
+                  }}
+                >
                   <CreateIcon size={20} />
                 </span>
                 Create Data
-            </Button>
+              </Button>
               <FileInput
                 label="Upload data"
                 onChange={(e) => {
@@ -109,11 +138,11 @@ const Profiles: FunctionComponent<{}> = () => {
                   }
                   const reader = new FileReader();
                   reader.onloadend = () => {
-                    if (typeof reader.result === 'string') {
+                    if (typeof reader.result === "string") {
                       setEncryptedData(reader.result);
                     }
-                  }
-                  reader.readAsText(file)
+                  };
+                  reader.readAsText(file);
                 }}
               />
               <DownloadButton data={encryptedData} fileName="data.ish">
@@ -123,7 +152,7 @@ const Profiles: FunctionComponent<{}> = () => {
           </div>
         </div>
         <div style={{ margin: 12 }}>
-          {(decodedData) && (
+          {decodedData && (
             // @ts-ignore workaround
             <DataAsList
               node={JSON.parse(decodedData)}
@@ -134,8 +163,8 @@ const Profiles: FunctionComponent<{}> = () => {
           )}
         </div>
       </div>
-    </div >
+    </div>
   );
-}
+};
 
 export default Profiles;

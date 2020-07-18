@@ -1,9 +1,9 @@
-import React, { useState, FunctionComponent, CSSProperties } from 'react';
+import React, { useState, FunctionComponent, CSSProperties } from "react";
 
 type Props = {
-  name: string,
-  setName(temporaryName: string): void,
-  isValid(temporaryName: string): boolean,
+  name: string;
+  setName(temporaryName: string): void;
+  isValid(temporaryName: string): boolean;
 };
 const commonStyle: CSSProperties = {
   marginRight: 12,
@@ -18,7 +18,7 @@ const RowItemName: FunctionComponent<Props> = ({ name, setName, isValid }) => {
       setName(temporaryName);
       setIsEditing(false);
     }
-  }
+  };
   if (!isEditing) {
     return (
       <span
@@ -28,8 +28,9 @@ const RowItemName: FunctionComponent<Props> = ({ name, setName, isValid }) => {
           cursor: "pointer",
           lineHeight: "28px",
           ...commonStyle,
-        }}>
-        {temporaryName === '' ? "?" : temporaryName}
+        }}
+      >
+        {temporaryName === "" ? "?" : temporaryName}
       </span>
     );
   }
@@ -42,14 +43,16 @@ const RowItemName: FunctionComponent<Props> = ({ name, setName, isValid }) => {
       onChange={(e) => setTemporaryName(e.target.value)}
       value={temporaryName}
       onBlur={saveName}
-      ref={(input) => { input && input.focus() }}
+      ref={(input) => {
+        input && input.focus();
+      }}
       onKeyDown={(e) => {
-        if (e.key === 'Enter') {
+        if (e.key === "Enter") {
           saveName();
         }
       }}
     />
   );
-}
+};
 
 export default RowItemName;

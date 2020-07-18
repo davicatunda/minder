@@ -1,11 +1,11 @@
-import React, { useState, FunctionComponent } from 'react';
-import DataAsList from './row-items/DataAsList';
-import STANDARD from './standard.alpha';
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
-import Button from './components/Button';
-import { useMutation } from '@apollo/react-hooks';
-import { useHistory } from 'react-router-dom';
+import React, { useState, FunctionComponent } from "react";
+import DataAsList from "./row-items/DataAsList";
+import STANDARD from "./standard.alpha";
+import { useQuery } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
+import Button from "./components/Button";
+import { useMutation } from "@apollo/react-hooks";
+import { useHistory } from "react-router-dom";
 
 const ADD_PROPOSAL = gql`
   mutation Adding($proposal: String!) {
@@ -24,11 +24,11 @@ const ALL_PROPOSALS = gql`
 const SUGGESTED_PROPOSAL = {
   "?Parent field": {
     "Proposed Field": {
-      "type": "text",
-      "description": "# in markdown",
-      "?subfields": ["more fields"]
-    }
-  }
+      type: "text",
+      description: "# in markdown",
+      "?subfields": ["more fields"],
+    },
+  },
 };
 const Standard: FunctionComponent<{}> = () => {
   const history = useHistory();
@@ -50,9 +50,13 @@ const Standard: FunctionComponent<{}> = () => {
         // @ts-ignore workaround
         setParentValue={setProposalData}
       />
-      <Button onClick={() => {
-        addProposal({ variables: { proposal: JSON.stringify(proposalData) } });
-      }}>
+      <Button
+        onClick={() => {
+          addProposal({
+            variables: { proposal: JSON.stringify(proposalData) },
+          });
+        }}
+      >
         Send
       </Button>
       <h2> All Proposals </h2>
@@ -66,10 +70,11 @@ const Standard: FunctionComponent<{}> = () => {
                 Check it out
               </Button>
             </li>
-          ))}
+          ))
+        }
       </ul>
     </div>
   );
-}
+};
 
 export default Standard;

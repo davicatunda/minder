@@ -1,12 +1,7 @@
 // @flow
 
-import React, { FunctionComponent } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import React, { FunctionComponent } from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import loadable from "@loadable/component";
 
 const Profiles = loadable(() => import("./Profiles"));
@@ -42,6 +37,6 @@ const App: FunctionComponent<{}> = () => {
       </div>
     </Router>
   );
-}
+};
 
 export default App;

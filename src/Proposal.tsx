@@ -1,9 +1,8 @@
-
-import React, { FunctionComponent } from 'react';
-import DataAsList from './row-items/DataAsList';
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
-import { useParams } from 'react-router-dom';
+import React, { FunctionComponent } from "react";
+import DataAsList from "./row-items/DataAsList";
+import { useQuery } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
+import { useParams } from "react-router-dom";
 
 const PROPOSAL = gql`
   query Proposal($uuid: String!) {
@@ -21,7 +20,7 @@ const Proposal: FunctionComponent<{}> = () => {
   }
   return (
     <div>
-      <h3> Proposals  {proposalId} </h3>
+      <h3> Proposals {proposalId} </h3>
       {isJSON(data.proposal.proposal) ? (
         <DataAsList
           node={JSON.parse(data.proposal.proposal)}
@@ -31,12 +30,17 @@ const Proposal: FunctionComponent<{}> = () => {
       ) : null}
     </div>
   );
-}
+};
 
 function isJSON(text: String) {
-  return /^[\],:{}\s]*$/.test(text.replace(/\\["\\\/bfnrtu]/g, '@')
-    .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-    .replace(/(?:^|:|,)(?:\s*\[)+/g, ''));
-
+  return /^[\],:{}\s]*$/.test(
+    text
+      .replace(/\\["\\\/bfnrtu]/g, "@")
+      .replace(
+        /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
+        "]",
+      )
+      .replace(/(?:^|:|,)(?:\s*\[)+/g, ""),
+  );
 }
 export default Proposal;

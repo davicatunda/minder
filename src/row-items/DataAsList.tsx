@@ -1,17 +1,24 @@
-import React, { ReactNode, CSSProperties } from 'react';
-import StringRowItem from './StringRowItem';
-import BooleanRowItem from './BooleanRowItem';
-import NumberRowItem from './NumberRowItem';
-import DateRowItem from './DateRowItem';
-import NullRowItem from './NullRowItem';
-import RowItemName from './RowItemName';
-import ButtonIcon from '../components/ButtonIcon';
-import AddIcon from '../icons/AddIcon';
-import RemoveIcon from '../icons/RemoveIcon';
+import React, { ReactNode, CSSProperties } from "react";
+import StringRowItem from "./StringRowItem";
+import BooleanRowItem from "./BooleanRowItem";
+import NumberRowItem from "./NumberRowItem";
+import DateRowItem from "./DateRowItem";
+import NullRowItem from "./NullRowItem";
+import RowItemName from "./RowItemName";
+import ButtonIcon from "../components/ButtonIcon";
+import AddIcon from "../icons/AddIcon";
+import RemoveIcon from "../icons/RemoveIcon";
 
-export type Value = number | boolean | string | Date | void | TreeNode[] | TreeNode;
+export type Value =
+  | number
+  | boolean
+  | string
+  | Date
+  | void
+  | TreeNode[]
+  | TreeNode;
 type TreeNode = {
-  [key: string]: Value,
+  [key: string]: Value;
 };
 
 const listStyle: CSSProperties = {
@@ -19,7 +26,6 @@ const listStyle: CSSProperties = {
   paddingLeft: 12,
   borderLeft: "1px solid #00000030",
   margin: "4px 0 8px 0",
-
 };
 const listItemStyle: CSSProperties = {
   padding: 4,
@@ -28,10 +34,12 @@ const listItemStyle: CSSProperties = {
 };
 
 type Props<T> = {
-  node: T,
-  setParentValue: (newNode: T | undefined) => void,
+  node: T;
+  setParentValue: (newNode: T | undefined) => void;
 };
-const DataAsList: <T extends TreeNode>(props: Props<T>) => ReactNode = (props) => {
+const DataAsList: <T extends TreeNode>(props: Props<T>) => ReactNode = (
+  props,
+) => {
   const { node, setParentValue } = props;
   return (
     <ul style={listStyle}>
@@ -41,44 +49,65 @@ const DataAsList: <T extends TreeNode>(props: Props<T>) => ReactNode = (props) =
             <RowItemName
               name={key}
               setName={(name) => {
-                const newNode = Object.keys(node).reduce((accumulator: TreeNode, currentKey) => {
-                  const isKeyBeingRenamed = currentKey === key;
-                  if (isKeyBeingRenamed) {
-                    accumulator[name] = node[currentKey];
-                  } else {
-                    accumulator[currentKey] = node[currentKey];
-                  }
-                  return accumulator;
-                }, {});
+                const newNode = Object.keys(node).reduce(
+                  (accumulator: TreeNode, currentKey) => {
+                    const isKeyBeingRenamed = currentKey === key;
+                    if (isKeyBeingRenamed) {
+                      accumulator[name] = node[currentKey];
+                    } else {
+                      accumulator[currentKey] = node[currentKey];
+                    }
+                    return accumulator;
+                  },
+                  {},
+                );
                 // @ts-ignore missing support for renames
                 setParentValue(newNode);
               }}
               isValid={(name) => name === key || node[name] === undefined}
             />
           )}
-          {function () {
+          {(function () {
             const value = node[key];
-            const setValue: (newValue: (typeof value)) => void = (newValue) => {
-              const newNode = Object.assign({}, node, { [key]: newValue })
+            const setValue: (newValue: typeof value) => void = (newValue) => {
+              const newNode = Object.assign({}, node, { [key]: newValue });
               if (node instanceof Array) {
                 const nodeAsArray = Object.values(newNode);
                 // @ts-ignore losing array<T> type
-                return setParentValue(nodeAsArray.filter(v => v !== undefined));
+                return setParentValue(
+                  nodeAsArray.filter((v) => v !== undefined),
+                );
               }
               return setParentValue(newNode);
-            }
+            };
 
             switch (typeof value) {
-              case 'string':
+              case "string":
                 if (isDate(value)) {
-                  return <DateRowItem name={key} value={new Date(value)} setValue={setValue} />;
-                };
-                return <StringRowItem name={key} value={value} setValue={setValue} />;
-              case 'number':
-                return <NumberRowItem name={key} value={value} setValue={setValue} />;
-              case 'boolean':
-                return <BooleanRowItem name={key} value={value} setValue={setValue} />;
-              case 'object':
+                  return (
+                    <DateRowItem
+                      name={key}
+                      value={new Date(value)}
+                      setValue={setValue}
+                    />
+                  );
+                }
+                return (
+                  <StringRowItem name={key} value={value} setValue={setValue} />
+                );
+              case "number":
+                return (
+                  <NumberRowItem name={key} value={value} setValue={setValue} />
+                );
+              case "boolean":
+                return (
+                  <BooleanRowItem
+                    name={key}
+                    value={value}
+                    setValue={setValue}
+                  />
+                );
+              case "object":
               default:
                 if (value instanceof Date) {
                   return null;
@@ -89,7 +118,7 @@ const DataAsList: <T extends TreeNode>(props: Props<T>) => ReactNode = (props) =
                 // @ts-ignore DataAsList should take array
                 return <DataAsList node={value} setParentValue={setValue} />;
             }
-          }()}
+          })()}
         </li>
       ))}
       <li style={listItemStyle}>
@@ -99,10 +128,10 @@ const DataAsList: <T extends TreeNode>(props: Props<T>) => ReactNode = (props) =
               // @ts-ignore losing array<T> type
               return setParentValue([...node, null]);
             }
-            const lastField = Object.keys(node).reverse().find(key => (
-              RegExp(/field:[0-9]+/).test(key)
-            ));
-            const index = lastField ? Number(lastField.split(':')[1]) : 0;
+            const lastField = Object.keys(node)
+              .reverse()
+              .find((key) => RegExp(/field:[0-9]+/).test(key));
+            const index = lastField ? Number(lastField.split(":")[1]) : 0;
             return setParentValue({ ...node, [`field:${index + 1}`]: null });
           }}
         >
@@ -116,10 +145,12 @@ const DataAsList: <T extends TreeNode>(props: Props<T>) => ReactNode = (props) =
       </li>
     </ul>
   );
-}
+};
 
 function isDate(value: string): boolean {
-  const regex = RegExp(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/);
+  const regex = RegExp(
+    /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/,
+  );
   return regex.test(value);
 }
 
