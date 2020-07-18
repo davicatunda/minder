@@ -1,8 +1,8 @@
-import React, { FunctionComponent } from 'react';
-import SVGWrapper from './SVGWrapper';
+import React, { FunctionComponent } from "react";
+import SVGWrapper from "./SVGWrapper";
 
 type Props = {
-  size: number,
+  size: number;
 };
 const CreateIcon: FunctionComponent<Props> = ({ size }) => (
   <SVGWrapper fontSize={size}>
@@ -11,5 +11,3 @@ const CreateIcon: FunctionComponent<Props> = ({ size }) => (
 );
 
 export default CreateIcon;
-
-

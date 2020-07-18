@@ -1,8 +1,8 @@
-import React, { FunctionComponent } from 'react';
-import SVGWrapper from './SVGWrapper';
+import React, { FunctionComponent } from "react";
+import SVGWrapper from "./SVGWrapper";
 
 type Props = {
-  size: number,
+  size: number;
 };
 const RemoveIcon: FunctionComponent<Props> = ({ size }) => (
   <SVGWrapper fontSize={size}>
@@ -10,5 +10,3 @@ const RemoveIcon: FunctionComponent<Props> = ({ size }) => (
   </SVGWrapper>
 );
 export default RemoveIcon;
-
-

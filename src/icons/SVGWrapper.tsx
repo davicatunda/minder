@@ -1,8 +1,8 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent, ReactNode } from "react";
 
 type Props = {
-  fontSize: number,
-  children: ReactNode,
+  fontSize: number;
+  children: ReactNode;
 };
 const SVGWrapper: FunctionComponent<Props> = ({ fontSize, children }) => (
   <svg
@@ -25,5 +25,3 @@ const SVGWrapper: FunctionComponent<Props> = ({ fontSize, children }) => (
 );
 
 export default SVGWrapper;
-
-

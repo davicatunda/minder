@@ -1,13 +1,17 @@
-import React, { useState, FunctionComponent } from 'react';
-import ButtonIcon from '../components/ButtonIcon';
-import RemoveIcon from '../icons/RemoveIcon';
+import React, { useState, FunctionComponent } from "react";
+import ButtonIcon from "../components/ButtonIcon";
+import RemoveIcon from "../icons/RemoveIcon";
 
 type Props = {
-  name: string,
-  value: boolean,
-  setValue(value: boolean | undefined): void,
+  name: string;
+  value: boolean;
+  setValue(value: boolean | undefined): void;
 };
-const BooleanRowItem: FunctionComponent<Props> = ({ name, value, setValue }) => {
+const BooleanRowItem: FunctionComponent<Props> = ({
+  name,
+  value,
+  setValue,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   if (!isEditing) {
     return (
@@ -23,7 +27,9 @@ const BooleanRowItem: FunctionComponent<Props> = ({ name, value, setValue }) => 
         checked={value}
         name={name}
         onChange={(e) => setValue(!value)}
-        ref={(input) => { input && input.focus() }}
+        ref={(input) => {
+          input && input.focus();
+        }}
         onBlur={() => setIsEditing(false)}
         style={{ cursor: "pointer" }}
       />
@@ -32,6 +38,6 @@ const BooleanRowItem: FunctionComponent<Props> = ({ name, value, setValue }) => 
       </ButtonIcon>
     </div>
   );
-}
+};
 
 export default BooleanRowItem;

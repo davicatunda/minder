@@ -1,5 +1,5 @@
 export default JSON.stringify({
-  "Personal": {
+  Personal: {
     /*
     Name: null,
     Birthday: null,
@@ -37,7 +37,7 @@ export default JSON.stringify({
     }],
     */
   },
-  "Community": {
+  Community: {
     /*
     Friends: [{
       Notes: null,
@@ -54,7 +54,7 @@ export default JSON.stringify({
     }],
     */
   },
-  "Education": {
+  Education: {
     /*
     "Education Level": null,
     History: [{
@@ -67,7 +67,7 @@ export default JSON.stringify({
     }],
     */
   },
-  "Work": {
+  Work: {
     /*
     Profession: null,
     History: [{
@@ -87,7 +87,7 @@ export default JSON.stringify({
     }]
     */
   },
-  "Health": {
+  Health: {
     /*
     "Blood Type": null, // A+, A-, B+, B-, AB+, AB-, O+, O-
     "Body History": [{

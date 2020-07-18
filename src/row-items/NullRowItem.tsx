@@ -1,12 +1,12 @@
-import React, { useState, FunctionComponent } from 'react';
-import CreateIcon from '../icons/CreateIcon';
-import RemoveIcon from '../icons/RemoveIcon';
-import ButtonIcon from '../components/ButtonIcon';
-import { Value } from '../row-items/DataAsList';
+import React, { useState, FunctionComponent } from "react";
+import CreateIcon from "../icons/CreateIcon";
+import RemoveIcon from "../icons/RemoveIcon";
+import ButtonIcon from "../components/ButtonIcon";
+import { Value } from "../row-items/DataAsList";
 
 type Props = {
-  name: string,
-  setValue(value: Value): void,
+  name: string;
+  setValue(value: Value): void;
 };
 const NullRowItem: FunctionComponent<Props> = (props) => {
   const [isSelectingType, setIsSelectingType] = useState(false);
@@ -33,7 +33,6 @@ const NullRowItem: FunctionComponent<Props> = (props) => {
       </ButtonIcon>
     </div>
   );
-}
-
+};
 
 export default NullRowItem;

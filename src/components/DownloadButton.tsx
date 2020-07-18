@@ -1,19 +1,17 @@
-import React, { FunctionComponent, ReactNode } from 'react';
-import DownloadIcon from '../icons/DownloadIcon';
-import Button, { buttonStyle } from './Button';
+import React, { FunctionComponent, ReactNode } from "react";
+import DownloadIcon from "../icons/DownloadIcon";
+import Button, { buttonStyle } from "./Button";
 
 type Props = {
-  fileName: string,
-  data: string | null,
-  children: ReactNode,
+  fileName: string;
+  data: string | null;
+  children: ReactNode;
 };
 const DownloadButton: FunctionComponent<Props> = (props) => {
   if (props.data == null) {
     return (
       <Button disabled={true}>
-        <WithIcon>
-          {props.children}
-        </WithIcon>
+        <WithIcon>{props.children}</WithIcon>
       </Button>
     );
   } else {
@@ -24,13 +22,11 @@ const DownloadButton: FunctionComponent<Props> = (props) => {
     const href = `data:text/plain;charset=base64,${props.data}`;
     return (
       <a style={style} href={href} download={props.fileName}>
-        <WithIcon>
-          {props.children}
-        </WithIcon>
+        <WithIcon>{props.children}</WithIcon>
       </a>
     );
   }
-}
+};
 
 const WithIcon: FunctionComponent<{ children: ReactNode }> = ({ children }) => (
   <>
@@ -40,6 +36,5 @@ const WithIcon: FunctionComponent<{ children: ReactNode }> = ({ children }) => (
     {children}
   </>
 );
-
 
 export default DownloadButton;

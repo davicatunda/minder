@@ -1,9 +1,9 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent, ReactNode } from "react";
 
 type Props = {
-  children: ReactNode,
-  onClick?(): void,
-  onMouseDown?(): void,
+  children: ReactNode;
+  onClick?(): void;
+  onMouseDown?(): void;
 };
 const ButtonIcon: FunctionComponent<Props> = (props) => (
   <button
