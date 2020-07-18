@@ -1,6 +1,5 @@
 import React, { useState, FunctionComponent } from "react";
 import DataAsList from "./row-items/DataAsList";
-import STANDARD from "./standard.alpha";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import Button from "./components/Button";
 import { useHistory } from "react-router-dom";
@@ -12,14 +11,14 @@ const ADD_PROPOSAL = gql`
     }
   }
 `;
-type AllProposalsResponse = {
+type StandardPageResponse = {
   latestStandard: {
     version: string;
     data: string;
   };
   proposals: Array<{ uuid: string }>;
 };
-const ALL_PROPOSALS = gql`
+const QUERY = gql`
   query StandardPage {
     latestStandard {
       version
@@ -43,7 +42,7 @@ const Standard: FunctionComponent<{}> = () => {
   const history = useHistory();
   const [addProposal] = useMutation(ADD_PROPOSAL);
   const [proposalData, setProposalData] = useState(SUGGESTED_PROPOSAL);
-  const { data } = useQuery<AllProposalsResponse>(ALL_PROPOSALS);
+  const { data } = useQuery<StandardPageResponse>(QUERY);
   if (data == null) {
     return null;
   }

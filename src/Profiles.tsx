@@ -7,11 +7,28 @@ import DownloadButton from "./components/DownloadButton";
 import Button from "./components/Button";
 import DataAsList from "./row-items/DataAsList";
 import CreateIcon from "./icons/CreateIcon";
+import { gql, useQuery } from "@apollo/client";
 
 import { createKey, encrypt, decrypt } from "./utils/encryption";
 import STANDARD from "./standard.alpha";
 
+type ProfilesPageResponse = {
+  latestStandard: {
+    version: string;
+    data: string;
+  };
+};
+const QUERY = gql`
+  query ProfilesPage {
+    latestStandard {
+      data
+    }
+  }
+`;
+
 const Profiles: FunctionComponent<{}> = () => {
+  const { data } = useQuery<ProfilesPageResponse>(QUERY);
+  const standard = data?.latestStandard.data ?? STANDARD;
   const [key, setKey] = useState<string | null>(null);
 
   // TODO deactive behavior while encrypting (cursor: progress)
@@ -116,7 +133,7 @@ const Profiles: FunctionComponent<{}> = () => {
                 alignItems: "center",
               }}
             >
-              <Button onClick={() => setDecodedData(STANDARD)}>
+              <Button onClick={() => setDecodedData(standard)}>
                 <span
                   style={{
                     display: "flex",
