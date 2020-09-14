@@ -2,11 +2,22 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
+
+import { ApolloProvider, ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+import { setContext } from '@apollo/client/link/context';
+
+const authLink = setContext((_, { headers }) => ({
+  headers: {
+    ...headers,
+    authorization: localStorage.getItem('token') ?? '',
+  }
+}));
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  uri: "https://thawing-wildwood-69808.herokuapp.com/graphql",
+  link: authLink.concat(createHttpLink({
+    uri: "https://thawing-wildwood-69808.herokuapp.com/graphql",
+  })),
+  cache: new InMemoryCache()
 });
 
 ReactDOM.render(

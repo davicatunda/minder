@@ -1,8 +1,9 @@
 // @flow
 
 import React, { FunctionComponent } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import loadable from "@loadable/component";
+import NavBar from "./NavBar";
 
 const Profiles = loadable(() => import("./Profiles"));
 const Standard = loadable(() => import("./Standard"));
@@ -12,17 +13,8 @@ const App: FunctionComponent<{}> = () => {
   return (
     <Router>
       <div>
-        <ul>
-          <li>
-            <Link to="/minder">Home</Link>
-          </li>
-          <li>
-            <Link to="/minder/standard">Standard</Link>
-          </li>
-        </ul>
-
+        <NavBar />
         <hr />
-
         <Switch>
           <Route exact path="/minder/">
             <Profiles />
