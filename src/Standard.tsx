@@ -12,6 +12,9 @@ const ADD_PROPOSAL = gql`
   }
 `;
 type StandardPageResponse = {
+  user?: {
+    uuid: string,
+  }
   latestStandard: {
     version: string;
     data: string;
@@ -20,6 +23,9 @@ type StandardPageResponse = {
 };
 const QUERY = gql`
   query StandardPage {
+    user {
+      uuid
+    }
     latestStandard {
       version
       data
@@ -55,22 +61,26 @@ const Standard: FunctionComponent<{}> = () => {
         // @ts-ignore workaround
         setParentValue={(str: Object) => null}
       />
-      <h2> Make a Proposal </h2>
-      <DataAsList
-        // @ts-ignore workaround
-        node={proposalData}
-        // @ts-ignore workaround
-        setParentValue={setProposalData}
-      />
-      <Button
-        onClick={() => {
-          addProposal({
-            variables: { proposal: JSON.stringify(proposalData) },
-          });
-        }}
-      >
-        Send
-      </Button>
+      {data.user?.uuid != null && (
+        <>
+          <h2> Make a Proposal </h2>
+          <DataAsList
+            // @ts-ignore workaround
+            node={proposalData}
+            // @ts-ignore workaround
+            setParentValue={setProposalData}
+          />
+          <Button
+            onClick={() => {
+              addProposal({
+                variables: { proposal: JSON.stringify(proposalData) },
+              });
+            }}
+          >
+            Send
+        </Button>
+        </>
+      )}
       <h2> All Proposals </h2>
       <ul>
         {proposals.map(({ uuid }) => (
