@@ -16,7 +16,7 @@ const PROPOSAL = gql`
   }
 `;
 const Proposal: FunctionComponent<{}> = () => {
-  let { proposalId } = useParams();
+  let { proposalId } = useParams<{ proposalId: string }>();
   const { data } = useQuery<ProposalResponse>(PROPOSAL, {
     variables: { uuid: proposalId },
   });

@@ -32,11 +32,11 @@ const Profiles: FunctionComponent<{}> = () => {
   const [key, setKey] = useState<string | null>(null);
 
   // TODO deactive behavior while encrypting (cursor: progress)
-  const [isEncrypting, setIsEncrypting] = useState(false);
+  const [, setIsEncrypting] = useState(false);
   const [encryptedData, setEncryptedData] = useState<string | null>(null);
 
   // TODO deactive behavior while decrypting (cursor: progress)
-  const [isDecrypting, setIsDecrypting] = useState(false);
+  const [, setIsDecrypting] = useState(false);
   const [decodedData, setDecodedData] = useState<string | null>(null);
 
   // keep encoded data always decoded

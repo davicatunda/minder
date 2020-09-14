@@ -1,4 +1,4 @@
-import React, { ReactNode, CSSProperties } from "react";
+import React, { CSSProperties } from "react";
 import StringRowItem from "./StringRowItem";
 import BooleanRowItem from "./BooleanRowItem";
 import NumberRowItem from "./NumberRowItem";
@@ -37,7 +37,7 @@ type Props<T> = {
   node: T;
   setParentValue: (newNode: T | undefined) => void;
 };
-const DataAsList: <T extends TreeNode>(props: Props<T>) => ReactNode = (
+const DataAsList: <T extends TreeNode>(props: Props<T>) => JSX.Element = (
   props,
 ) => {
   const { node, setParentValue } = props;
