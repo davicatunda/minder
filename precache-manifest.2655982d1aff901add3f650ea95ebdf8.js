@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "2eb52e761959cfe719251c12cb7f3e64",
+    "revision": "76255eb2cf0c2ac8557008c3440967fd",
     "url": "/minder/index.html"
   },
   {
@@ -12,12 +12,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/minder/static/js/2.4cba3333.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "64e01984050e36c7fb90",
-    "url": "/minder/static/js/3.797ec703.chunk.js"
+    "revision": "6b87c12607b99def41cd",
+    "url": "/minder/static/js/3.c0b17c9b.chunk.js"
   },
   {
-    "revision": "9626efa29c2bbbe193cf",
-    "url": "/minder/static/js/4.2e4f4e19.chunk.js"
+    "revision": "9ea18f48a4a6c3c1630a",
+    "url": "/minder/static/js/4.f22471d0.chunk.js"
   },
   {
     "revision": "2501342cc3638f9aecba",
@@ -32,7 +32,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/minder/static/js/main.ec392d97.chunk.js"
   },
   {
-    "revision": "7e3b439a1cde2af41b18",
-    "url": "/minder/static/js/runtime-main.67fa0d83.js"
+    "revision": "14bdb23cc035e07b356e",
+    "url": "/minder/static/js/runtime-main.ad8f676a.js"
   }
 ]);
