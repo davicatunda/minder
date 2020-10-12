@@ -13,14 +13,14 @@ import { createKey, encrypt, decrypt } from "./utils/encryption";
 import STANDARD from "./standard.alpha";
 
 type OfflinePageResponse = {
-  latestStandard: {
+  standardProposal: {
     version: string;
     data: string;
   };
 };
 const QUERY = gql`
   query OfflinePage {
-    latestStandard {
+    standardProposal {
       data
     }
   }
@@ -28,7 +28,7 @@ const QUERY = gql`
 
 const Offline: FunctionComponent<{}> = () => {
   const { data } = useQuery<OfflinePageResponse>(QUERY);
-  const standard = data?.latestStandard.data ?? STANDARD;
+  const standard = data?.standardProposal.data ?? STANDARD;
   const [key, setKey] = useState<string | null>(null);
 
   // TODO deactive behavior while encrypting (cursor: progress)

@@ -15,7 +15,7 @@ type StandardPageResponse = {
   user?: {
     uuid: string,
   }
-  latestStandard: {
+  standardProposal: {
     version: string;
     data: string;
   };
@@ -26,7 +26,7 @@ const QUERY = gql`
     user {
       uuid
     }
-    latestStandard {
+    standardProposal {
       version
       data
     }
@@ -52,12 +52,12 @@ const Standard: FunctionComponent<{}> = () => {
   if (data == null) {
     return null;
   }
-  const { latestStandard, proposals } = data;
+  const { standardProposal, proposals } = data;
   return (
     <div>
-      <h2> Proposed API {latestStandard.version}</h2>
+      <h2> Proposed API {standardProposal.version}</h2>
       <DataAsList
-        node={JSON.parse(latestStandard.data)}
+        node={JSON.parse(standardProposal.data)}
         // @ts-ignore workaround
         setParentValue={(str: Object) => null}
       />
