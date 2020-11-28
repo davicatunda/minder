@@ -1,0 +1,2 @@
+(this.webpackJsonpminder=this.webpackJsonpminder||[]).push([[6],{251:function(e,n,i){"use strict";i.r(n);var t=i(5);i(0);n.default=function(){return Object(t.jsx)("div",{children:"Home"})}}}]);
+//# sourceMappingURL=6.89777248.chunk.js.map
