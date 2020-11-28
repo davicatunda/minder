@@ -1,7 +1,15 @@
-import React, { useState, FunctionComponent } from "react";
-import DataAsList from "./row-items/DataAsList";
-import { gql, useQuery, useMutation } from "@apollo/client";
-import Button from "./components/Button";
+import { Button, Paper, Typography } from "@material-ui/core";
+import React, { FunctionComponent } from "react";
+import {
+  TNode,
+  normalizeRoot,
+  recursivelyDenormalizeNode,
+} from "./utils/normalization";
+import { gql, useMutation, useQuery } from "@apollo/client";
+
+import CardView from "./card-items/CardView";
+import { DecodedDataContext } from "./card-items/CardViewRoot";
+import { useDataEncryptionInSync } from "./utils/encryption";
 import { useHistory } from "react-router-dom";
 
 const ADD_PROPOSAL = gql`
@@ -13,8 +21,8 @@ const ADD_PROPOSAL = gql`
 `;
 type StandardPageResponse = {
   user?: {
-    uuid: string,
-  }
+    uuid: string;
+  };
   standardProposal: {
     version: string;
     data: string;
@@ -35,6 +43,40 @@ const QUERY = gql`
     }
   }
 `;
+
+const Standard: FunctionComponent<{}> = () => {
+  const { data } = useQuery<StandardPageResponse>(QUERY);
+  if (data == null) {
+    return null;
+  }
+  const { standardProposal, proposals } = data;
+  return (
+    <div>
+      <ProposedAPISection standardProposal={standardProposal} />
+      {data.user?.uuid != null && <MakeAProposalSection />}
+      <AllProposalsSection proposals={proposals} />
+    </div>
+  );
+};
+
+type ProposedAPISectionProps = {
+  standardProposal: {
+    version: string;
+    data: string;
+  };
+};
+function ProposedAPISection({ standardProposal }: ProposedAPISectionProps) {
+  const store = normalizeRoot(standardProposal.data, {});
+  return (
+    <DecodedDataContext.Provider value={{ store, updateNodes: null }}>
+      <Paper style={{ position: "relative", padding: 24 }}>
+        <Typography variant="h2">Proposed API {standardProposal.version}</Typography>
+        <CardView nodeKey={store.rootNode.value} />
+      </Paper>
+    </DecodedDataContext.Provider>
+  );
+}
+
 const SUGGESTED_PROPOSAL = {
   "?Parent field": {
     "Proposed Field": {
@@ -44,56 +86,63 @@ const SUGGESTED_PROPOSAL = {
     },
   },
 };
-const Standard: FunctionComponent<{}> = () => {
-  const history = useHistory();
+const DUMMY_KEY = "1Qd1fIUBT6KuzgM9mQOIkk8k77mkXz/4BGMnttcdY1c=";
+function MakeAProposalSection() {
   const [addProposal] = useMutation(ADD_PROPOSAL);
-  const [proposalData, setProposalData] = useState(SUGGESTED_PROPOSAL);
-  const { data } = useQuery<StandardPageResponse>(QUERY);
-  if (data == null) {
+  const { decodedData, setDecodedData } = useDataEncryptionInSync(
+    DUMMY_KEY,
+    JSON.stringify(SUGGESTED_PROPOSAL),
+  );
+  if (!decodedData) {
     return null;
   }
-  const { standardProposal, proposals } = data;
+  const store = normalizeRoot(decodedData, {});
+  const updateNodes = (nodes: TNode[]) => {
+    const newNodes = { ...store.nodes };
+    nodes.forEach((node) => (newNodes[node.key] = node));
+    setDecodedData(
+      JSON.stringify(recursivelyDenormalizeNode(newNodes, store.rootNode.value)),
+    );
+  };
   return (
-    <div>
-      <h2> Proposed API {standardProposal.version}</h2>
-      <DataAsList
-        node={JSON.parse(standardProposal.data)}
-        // @ts-ignore workaround
-        setParentValue={(str: Object) => null}
-      />
-      {data.user?.uuid != null && (
-        <>
-          <h2> Make a Proposal </h2>
-          <DataAsList
-            // @ts-ignore workaround
-            node={proposalData}
-            // @ts-ignore workaround
-            setParentValue={setProposalData}
-          />
-          <Button
-            onClick={() => {
-              addProposal({
-                variables: { proposal: JSON.stringify(proposalData) },
-              });
-            }}
-          >
-            Send
-        </Button>
-        </>
-      )}
-      <h2> All Proposals </h2>
+    <DecodedDataContext.Provider value={{ store, updateNodes }}>
+      <Paper style={{ position: "relative", padding: 24 }}>
+        <CardView nodeKey={store.rootNode.value} />
+      </Paper>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => addProposal({ variables: { proposal: decodedData } })}
+      >
+        Send
+      </Button>
+    </DecodedDataContext.Provider>
+  );
+}
+type AllProposalsSectionProps = {
+  proposals: Array<{ uuid: string }>;
+};
+function AllProposalsSection({ proposals }: AllProposalsSectionProps) {
+  const history = useHistory();
+  return (
+    <Paper style={{ position: "relative", padding: 24 }}>
+      <Typography variant="h2">All Proposals</Typography>
       <ul>
         {proposals.map(({ uuid }) => (
           <li key={uuid}>
             Proposal {uuid}:
-            <Button onClick={() => history.push(`/minder/proposal/${uuid}`)}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => history.push(`/minder/proposal/${uuid}`)}
+            >
               Check it out
             </Button>
           </li>
         ))}
       </ul>
-    </div>
+    </Paper>
   );
-};
+}
 
 export default Standard;

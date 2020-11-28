@@ -3,6 +3,7 @@
  * TODO: remove redundant conversions for more direct mappings.
  */
 
+import { useEffect, useState } from "react";
 import {
   string2arraybufferUTF16,
   arraybuffer2stringUTF16,
@@ -70,4 +71,56 @@ export async function createKey(): Promise<string> {
   );
   const exportedKey = await window.crypto.subtle.exportKey("raw", key);
   return arraybuffer2base64UTF16(exportedKey);
+}
+
+export function useDataEncryptionInSync(
+  encryptionKey: string,
+  initialData: string,
+): {
+  decodedData: string | null;
+  setDecodedData: (decodedData: string) => void;
+  encryptedData: string | null;
+  isEncrypting: boolean;
+  isDecrypting: boolean;
+} {
+  const isProbablyJson = initialData[0] === "{";
+  const [encryptedData, setEncryptedData] = useState<string | null>(
+    isProbablyJson ? null : initialData,
+  );
+  const [decodedData, setDecodedData] = useState<string | null>(
+    isProbablyJson ? initialData : null,
+  );
+  const [isEncrypting, setIsEncrypting] = useState(false);
+  const [isDecrypting, setIsDecrypting] = useState(false);
+
+  // keep encoded data always decoded
+  useEffect(() => {
+    if (encryptedData == null) {
+      return;
+    }
+    setIsDecrypting(true);
+    decrypt(encryptedData, encryptionKey).then((message) => {
+      setDecodedData(message);
+      setIsDecrypting(false);
+    });
+  }, [encryptedData, encryptionKey]);
+
+  // keep encoded file always ready to download
+  useEffect(() => {
+    if (decodedData == null) {
+      return;
+    }
+    setIsEncrypting(true);
+    encrypt(decodedData, encryptionKey).then((cypher) => {
+      setEncryptedData(cypher);
+      setIsEncrypting(false);
+    });
+  }, [decodedData, encryptionKey]);
+  return {
+    decodedData,
+    setDecodedData,
+    encryptedData,
+    isEncrypting,
+    isDecrypting,
+  };
 }

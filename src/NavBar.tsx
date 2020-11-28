@@ -1,6 +1,9 @@
-import React, { CSSProperties, FunctionComponent } from "react";
-import { Link } from "react-router-dom";
+import { AppBar, Button, Toolbar, Typography, useTheme } from "@material-ui/core";
+import React, { CSSProperties } from "react";
 import { gql, useQuery } from "@apollo/client";
+
+import { AccountCircle } from "@material-ui/icons";
+import { NavLink } from "react-router-dom";
 
 const QUERY = gql`
   query NavBarLoggedIn {
@@ -15,48 +18,48 @@ type NavBarLoggedInResponse = {
     username: string;
   };
 };
-const containerStyle: CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  background: "#24292e",
-  padding: 20,
-}
-const listStyle: CSSProperties = {
-  display: "flex",
-  listStyle: "none",
-  padding: 0,
-  margin: 0,
-};
 const listItemStyle: CSSProperties = {
-  fontWeight: 600,
-  color: 'white',
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   marginInlineEnd: 20,
-  textDecoration: 'none',
-}
-
-const NavBar: FunctionComponent<{}> = () => {
-  const { data } = useQuery<NavBarLoggedInResponse>(QUERY);
-  return (
-    <div style={containerStyle}>
-      <ul style={listStyle}>
-        <li>
-          <Link style={listItemStyle} to="/minder">Home</Link>
-        </li>
-        <li>
-          <Link style={listItemStyle} to="/minder/offline">Offline Mode</Link>
-        </li>
-        <li>
-          <Link style={listItemStyle} to="/minder/standard">Standard</Link>
-        </li>
-      </ul>
-      {data?.user != null && (
-        <div style={listItemStyle}>
-          {data.user.username}
-        </div>
-      )}
-    </div>
-  );
+  textDecoration: "none",
+  color: "initial",
+};
+const active: CSSProperties = {
+  fontWeight: "bold",
 };
 
-export default NavBar;
+export default function NavBar() {
+  const theme = useTheme();
+  const { data, loading } = useQuery<NavBarLoggedInResponse>(QUERY);
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6">
+          <NavLink to="/minder" exact style={listItemStyle} activeStyle={active}>
+            Home
+          </NavLink>
+        </Typography>
+        <Typography variant="h6">
+          <NavLink to="/minder/offline" style={listItemStyle} activeStyle={active}>
+            Offline Mode
+          </NavLink>
+        </Typography>
+        <Typography variant="h6">
+          <NavLink to="/minder/standard" style={listItemStyle} activeStyle={active}>
+            Standard
+          </NavLink>
+        </Typography>
+        <div style={{ flexGrow: 1 }} />
+        {loading ? null : data?.user != null ? (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <AccountCircle />
+            <div style={{ width: theme.spacing(1) }} />
+            <Typography variant="h6">{data.user.username}</Typography>
+          </div>
+        ) : (
+          <Button>Login</Button>
+        )}
+      </Toolbar>
+    </AppBar>
+  );
+}

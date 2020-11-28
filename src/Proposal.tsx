@@ -1,6 +1,10 @@
+import { Paper, Typography } from "@material-ui/core";
 import React, { FunctionComponent } from "react";
-import DataAsList from "./row-items/DataAsList";
-import { useQuery, gql } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
+
+import CardView from "./card-items/CardView";
+import { DecodedDataContext } from "./card-items/CardViewRoot";
+import { normalizeRoot } from "./utils/normalization";
 import { useParams } from "react-router-dom";
 
 type ProposalResponse = {
@@ -20,20 +24,17 @@ const Proposal: FunctionComponent<{}> = () => {
   const { data } = useQuery<ProposalResponse>(PROPOSAL, {
     variables: { uuid: proposalId },
   });
-  if (data == null) {
+  if (data == null || !isJSON(data.proposal.data)) {
     return null;
   }
+  const store = normalizeRoot(data.proposal.data, {});
   return (
-    <div>
-      <h3> Proposals {proposalId} </h3>
-      {isJSON(data.proposal.data) ? (
-        <DataAsList
-          node={JSON.parse(data.proposal.data)}
-          // @ts-ignore workaround
-          setParentValue={(str: Object) => null}
-        />
-      ) : null}
-    </div>
+    <DecodedDataContext.Provider value={{ store, updateNodes: null }}>
+      <Paper style={{ position: "relative", padding: 24 }}>
+        <Typography variant="h3">Proposals {proposalId}</Typography>
+        <CardView nodeKey={store.rootNode.value} />
+      </Paper>
+    </DecodedDataContext.Provider>
   );
 };
 
