@@ -1,2 +1,0 @@
-(this.webpackJsonpminder=this.webpackJsonpminder||[]).push([[9],{254:function(t,e,n){"use strict";n.r(e),n.d(e,"default",(function(){return a}));var c=n(5),r=n(0),o=n(15);function a(){return function(){var t=Object(o.f)();Object(r.useEffect)((function(){var e=localStorage.getItem("path");e&&(localStorage.removeItem("path"),t.push(e))}))}(),Object(c.jsx)("div",{children:"Home"})}}}]);
-//# sourceMappingURL=9.6eb3d981.chunk.js.map
