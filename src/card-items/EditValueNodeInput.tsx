@@ -2,6 +2,9 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  InputLabel,
+  MenuItem,
+  Select,
   Switch,
   TextField,
 } from "@material-ui/core";
@@ -49,8 +52,7 @@ type EditNumberInputProps = {
 function EditNumberInput({ node, onChange }: EditNumberInputProps) {
   return (
     <TextField
-      autoFocus
-      margin="dense"
+      variant="filled"
       id="name"
       label="Initial Value"
       type="number"
@@ -77,8 +79,9 @@ function EditDateInput({ node, onChange }: EditDateInputProps) {
     <KeyboardDatePicker
       disableToolbar
       variant="inline"
+      inputVariant="filled"
+      fullWidth
       format="MM/dd/yyyy"
-      margin="normal"
       label="Initial Date"
       value={node.date}
       onChange={(date: Date | null) => {
@@ -99,22 +102,21 @@ type EditBooleanInputProps = {
 };
 function EditBooleanInput({ node, onChange }: EditBooleanInputProps) {
   return (
-    <FormControl>
-      <FormLabel component="legend">Initial value</FormLabel>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={node.value}
-            onChange={(event) => {
-              onChange({
-                ...node,
-                value: event.target.checked,
-              });
-            }}
-          />
-        }
-        label={node.value ? "yes" : "no"}
-      />
+    <FormControl variant="filled" fullWidth>
+      <InputLabel>Initial value</InputLabel>
+      <Select
+        label="Type"
+        value={node.value}
+        onChange={({ target: { value } }) => {
+          onChange({
+            ...node,
+            value: value === "true" ? true : false,
+          });
+        }}
+      >
+        <MenuItem value="true">Yes</MenuItem>
+        <MenuItem value="false">No</MenuItem>
+      </Select>
     </FormControl>
   );
 }
@@ -125,10 +127,9 @@ type EditStringInputProps = {
 function EditStringInput({ node, onChange }: EditStringInputProps) {
   return (
     <TextField
-      autoFocus
-      margin="dense"
       id="name"
       label="Initial Value"
+      variant="filled"
       type="string"
       value={node.value}
       onChange={(event) => {

@@ -1,13 +1,14 @@
 import { RefinedType, Store, StoreKey } from "../utils/normalization";
-import { useDecodedDataState } from "./CardViewRoot";
+
 import { date2HumanValue } from "./DateNodeCardView";
+import useDecodedDataContext from "./useDecodedDataContext";
 
 type FilterFn = (value: string) => boolean;
 
 export default function useSearchTextOnNodeRecursively(
   searchValue: string,
 ): FilterFn {
-  const { store } = useDecodedDataState();
+  const { store } = useDecodedDataContext();
   return function searchMatches(key: string) {
     if (searchValue === "") {
       return true;

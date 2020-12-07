@@ -7,26 +7,26 @@ import { RefinedType } from "../utils/normalization";
 import SubjectOutlinedIcon from "@material-ui/icons/SubjectOutlined";
 import TodayOutlinedIcon from "@material-ui/icons/TodayOutlined";
 import ToggleOnOutlinedIcon from "@material-ui/icons/ToggleOnOutlined";
-import { useDecodedDataState } from "./CardViewRoot";
+import useDecodedDataContext from "./useDecodedDataContext";
 
 function NodeTypeIcon(props: { nodeKey: string }) {
-  const { store } = useDecodedDataState();
+  const { store } = useDecodedDataContext();
   const node = store.nodes[props.nodeKey];
   switch (node.type) {
     case RefinedType.Boolean:
-      return <ToggleOnOutlinedIcon fontSize="small" />;
+      return <ToggleOnOutlinedIcon />;
     case RefinedType.Date:
-      return <TodayOutlinedIcon fontSize="small" />;
+      return <TodayOutlinedIcon />;
     case RefinedType.List:
-      return <ListOutlinedIcon fontSize="small" />;
+      return <ListOutlinedIcon />;
     case RefinedType.Null:
-      return <HelpOutlineOutlinedIcon fontSize="small" />;
+      return <HelpOutlineOutlinedIcon />;
     case RefinedType.Number:
-      return <Filter1OutlinedIcon fontSize="small" />;
+      return <Filter1OutlinedIcon />;
     case RefinedType.Object:
-      return <FolderOpenOutlinedIcon fontSize="small" />;
+      return <FolderOpenOutlinedIcon />;
     case RefinedType.String:
-      return <SubjectOutlinedIcon fontSize="small" />;
+      return <SubjectOutlinedIcon />;
   }
 }
 

@@ -3,15 +3,16 @@
  * TODO: remove redundant conversions for more direct mappings.
  */
 
-import { useEffect, useState } from "react";
+import { Store, TNode, denormalizeRoot, normalizeRoot } from "./normalization";
 import {
-  string2arraybufferUTF16,
-  arraybuffer2stringUTF16,
-  arraybuffer2base64UTF8,
-  base642arraybufferUTF8,
   arraybuffer2base64UTF16,
+  arraybuffer2base64UTF8,
+  arraybuffer2stringUTF16,
   base642arraybufferUTF16,
+  base642arraybufferUTF8,
+  string2arraybufferUTF16,
 } from "./data-manipulation";
+import { useEffect, useState } from "react";
 
 /**
  * Encrypts the data together with iv on base 64 format
@@ -74,53 +75,59 @@ export async function createKey(): Promise<string> {
 }
 
 export function useDataEncryptionInSync(
+  title: string,
   encryptionKey: string,
   initialData: string,
 ): {
-  decodedData: string | null;
-  setDecodedData: (decodedData: string) => void;
-  encryptedData: string | null;
-  isEncrypting: boolean;
-  isDecrypting: boolean;
-} {
+  store: Store;
+  updateNodes: (nodes: TNode[]) => void;
+  encryptedData: string;
+} | null {
   const isProbablyJson = initialData[0] === "{";
-  const [encryptedData, setEncryptedData] = useState<string | null>(
-    isProbablyJson ? null : initialData,
-  );
-  const [decodedData, setDecodedData] = useState<string | null>(
-    isProbablyJson ? initialData : null,
-  );
-  const [isEncrypting, setIsEncrypting] = useState(false);
-  const [isDecrypting, setIsDecrypting] = useState(false);
 
-  // keep encoded data always decoded
+  const initialStore = isProbablyJson
+    ? () => normalizeRoot(initialData, { title, encryptionKey })
+    : null;
+  const [store, setStore] = useState<Store | null>(initialStore);
+
+  // decrypted initial encryption data
+  const initialEncryptedData = isProbablyJson ? null : initialData;
   useEffect(() => {
-    if (encryptedData == null) {
+    if (initialEncryptedData == null) {
       return;
     }
-    setIsDecrypting(true);
-    decrypt(encryptedData, encryptionKey).then((message) => {
-      setDecodedData(message);
-      setIsDecrypting(false);
+    decrypt(initialEncryptedData, encryptionKey).then((message) => {
+      setStore(normalizeRoot(message, { title, encryptionKey }));
     });
-  }, [encryptedData, encryptionKey]);
+  }, [initialEncryptedData, encryptionKey, title]);
 
-  // keep encoded file always ready to download
+  // keep store always encrypted
+  const [encryptedData, setEncryptedData] = useState<string | null>(null);
   useEffect(() => {
-    if (decodedData == null) {
+    if (store == null) {
       return;
     }
-    setIsEncrypting(true);
-    encrypt(decodedData, encryptionKey).then((cypher) => {
-      setEncryptedData(cypher);
-      setIsEncrypting(false);
-    });
-  }, [decodedData, encryptionKey]);
+    encrypt(denormalizeRoot(store), encryptionKey).then(setEncryptedData);
+  }, [store, encryptionKey]);
+
+  if (store === null || encryptedData === null) {
+    return null;
+  }
+
   return {
-    decodedData,
-    setDecodedData,
+    store,
+    updateNodes: (nodes: TNode[]) => {
+      const newNodes = { ...store.nodes };
+      nodes.forEach((node) => (newNodes[node.key] = node));
+      const newStore = {
+        rootNode: {
+          ...store.rootNode,
+          updated: new Date(),
+        },
+        nodes: newNodes,
+      };
+      setStore(newStore);
+    },
     encryptedData,
-    isEncrypting,
-    isDecrypting,
   };
 }

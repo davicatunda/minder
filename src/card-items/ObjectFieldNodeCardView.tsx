@@ -1,10 +1,6 @@
+import { Card, CardActionArea, CardContent, useTheme } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import {
-  RefinedType,
-  StoreKey,
-  TObejctField,
-  TObjectNode,
-} from "../utils/normalization";
+import { RefinedType, TObjectField } from "../utils/normalization";
 
 import BlurredBar from "../components/BlurredBar";
 import Button from "@material-ui/core/Button";
@@ -18,157 +14,171 @@ import EditValueNodeInput from "./EditValueNodeInput";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import NodeTypeIcon from "./NodeTypeIcon";
-import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { useDecodedDataState } from "./CardViewRoot";
-import { useTheme } from "@material-ui/core";
+import useDecodedDataContext from "./useDecodedDataContext";
+import useDragObjectField from "./useDragObjectField";
 
 // replace this generic grow to show with something better by type
 // Maybe open a preview Dialog ?
 // when entering a folder put a dark background on top of parent?
-type Props = {
-  field: {
-    name: string;
-    value: StoreKey;
-  };
-  parentNode: TObjectNode;
-};
-export default function ObjectFieldNodeCardView({ field, parentNode }: Props) {
+export default function ObjectFieldNodeCardView({
+  name,
+  value,
+  parentKey,
+}: TObjectField) {
   const theme = useTheme();
-  const [isSelected, setIsSelected] = useState(false);
-  const isSmall = useIsValueSmall(field.value);
-  const fillLine = !isSmall && isSelected;
+  const { draggableContainerProps, dropTargetProps } = useDragObjectField({
+    name,
+    value,
+    parentKey,
+  });
+  const needsToExpand = useNeedsToExpand(name, value);
+  const [isMinimized, setIsMinimized] = useState(!needsToExpand);
   return (
     <Grid
       item
       xs={12}
-      sm={fillLine ? 12 : 6}
-      md={fillLine ? 12 : 4}
-      style={{ position: "relative" }}
+      sm={isMinimized || !needsToExpand ? 6 : 12}
+      md={isMinimized || !needsToExpand ? 4 : 12}
+      {...draggableContainerProps}
     >
-      <Paper
-        style={{ padding: theme.spacing(1) }}
+      <div {...dropTargetProps} />
+      <Card
         onClick={(e) => {
           e.stopPropagation();
-          setIsSelected((v) => !v);
+          setIsMinimized((v) => !v);
         }}
         variant="outlined"
       >
-        <Typography variant="body1" display="inline">
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <NodeTypeIcon nodeKey={field.value} />
-            <span style={{ width: 8 }} />
-            {field.name}
-          </div>
-        </Typography>
-        {isSelected && (
-          <span
-            onClick={(e) => e.stopPropagation()}
-            style={{ position: "absolute", top: 16, right: 16 }}
-          >
-            <EditFieldDialog field={field} parentNode={parentNode} />
-          </span>
-        )}
-        {isSelected ? (
-          <div onClick={(e) => e.stopPropagation()}>
-            <CardView nodeKey={field.value} />
-          </div>
-        ) : (
-          <BlurredBar style={{ width: "80%", height: 12, marginTop: 6 }} />
-        )}
-      </Paper>
+        <CardActionArea disableRipple>
+          <CardContent>
+            <Typography
+              gutterBottom
+              variant="h6"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <NodeTypeIcon nodeKey={value} />
+              <span style={{ width: theme.spacing(1) }} />
+              {isMinimized && name.length > 19 ? `${name.slice(0, 18)}...` : name}
+            </Typography>
+            {!isMinimized && (
+              <span
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  position: "absolute",
+                  top: theme.spacing(2),
+                  right: theme.spacing(2),
+                }}
+              >
+                <EditFieldDialog name={name} value={value} parentKey={parentKey} />
+              </span>
+            )}
+            {isMinimized ? (
+              <BlurredBar
+                style={{ width: "80%", height: 12, marginTop: theme.spacing(2) }}
+              />
+            ) : (
+              <div onClick={(e) => e.stopPropagation()}>
+                <CardView nodeKey={value} />
+              </div>
+            )}
+          </CardContent>
+        </CardActionArea>
+      </Card>
     </Grid>
   );
 }
 
-function useIsValueSmall(nodeKey: string): boolean {
-  const { store } = useDecodedDataState();
+function useNeedsToExpand(name: string, nodeKey: string): boolean {
+  const { store } = useDecodedDataContext();
+  if (name.length > 20) {
+    return true;
+  }
   const node = store.nodes[nodeKey];
   switch (node.type) {
     case RefinedType.Boolean:
-      return true;
+      return false;
     case RefinedType.Date:
-      return true;
+      return false;
     case RefinedType.List:
-      return false;
-    case RefinedType.Null:
       return true;
-    case RefinedType.Number:
-      return node.value.toString().length < 24;
-    case RefinedType.Object:
+    case RefinedType.Null:
       return false;
+    case RefinedType.Number:
+      return node.value.toString().length > 30;
+    case RefinedType.Object:
+      return true;
     case RefinedType.String:
-      return node.value.length < 24;
+      return node.value.length > 30;
   }
 }
 
-type EditFieldDialogProps = {
-  field: TObejctField;
-  parentNode: TObjectNode;
-};
-function EditFieldDialog({ field, parentNode }: EditFieldDialogProps) {
+function EditFieldDialog({ name, value, parentKey }: TObjectField) {
   const theme = useTheme();
-  const { store, updateNodes } = useDecodedDataState();
-  const [newFieldName, setNewFieldName] = useState(field.name);
-  const oldValueNode = store.nodes[field.value];
+  const { store, updateNodes } = useDecodedDataContext();
+  const [newFieldName, setNewFieldName] = useState(name);
+  const oldValueNode = store.nodes[value];
+  const oldParentNode = store.nodes[parentKey];
   const [valueNode, setValueNode] = useState(oldValueNode);
   const [isEditting, setIsEditting] = useState(false);
 
   // refresh if new values are passed.
   useEffect(() => {
-    setNewFieldName(field.name);
+    setNewFieldName(name);
     setValueNode(oldValueNode);
-  }, [field, parentNode, oldValueNode]);
-  if (updateNodes === null) {
+  }, [name, oldValueNode, oldParentNode]);
+  if (updateNodes === null || oldParentNode.type !== RefinedType.Object) {
     return null;
   }
   return (
     <>
-      <IconButton onClick={(e) => setIsEditting(true)} size="small">
+      <IconButton onClick={() => setIsEditting(true)} size="small">
         <CreateIcon fontSize="small" />
       </IconButton>
-      <Dialog
-        open={isEditting}
-        onClose={() => setIsEditting(false)}
-        aria-labelledby="edit-dialog-title"
-        fullWidth
-        maxWidth="xs"
-      >
-        <DialogTitle id="edit-dialog-title">Edit</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Name"
-            variant="outlined"
-            type="string"
-            autoFocus
-            value={newFieldName}
-            onChange={(event) => setNewFieldName(event.target.value)}
-            fullWidth
-          />
-          <span style={{ width: theme.spacing(1) }} />
-          <EditValueNodeInput node={valueNode} onChange={setValueNode} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsEditting(false)}>Cancel</Button>
-          <Button
-            onClick={() => {
-              const newParentNode = {
-                ...parentNode,
-                fields: parentNode.fields.map((originalField) =>
-                  originalField.value !== field.value
-                    ? originalField
-                    : { ...originalField, name: newFieldName },
-                ),
-              };
-              updateNodes([valueNode, newParentNode]);
-              setIsEditting(false);
-            }}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {isEditting && (
+        <Dialog
+          open={isEditting}
+          onClose={() => setIsEditting(false)}
+          aria-labelledby="edit-dialog-title"
+          fullWidth
+          maxWidth="xs"
+        >
+          <DialogTitle id="edit-dialog-title">Edit</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Name"
+              variant="outlined"
+              type="string"
+              autoFocus
+              value={newFieldName}
+              onChange={(event) => setNewFieldName(event.target.value)}
+              fullWidth
+            />
+            <span style={{ width: theme.spacing(1) }} />
+            <EditValueNodeInput node={valueNode} onChange={setValueNode} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setIsEditting(false)}>Cancel</Button>
+            <Button
+              onClick={() => {
+                const newParentNode = {
+                  ...oldParentNode,
+                  fields: oldParentNode.fields.map((originalField) =>
+                    originalField.value !== value
+                      ? originalField
+                      : { ...originalField, name: newFieldName },
+                  ),
+                };
+                updateNodes([valueNode, newParentNode]);
+                setIsEditting(false);
+              }}
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 }

@@ -1,15 +1,11 @@
-import { Button, Paper, Typography } from "@material-ui/core";
-import React, { FunctionComponent } from "react";
-import {
-  TNode,
-  normalizeRoot,
-  recursivelyDenormalizeNode,
-} from "./utils/normalization";
+import { Button, Paper, TextField, Typography, useTheme } from "@material-ui/core";
+import React, { FunctionComponent, useState } from "react";
+import { denormalizeRoot, normalizeRoot } from "./utils/normalization";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import CardView from "./card-items/CardView";
-import { DecodedDataContext } from "./card-items/CardViewRoot";
-import { useDataEncryptionInSync } from "./utils/encryption";
+import CardViewRoot from "./card-items/CardViewRoot";
+import { DecodedDataContext } from "./card-items/useDecodedDataContext";
 import { useHistory } from "react-router-dom";
 
 const ADD_PROPOSAL = gql`
@@ -88,35 +84,70 @@ const SUGGESTED_PROPOSAL = {
 };
 const DUMMY_KEY = "1Qd1fIUBT6KuzgM9mQOIkk8k77mkXz/4BGMnttcdY1c=";
 function MakeAProposalSection() {
+  const [isCreating, setIsCreating] = useState(false);
+  const theme = useTheme();
+  const [title, setTitle] = useState("");
   const [addProposal] = useMutation(ADD_PROPOSAL);
-  const { decodedData, setDecodedData } = useDataEncryptionInSync(
-    DUMMY_KEY,
-    JSON.stringify(SUGGESTED_PROPOSAL),
-  );
-  if (!decodedData) {
-    return null;
-  }
-  const store = normalizeRoot(decodedData, {});
-  const updateNodes = (nodes: TNode[]) => {
-    const newNodes = { ...store.nodes };
-    nodes.forEach((node) => (newNodes[node.key] = node));
-    setDecodedData(
-      JSON.stringify(recursivelyDenormalizeNode(newNodes, store.rootNode.value)),
-    );
-  };
-  return (
-    <DecodedDataContext.Provider value={{ store, updateNodes }}>
-      <Paper style={{ position: "relative", padding: 24 }}>
-        <CardView nodeKey={store.rootNode.value} />
-      </Paper>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => addProposal({ variables: { proposal: decodedData } })}
+  if (!isCreating) {
+    return (
+      <Paper
+        style={{
+          padding: theme.spacing(2),
+          margin: `${theme.spacing(2)}px auto`,
+          maxWidth: 380,
+        }}
       >
-        Send
-      </Button>
-    </DecodedDataContext.Provider>
+        <div
+          style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+        >
+          <Typography variant="h5">Start</Typography>
+        </div>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          label="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          autoFocus
+          style={{ marginBottom: theme.spacing(2) }}
+        />
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={() => setIsCreating(true)}
+        >
+          Make new proposal
+        </Button>
+      </Paper>
+    );
+  }
+  return (
+    <CardViewRoot
+      initialValues={{
+        encryptionKey: DUMMY_KEY,
+        initialData: JSON.stringify(SUGGESTED_PROPOSAL),
+      }}
+      title={title}
+      onClose={() => setIsCreating(false)}
+    >
+      {(store) => (
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            addProposal({ variables: { proposal: denormalizeRoot(store) } });
+            setIsCreating(false);
+            setTitle("");
+          }}
+          style={{ marginTop: theme.spacing(2) }}
+        >
+          Make new proposal
+        </Button>
+      )}
+    </CardViewRoot>
   );
 }
 type AllProposalsSectionProps = {

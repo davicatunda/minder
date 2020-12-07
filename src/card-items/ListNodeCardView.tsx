@@ -27,7 +27,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import NodeTypeIcon from "./NodeTypeIcon";
 import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
-import { useDecodedDataState } from "./CardViewRoot";
+import useDecodedDataContext from "./useDecodedDataContext";
 import useSearchTextOnNodeRecursively from "./useSearchTextOnNodeRecursively";
 
 export default function ListNodeCardView(props: { node: TListNode }) {
@@ -72,7 +72,7 @@ export default function ListNodeCardView(props: { node: TListNode }) {
 }
 
 function NewListItemDialogButton(props: { parentNode: TListNode }) {
-  const { store, updateNodes } = useDecodedDataState();
+  const { store, updateNodes } = useDecodedDataContext();
   const templateNode =
     props.parentNode.children.length > 0
       ? defaultNodeValue(

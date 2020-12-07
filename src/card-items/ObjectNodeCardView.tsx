@@ -1,3 +1,5 @@
+import { Close, Minimize } from "@material-ui/icons";
+import { IconButton, OutlinedInput, useTheme } from "@material-ui/core";
 import React, { useState } from "react";
 import {
   RefinedType,
@@ -15,7 +17,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import EditValueNodeInput from "./EditValueNodeInput";
 import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
-import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -23,25 +24,37 @@ import ObjectFieldNodeCardView from "./ObjectFieldNodeCardView";
 import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
-import { useDecodedDataState } from "./CardViewRoot";
+import useDecodedDataContext from "./useDecodedDataContext";
 import useSearchTextOnNodeRecursively from "./useSearchTextOnNodeRecursively";
-import { useTheme } from "@material-ui/core";
 
 type Props = { node: TObjectNode };
 export default function ObjectNodeCardView({ node }: Props) {
   const [searchValue, setSearchValue] = useState("");
   const searchMatches = useSearchTextOnNodeRecursively(searchValue);
   const theme = useTheme();
-
+  const [searchHasFocus, setSearchHasFocus] = useState(false);
   return (
-    <div>
-      <div onClick={(e) => e.stopPropagation()}>
-        {node.fields.length > 7 ? (
-          <FormControl>
-            <Input
+    <>
+      {node.fields.length > 7 ? (
+        <Grid item xs={12} sm={searchHasFocus ? 6 : 4} md={searchHasFocus ? 4 : 3}>
+          <FormControl
+            variant="outlined"
+            fullWidth={searchHasFocus || searchValue !== ""}
+          >
+            <OutlinedInput
+              onKeyDown={(event) => {
+                if (event.key === " ") {
+                  // You've seen nothing
+                  event.preventDefault();
+                  setSearchValue((v) => v + " ");
+                  // I will stop remove this mess later
+                }
+              }}
+              onFocus={() => setSearchHasFocus(true)}
+              onBlur={() => setSearchHasFocus(false)}
+              placeholder="Search ..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search ..."
               startAdornment={
                 <InputAdornment position="start">
                   <SearchIcon />
@@ -49,10 +62,10 @@ export default function ObjectNodeCardView({ node }: Props) {
               }
             />
           </FormControl>
-        ) : null}
-      </div>
-      <div style={{ height: theme.spacing(2) }} />
-      <Grid container spacing={1}>
+          <div style={{ height: theme.spacing(2) }} />
+        </Grid>
+      ) : null}
+      <Grid container spacing={1} onClick={(event) => event.stopPropagation()}>
         {node.fields
           .filter(
             (field) =>
@@ -63,8 +76,9 @@ export default function ObjectNodeCardView({ node }: Props) {
           )
           .map((field) => (
             <ObjectFieldNodeCardView
-              field={field}
-              parentNode={node}
+              name={field.name}
+              value={field.value}
+              parentKey={node.key}
               key={field.value}
             />
           ))}
@@ -72,58 +86,69 @@ export default function ObjectNodeCardView({ node }: Props) {
           <NewFieldDialogButton parentNode={node} />
         </Grid>
       </Grid>
-    </div>
+    </>
   );
 }
 
 function NewFieldDialogButton(props: { parentNode: TObjectNode }) {
   const theme = useTheme();
-  const { updateNodes } = useDecodedDataState();
+  const { updateNodes } = useDecodedDataContext();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [valueNode, setValueNode] = useState<TNode | null>(null);
+  const [valueNode, setValueNode] = useState<TNode>(
+    defaultNodeValue(RefinedType.String, props.parentNode),
+  );
   const [fieldName, setFieldName] = useState<string>("");
   if (updateNodes === null) {
     return null;
   }
+  const closeAndClearDialog = () => {
+    setIsDialogOpen(false);
+    setValueNode(defaultNodeValue(RefinedType.String, props.parentNode));
+    setFieldName("");
+  };
   return (
-    <span onClick={(e) => e.stopPropagation()} style={{ display: "flex", flex: 1 }}>
-      <Button
-        variant="outlined"
-        color="primary"
-        size="large"
-        fullWidth
+    <span
+      style={{ display: "flex", alignItems: "center" }}
+      onClick={(event) => event.stopPropagation()}
+    >
+      <IconButton
         onClick={(e) => {
           setIsDialogOpen(true);
         }}
-        startIcon={<AddIcon />}
       >
-        Add
-      </Button>
+        <AddIcon fontSize="large" />
+      </IconButton>
       <Dialog
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
-        aria-labelledby="new-field-dialog-title"
+        aria-labelledby="new-item-dialog-title"
         fullWidth
         maxWidth="xs"
       >
-        <DialogTitle id="new-field-dialog-title">Add New Field</DialogTitle>
-        <DialogContent>
+        <DialogTitle id="new-item-dialog-title">Add New Item</DialogTitle>
+        <div
+          style={{
+            position: "absolute",
+            display: "flex",
+            alignItems: "center",
+            right: theme.spacing(1),
+            top: theme.spacing(1),
+          }}
+        >
+          <IconButton aria-label="minimize" onClick={() => setIsDialogOpen(false)}>
+            <Minimize style={{ transform: "translate(0px, -7px)" }} />
+          </IconButton>
+          <IconButton aria-label="close" onClick={closeAndClearDialog}>
+            <Close />
+          </IconButton>
+        </div>
+        <DialogContent dividers style={{ minHeight: 180 }}>
           <div style={{ display: "flex" }}>
-            <TextField
-              label="Name"
-              variant="outlined"
-              type="string"
-              autoFocus
-              value={fieldName}
-              onChange={(event) => setFieldName(event.target.value)}
-              fullWidth
-            />
-            <span style={{ width: theme.spacing(1) }} />
-            <FormControl variant="outlined" style={{ minWidth: 120 }}>
+            <FormControl variant="filled" style={{ minWidth: 120 }}>
               <InputLabel>Type</InputLabel>
               <Select
                 label="Type"
-                value={valueNode?.type ?? ""}
+                value={valueNode.type}
                 onChange={(event) => {
                   const newType: RefinedType = event.target.value as RefinedType;
                   setValueNode(defaultNodeValue(newType, props.parentNode));
@@ -137,14 +162,21 @@ function NewFieldDialogButton(props: { parentNode: TObjectNode }) {
                 <MenuItem value={RefinedType.String}>Text</MenuItem>
               </Select>
             </FormControl>
+            <span style={{ width: theme.spacing(1) }} />
+            <TextField
+              label="Name"
+              variant="filled"
+              type="string"
+              autoFocus
+              value={fieldName}
+              onChange={(event) => setFieldName(event.target.value)}
+              fullWidth
+            />
           </div>
           <div style={{ height: theme.spacing(1) }} />
           <EditValueNodeInput node={valueNode} onChange={setValueNode} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setIsDialogOpen(false)} color="primary">
-            Cancel
-          </Button>
           <Button
             onClick={() => {
               if (valueNode) {
@@ -152,15 +184,19 @@ function NewFieldDialogButton(props: { parentNode: TObjectNode }) {
                   ...props.parentNode,
                   fields: [
                     ...props.parentNode.fields,
-                    { name: fieldName, value: valueNode.key },
+                    {
+                      name: fieldName,
+                      value: valueNode.key,
+                      parentKey: valueNode.parentKey,
+                    },
                   ],
                 };
                 updateNodes([valueNode, newParentNode]);
               }
-              setIsDialogOpen(false);
-              setValueNode(null);
-              setFieldName("");
+              closeAndClearDialog();
             }}
+            fullWidth
+            variant="contained"
             color="primary"
           >
             Create

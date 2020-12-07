@@ -10,11 +10,12 @@ import DateNodeCardView from "./DateNodeCardView";
 import ListNodeCardView from "./ListNodeCardView";
 import ObjectNodeCardView from "./ObjectNodeCardView";
 import React from "react";
-import { useDecodedDataState } from "./CardViewRoot";
+import { Typography } from "@material-ui/core";
+import useDecodedDataContext from "./useDecodedDataContext";
 
 type Props = { nodeKey: string };
 export default function CardView({ nodeKey }: Props) {
-  const { store } = useDecodedDataState();
+  const { store } = useDecodedDataContext();
   const node = store.nodes[nodeKey];
   switch (node.type) {
     case RefinedType.Boolean:
@@ -35,14 +36,30 @@ export default function CardView({ nodeKey }: Props) {
 }
 
 function StringNodeCardView(props: { node: TStringNode }) {
-  return <span>{props.node.value}</span>;
+  return (
+    <Typography variant="body2" color="textSecondary" component="p">
+      {props.node.value}
+    </Typography>
+  );
 }
 function NumberNodeCardView(props: { node: TNumberNode }) {
-  return <span>{props.node.value}</span>;
+  return (
+    <Typography variant="body2" color="textSecondary" component="p">
+      {props.node.value}
+    </Typography>
+  );
 }
 function BooleanNodeCardView(props: { node: TBooleanNode }) {
-  return <span>{props.node.value ? "Yes" : "No"}</span>;
+  return (
+    <Typography variant="body2" color="textSecondary" component="p">
+      {props.node.value ? "Yes" : "No"}
+    </Typography>
+  );
 }
 function NullNodeCardView(props: { node: TNullNode }) {
-  return <span />;
+  return (
+    <Typography variant="body2" color="textSecondary" component="p">
+      Null
+    </Typography>
+  );
 }

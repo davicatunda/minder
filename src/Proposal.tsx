@@ -3,7 +3,7 @@ import React, { FunctionComponent } from "react";
 import { gql, useQuery } from "@apollo/client";
 
 import CardView from "./card-items/CardView";
-import { DecodedDataContext } from "./card-items/CardViewRoot";
+import { DecodedDataContext } from "./card-items/useDecodedDataContext";
 import { normalizeRoot } from "./utils/normalization";
 import { useParams } from "react-router-dom";
 

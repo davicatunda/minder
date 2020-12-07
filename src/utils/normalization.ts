@@ -22,12 +22,13 @@ export interface TNodeWithKeys<T extends RefinedType> {
   key: StoreKey;
   parentKey: StoreKey;
 }
-export type TObejctField = {
+export type TObjectField = {
   name: string;
   value: StoreKey;
+  parentKey: StoreKey;
 };
 export interface TObjectNode extends TNodeWithKeys<RefinedType.Object> {
-  fields: TObejctField[];
+  fields: TObjectField[];
 }
 export interface TListNode extends TNodeWithKeys<RefinedType.List> {
   children: StoreKey[];
@@ -138,6 +139,7 @@ function getNode(nodes: NodesStore, parentKey: StoreKey, value: any): TNode {
         const fields = Object.keys(value).map((name) => ({
           name,
           value: recursivelyAddNodes(nodes, key, value[name]).key,
+          parentKey: key,
         }));
         return { type: RefinedType.Object, key, parentKey, fields };
       }
@@ -160,7 +162,6 @@ export function recursivelyDenormalizeNode(
   nodeKey: StoreKey,
 ): any {
   const node = nodes[nodeKey];
-  console.log(node, nodeKey);
   switch (node.type) {
     case RefinedType.Boolean:
       return node.value;
