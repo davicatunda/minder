@@ -154,9 +154,9 @@ function CreateCardKeyInput({
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <Tooltip title="Generate new key" arrow>
+              <Tooltip title="Generate key" arrow>
                 <IconButton
-                  aria-label="generate new encryption Key"
+                  aria-label="generate encryption Key"
                   onClick={() => createKey().then(setEncryptionKey)}
                 >
                   <Cached />

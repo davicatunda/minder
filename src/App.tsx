@@ -32,6 +32,7 @@ function App() {
           </Route>
         </Switch>
       </Container>
+      <div style={{ height: theme.spacing(4) }} />
     </Router>
   );
 }

@@ -12,18 +12,13 @@ import { blue, green, orange, pink, red } from "@material-ui/core/colors";
 const DEFAULT_THEME = {
   palette: {
     type: "light",
-    primary: { main: blue[200] },
-    secondary: { main: pink[200] },
+    primary: { main: blue[600] },
+    secondary: { main: pink[600] },
     error: { main: red[500] },
     warning: { main: orange[500] },
     info: { main: blue[500] },
     success: { main: green[500] },
   },
-  typography: {
-    h1: {},
-    h2: {},
-  },
-  props: {},
 };
 
 export function CustomThemeProvider({ children }: { children?: ReactNode }) {

@@ -7,9 +7,10 @@ import {
   Typography,
   useTheme,
 } from "@material-ui/core";
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 
+import Alert from "@material-ui/lab/Alert";
 import { NavLink } from "react-router-dom";
 import { useTogglePaletteContext } from "./card-items/useTogglePaletteContext";
 
@@ -30,7 +31,7 @@ const listItemStyle: CSSProperties = {
   whiteSpace: "nowrap",
   marginInlineEnd: 20,
   textDecoration: "none",
-  color: "initial",
+  color: "inherit",
 };
 const active: CSSProperties = {
   fontWeight: "bold",
@@ -40,7 +41,7 @@ export default function NavBar() {
   const theme = useTheme();
   const { togglePalette } = useTogglePaletteContext();
   const { data, loading } = useQuery<NavBarLoggedInResponse>(QUERY);
-
+  const [hasAlert, showAlert] = useState(false);
   return (
     <AppBar position="static">
       <Toolbar>
@@ -60,18 +61,39 @@ export default function NavBar() {
           </NavLink>
         </Typography>
         <div style={{ flexGrow: 1 }} />
+        <IconButton onClick={togglePalette}>
+          <Brightness4 />
+        </IconButton>
         {loading ? null : data?.user != null ? (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <IconButton onClick={togglePalette}>
-              <Brightness4 />
-            </IconButton>
             <div style={{ width: theme.spacing(2) }} />
-            <AccountCircle />
-            <div style={{ width: theme.spacing(1) }} />
-            <Typography variant="h6">{data.user.username}</Typography>
+            <Button
+              color="inherit"
+              onClick={togglePalette}
+              startIcon={<AccountCircle />}
+            >
+              <Typography variant="h6">{data.user.username}</Typography>
+            </Button>
           </div>
         ) : (
-          <Button>Login</Button>
+          <>
+            <Button color="inherit" onClick={() => showAlert(true)}>
+              Login
+            </Button>
+            {hasAlert && (
+              <Alert
+                style={{
+                  position: "absolute",
+                  bottom: -64,
+                  right: theme.spacing(1),
+                }}
+                severity="warning"
+                onClose={() => showAlert(false)}
+              >
+                Not implemented, sorry
+              </Alert>
+            )}
+          </>
         )}
       </Toolbar>
     </AppBar>
