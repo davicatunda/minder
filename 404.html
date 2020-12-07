@@ -1,0 +1,5 @@
+<script>
+  const [_, project, ...paths] = window.location.pathname.split("/");
+  localStorage.setItem("path", `${project}/${paths.join("/")}`);
+  window.location.href = `../${project}`;
+</script>
