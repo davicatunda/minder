@@ -1,15 +1,15 @@
 import { IconButton, Paper, Tooltip, Typography, useTheme } from "@material-ui/core";
 import useDraggableItemsProvider, {
   DraggableItemsContext,
-} from "./useDraggableItemsContext";
+} from "../useDraggableItemsContext";
 
 import CardInfo from "./CardInfo";
 import CardView from "./CardView";
 import { Close } from "@material-ui/icons";
-import { DecodedDataContext } from "./useDecodedDataContext";
+import { DecodedDataContext } from "../useDecodedDataContext";
 import React from "react";
-import { Store } from "../utils/normalization";
-import { useDataEncryptionInSync } from "../utils/encryption";
+import { Store } from "../../../utils/normalization";
+import { useDataEncryptionInSync } from "../../../utils/encryption";
 
 export type CardDataProps = {
   children?(store: Store): void;

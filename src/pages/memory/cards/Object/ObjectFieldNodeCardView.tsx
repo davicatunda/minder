@@ -1,22 +1,22 @@
 import { Card, CardActionArea, CardContent, useTheme } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { RefinedType, TObjectField } from "../utils/normalization";
+import { RefinedType, TObjectField } from "../../../../utils/normalization";
 
-import BlurredBar from "../components/BlurredBar";
+import BlurredBar from "../../../../components/BlurredBar";
 import Button from "@material-ui/core/Button";
-import CardView from "./CardView";
+import CardView from "../CardView";
 import CreateIcon from "@material-ui/icons/Create";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import EditValueNodeInput from "./EditValueNodeInput";
+import EditValueInput from "../EditValueInput";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
-import NodeTypeIcon from "./NodeTypeIcon";
+import NodeTypeIcon from "../NodeTypeIcon";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import useDecodedDataContext from "./useDecodedDataContext";
+import useDecodedDataContext from "../../useDecodedDataContext";
 import useDragObjectField from "./useDragObjectField";
 
 // replace this generic grow to show with something better by type
@@ -156,7 +156,7 @@ function EditFieldDialog({ name, value, parentKey }: TObjectField) {
               fullWidth
             />
             <span style={{ width: theme.spacing(1) }} />
-            <EditValueNodeInput node={valueNode} onChange={setValueNode} />
+            <EditValueInput node={valueNode} onChange={setValueNode} />
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setIsEditting(false)}>Cancel</Button>

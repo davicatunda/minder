@@ -1,4 +1,4 @@
-import { Store, TNode } from "../utils/normalization";
+import { Store, TNode } from "../../utils/normalization";
 import { createContext, useContext } from "react";
 
 type TDecodedDataContext = {

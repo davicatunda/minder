@@ -4,17 +4,17 @@ import {
   TListNode,
   TNode,
   defaultNodeValue,
-} from "../utils/normalization";
+} from "../../../../utils/normalization";
 
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
-import CardView from "./CardView";
+import CardView from "../CardView";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import EditValueInput from "./EditValueNodeInput";
+import EditValueInput from "../EditValueInput";
 import FormControl from "@material-ui/core/FormControl";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -24,11 +24,11 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuItem from "@material-ui/core/MenuItem";
-import NodeTypeIcon from "./NodeTypeIcon";
+import NodeTypeIcon from "../NodeTypeIcon";
 import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
-import useDecodedDataContext from "./useDecodedDataContext";
-import useSearchTextOnNodeRecursively from "./useSearchTextOnNodeRecursively";
+import useDecodedDataContext from "../../useDecodedDataContext";
+import useSearchTextOnNodeRecursively from "../Object/useSearchTextOnNodeRecursively";
 
 export default function ListNodeCardView(props: { node: TListNode }) {
   const [searchValue, setSearchValue] = useState("");

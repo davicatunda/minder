@@ -26,9 +26,9 @@ import {
 import React, { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 
-import { CardDataProps } from "./CardViewRoot";
-import DragAndDrop from "../components/DragAndDrop";
-import { createKey } from "../utils/encryption";
+import { CardDataProps } from "../cards/CardViewRoot";
+import DragAndDrop from "./DragAndDrop";
+import { createKey } from "../../../utils/encryption";
 
 type OfflinePageResponse = {
   standardProposal: {
@@ -53,7 +53,7 @@ enum DataOptions {
 type Props = {
   onSubmit(card: CardDataProps): void;
 };
-export default function CreateCard({ onSubmit }: Props) {
+export default function MemoryVaultCreateForm({ onSubmit }: Props) {
   const theme = useTheme();
   const [initialData, setInitialData] = useState<string | null>(null);
   const [title, setTitle] = useState("");

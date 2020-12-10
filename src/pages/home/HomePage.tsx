@@ -22,7 +22,7 @@ import React, { useEffect } from "react";
 
 import { useHistory } from "react-router-dom";
 
-export default function Home() {
+export default function HomePage() {
   useGithubPagesHasNoRouting();
   const theme = useTheme();
   const history = useHistory();
@@ -32,7 +32,12 @@ export default function Home() {
       <div style={{ height: theme.spacing(4) }} />
       <div style={{ display: "flex" }}>
         <div
-          style={{ maxWidth: 150, flexShrink: 0, color: theme.palette.primary.main }}
+          style={{
+            maxWidth: 150,
+            flexShrink: 0,
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.black,
+          }}
         >
           <Logo />
         </div>

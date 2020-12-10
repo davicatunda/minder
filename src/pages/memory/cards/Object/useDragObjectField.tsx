@@ -1,8 +1,12 @@
 import React, { useContext, useRef, useState } from "react";
-import { RefinedType, TObjectField, TObjectNode } from "../utils/normalization";
+import {
+  RefinedType,
+  TObjectField,
+  TObjectNode,
+} from "../../../../utils/normalization";
 
-import { DraggableItemsContext } from "./useDraggableItemsContext";
-import useDecodedDataContext from "./useDecodedDataContext";
+import { DraggableItemsContext } from "../../useDraggableItemsContext";
+import useDecodedDataContext from "../../useDecodedDataContext";
 import { useTheme } from "@material-ui/core";
 
 type useDragObjectFieldReturn = {

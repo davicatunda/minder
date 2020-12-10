@@ -9,9 +9,9 @@ import {
   createHttpLink,
 } from "@apollo/client";
 
-import App from "./App";
+import App from "./pages/App";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { CustomThemeProvider } from "./card-items/useTogglePaletteContext";
+import { CustomThemeProvider } from "./pages/shared-layout/useTogglePaletteContext";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import React from "react";

@@ -12,7 +12,7 @@ import { gql, useQuery } from "@apollo/client";
 
 import Alert from "@material-ui/lab/Alert";
 import { NavLink } from "react-router-dom";
-import { useTogglePaletteContext } from "./card-items/useTogglePaletteContext";
+import { useTogglePaletteContext } from "./useTogglePaletteContext";
 
 const QUERY = gql`
   query NavBarLoggedIn {

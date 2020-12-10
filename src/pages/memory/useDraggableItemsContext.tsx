@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-import { TObjectField } from "../utils/normalization";
+import { TObjectField } from "../../utils/normalization";
 
 type TDraggableItemsContext = {
   draggedItem: TObjectField | null;

@@ -1,14 +1,14 @@
 import { Container, useTheme } from "@material-ui/core";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
-import NavBar from "./NavBar";
+import NavBar from "./shared-layout/NavBar";
 import React from "react";
 import loadable from "@loadable/component";
 
-const Home = loadable(() => import("./Home"));
-const Offline = loadable(() => import("./Offline"));
-const Standard = loadable(() => import("./Standard"));
-const Proposal = loadable(() => import("./Proposal"));
+const Home = loadable(() => import("./home/HomePage"));
+const Offline = loadable(() => import("./memory/MemoryPage"));
+const Standard = loadable(() => import("./standard/StandardPage"));
+const Proposal = loadable(() => import("./proposal/ProposalPage"));
 
 function App() {
   const theme = useTheme();

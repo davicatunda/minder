@@ -9,9 +9,9 @@ import {
 } from "@material-ui/core";
 import React, { useState } from "react";
 
-import BlurredBar from "../components/BlurredBar";
-import { RootNode } from "../utils/normalization";
-import { date2HumanValue } from "./DateNodeCardView";
+import BlurredBar from "../../../components/BlurredBar";
+import { RootNode } from "../../../utils/normalization";
+import { date2HumanValue } from "./Date/DateNodeCardView";
 
 type Props = {
   rootNode: RootNode;

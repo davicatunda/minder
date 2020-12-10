@@ -1,11 +1,11 @@
 import { Button, useTheme } from "@material-ui/core";
-import CardViewRoot, { CardDataProps } from "./card-items/CardViewRoot";
+import CardViewRoot, { CardDataProps } from "./cards/CardViewRoot";
 import React, { useState } from "react";
 
 import { Add } from "@material-ui/icons";
-import CreateCard from "./card-items/CreateCard";
+import MemoryVaultCreateForm from "./create/MemoryVaultCreateForm";
 
-export default function Offline() {
+export default function MemoryPage() {
   const theme = useTheme();
   const [cards, setCards] = useState<CardDataProps[]>([]);
   const [isCreating, setIsCreating] = useState(true);
@@ -29,7 +29,7 @@ export default function Offline() {
         </div>
       ))}
       {isCreating || cards.length === 0 ? (
-        <CreateCard
+        <MemoryVaultCreateForm
           onSubmit={(newCard) => {
             setIsCreating(false);
             setCards((old) => [...old, newCard]);

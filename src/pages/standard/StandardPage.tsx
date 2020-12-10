@@ -1,11 +1,11 @@
 import { Button, Paper, TextField, Typography, useTheme } from "@material-ui/core";
 import React, { FunctionComponent, useState } from "react";
-import { denormalizeRoot, normalizeRoot } from "./utils/normalization";
+import { denormalizeRoot, normalizeRoot } from "../../utils/normalization";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
-import CardView from "./card-items/CardView";
-import CardViewRoot from "./card-items/CardViewRoot";
-import { DecodedDataContext } from "./card-items/useDecodedDataContext";
+import CardView from "../memory/cards/CardView";
+import CardViewRoot from "../memory/cards/CardViewRoot";
+import { DecodedDataContext } from "../memory/useDecodedDataContext";
 import { useHistory } from "react-router-dom";
 
 const ADD_PROPOSAL = gql`
@@ -40,7 +40,7 @@ const QUERY = gql`
   }
 `;
 
-const Standard: FunctionComponent<{}> = () => {
+const StandardPage: FunctionComponent<{}> = () => {
   const { data } = useQuery<StandardPageResponse>(QUERY);
   if (data == null) {
     return null;
@@ -176,4 +176,4 @@ function AllProposalsSection({ proposals }: AllProposalsSectionProps) {
   );
 }
 
-export default Standard;
+export default StandardPage;
