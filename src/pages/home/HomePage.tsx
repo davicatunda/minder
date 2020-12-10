@@ -76,6 +76,10 @@ export default function HomePage() {
                 is long forgotten or lost. All these things can be stored and shared
                 on Minder with the safety of a client to client encrytion.
               </Typography>
+              <div style={{ height: theme.spacing(2) }} />
+              <Button size="large" variant="contained" color="primary">
+                Sign up
+              </Button>
             </Grid>
             <Grid item xs={12} sm={12} md={8}>
               <img

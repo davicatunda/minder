@@ -5,10 +5,8 @@ import {
   ExpandLess,
   ExpandMore,
   GetApp,
-  LockOutlined,
 } from "@material-ui/icons";
 import {
-  Avatar,
   Button,
   Collapse,
   FormControlLabel,
@@ -67,8 +65,18 @@ export default function MemoryVaultCreateForm({ onSubmit }: Props) {
     return null;
   }
   return (
-    <Paper style={{ padding: theme.spacing(2), margin: "auto", maxWidth: 380 }}>
-      <CreateCardHeader />
+    <Paper
+      style={{
+        padding: theme.spacing(4),
+        margin: "auto",
+        maxWidth: 480,
+        width: "100%",
+      }}
+    >
+      <Typography align="center" variant="h3">
+        Start
+      </Typography>
+      <div style={{ height: theme.spacing(4) }} />
       <CreateCardTitleInput title={title} setTitle={setTitle} />
       <CreateCardKeyInput
         encryptionKey={encryptionKey}
@@ -84,6 +92,7 @@ export default function MemoryVaultCreateForm({ onSubmit }: Props) {
         variant="contained"
         disabled={encryptionKey === "" || initialData === null}
         color="primary"
+        size="large"
         startIcon={<Add />}
         onClick={() => {
           onSubmit({
@@ -98,17 +107,6 @@ export default function MemoryVaultCreateForm({ onSubmit }: Props) {
         Open
       </Button>
     </Paper>
-  );
-}
-
-function CreateCardHeader() {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <Avatar>
-        <LockOutlined />
-      </Avatar>
-      <Typography variant="h5">Start</Typography>
-    </div>
   );
 }
 

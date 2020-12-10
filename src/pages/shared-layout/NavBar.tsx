@@ -1,17 +1,19 @@
-import { AccountCircle, Brightness4 } from "@material-ui/icons";
+import { AccountCircle, Brightness4, MeetingRoom } from "@material-ui/icons";
 import {
   AppBar,
   Button,
   IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
   Toolbar,
   Typography,
   useTheme,
 } from "@material-ui/core";
-import React, { ReactNode, useState } from "react";
-import { gql, useQuery } from "@apollo/client";
+import React, { ReactNode, useRef, useState } from "react";
+import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { useHistory, useLocation } from "react-router-dom";
 
-import Alert from "@material-ui/lab/Alert";
 import Logo from "./Logo";
 import { useTogglePaletteContext } from "./useTogglePaletteContext";
 
@@ -33,7 +35,6 @@ export default function NavBar() {
   const theme = useTheme();
   const { togglePalette } = useTogglePaletteContext();
   const { data, loading } = useQuery<NavBarLoggedInResponse>(QUERY);
-  const [hasAlert, showAlert] = useState(false);
   return (
     <AppBar
       position="static"
@@ -47,39 +48,62 @@ export default function NavBar() {
         <IconButton onClick={togglePalette}>
           <Brightness4 />
         </IconButton>
+        <div style={{ width: theme.spacing(2) }} />
         {loading ? null : data?.user != null ? (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div style={{ width: theme.spacing(2) }} />
-            <Button
-              color="inherit"
-              onClick={togglePalette}
-              startIcon={<AccountCircle />}
-            >
-              <Typography variant="h6">{data.user.username}</Typography>
-            </Button>
-          </div>
+          <LoggedInButton username={data.user.username} />
         ) : (
-          <>
-            <Button color="inherit" onClick={() => showAlert(true)}>
-              Login
-            </Button>
-            {hasAlert && (
-              <Alert
-                style={{
-                  position: "absolute",
-                  bottom: -64,
-                  right: theme.spacing(1),
-                }}
-                severity="warning"
-                onClose={() => showAlert(false)}
-              >
-                Not implemented, sorry
-              </Alert>
-            )}
-          </>
+          <NavBarButton route="/minder/login" label="Log in" />
         )}
       </Toolbar>
     </AppBar>
+  );
+}
+
+function LoggedInButton({ username }: { username: string }) {
+  const history = useHistory();
+  const client = useApolloClient();
+  const anchorRef = useRef(null);
+  const [isShowingPopover, setIsShowingPopover] = useState(false);
+  const [logout] = useMutation(
+    gql`
+      mutation Logout {
+        logout
+      }
+    `,
+  );
+  return (
+    <>
+      <Button
+        color="inherit"
+        startIcon={<AccountCircle />}
+        onClick={() => setIsShowingPopover(true)}
+        ref={anchorRef}
+      >
+        <Typography variant="h6">{username}</Typography>
+      </Button>
+      <Menu
+        anchorEl={anchorRef.current}
+        open={isShowingPopover}
+        onClose={() => setIsShowingPopover(false)}
+      >
+        <MenuItem
+          onClick={() => {
+            logout().then(() => {
+              setIsShowingPopover(false);
+              localStorage.setItem("token", "");
+              client.resetStore().then(() => {
+                history.push("/minder/");
+              });
+            });
+          }}
+        >
+          <ListItemIcon style={{ minWidth: 36 }}>
+            <MeetingRoom fontSize="small" color="action" />
+          </ListItemIcon>
+          <Typography>Logout</Typography>
+        </MenuItem>
+      </Menu>
+    </>
   );
 }
 
