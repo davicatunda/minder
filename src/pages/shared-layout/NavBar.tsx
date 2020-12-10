@@ -7,11 +7,12 @@ import {
   Typography,
   useTheme,
 } from "@material-ui/core";
-import React, { CSSProperties, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
+import { useHistory, useLocation } from "react-router-dom";
 
 import Alert from "@material-ui/lab/Alert";
-import { NavLink } from "react-router-dom";
+import Logo from "./Logo";
 import { useTogglePaletteContext } from "./useTogglePaletteContext";
 
 const QUERY = gql`
@@ -27,15 +28,6 @@ type NavBarLoggedInResponse = {
     username: string;
   };
 };
-const listItemStyle: CSSProperties = {
-  whiteSpace: "nowrap",
-  marginInlineEnd: 20,
-  textDecoration: "none",
-  color: "inherit",
-};
-const active: CSSProperties = {
-  fontWeight: "bold",
-};
 
 export default function NavBar() {
   const theme = useTheme();
@@ -43,23 +35,14 @@ export default function NavBar() {
   const { data, loading } = useQuery<NavBarLoggedInResponse>(QUERY);
   const [hasAlert, showAlert] = useState(false);
   return (
-    <AppBar position="static">
+    <AppBar
+      position="static"
+      color={theme.palette.type === "light" ? "primary" : "default"}
+    >
       <Toolbar>
-        <Typography variant="h6">
-          <NavLink to="/minder" exact style={listItemStyle} activeStyle={active}>
-            Home
-          </NavLink>
-        </Typography>
-        <Typography variant="h6">
-          <NavLink to="/minder/offline" style={listItemStyle} activeStyle={active}>
-            Offline Mode
-          </NavLink>
-        </Typography>
-        <Typography variant="h6">
-          <NavLink to="/minder/standard" style={listItemStyle} activeStyle={active}>
-            Standard
-          </NavLink>
-        </Typography>
+        <NavBarButton icon={<Logo size={36} />} route="/minder" label="Minder" />
+        <NavBarButton route="/minder/memories" label="Memories" />
+        <NavBarButton route="/minder/standard" label="Standard" />
         <div style={{ flexGrow: 1 }} />
         <IconButton onClick={togglePalette}>
           <Brightness4 />
@@ -97,5 +80,40 @@ export default function NavBar() {
         )}
       </Toolbar>
     </AppBar>
+  );
+}
+
+type NavBarButtonProps = {
+  route: string;
+  icon?: ReactNode;
+  label: string;
+};
+function NavBarButton({ route, icon, label }: NavBarButtonProps) {
+  const theme = useTheme();
+  const location = useLocation();
+  const history = useHistory();
+  const hasSelectedStyle = location.pathname === route && route !== "/minder";
+  return (
+    <Button
+      color="inherit"
+      onClick={() => history.push(route)}
+      startIcon={icon}
+      style={{ textTransform: "none" }}
+      disableRipple
+    >
+      {hasSelectedStyle && (
+        <span
+          style={{
+            position: "absolute",
+            left: theme.spacing(1),
+            right: theme.spacing(1),
+            bottom: -theme.spacing(1),
+            height: 2,
+            backgroundColor: theme.palette.common.white,
+          }}
+        />
+      )}
+      <Typography variant="h6">{label}</Typography>
+    </Button>
   );
 }

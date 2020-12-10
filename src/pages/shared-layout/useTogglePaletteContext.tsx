@@ -7,13 +7,13 @@ import React, {
   useState,
 } from "react";
 import { ThemeProvider, createMuiTheme, useMediaQuery } from "@material-ui/core";
-import { blue, green, orange, pink, red } from "@material-ui/core/colors";
+import { blue, green, orange, red } from "@material-ui/core/colors";
 
 const DEFAULT_THEME = {
   palette: {
     type: "light",
-    primary: { main: blue[600] },
-    secondary: { main: pink[600] },
+    primary: { main: blue[500] },
+    secondary: { main: orange["A100"] },
     error: { main: red[500] },
     warning: { main: orange[500] },
     info: { main: blue[500] },

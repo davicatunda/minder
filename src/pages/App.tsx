@@ -15,13 +15,13 @@ function App() {
   return (
     <Router>
       <NavBar />
-      <div style={{ height: theme.spacing(2) }} />
-      <Container maxWidth="md">
-        <Switch>
-          <Route exact path="/minder/">
-            <Home />
-          </Route>
-          <Route exact path="/minder/offline">
+      <Switch>
+        <Route exact path="/minder/">
+          <Home />
+        </Route>
+        <Container maxWidth="md">
+          <div style={{ height: theme.spacing(2) }} />
+          <Route exact path="/minder/memories">
             <Offline />
           </Route>
           <Route path="/minder/standard">
@@ -30,8 +30,8 @@ function App() {
           <Route path="/minder/proposal/:proposalId">
             <Proposal />
           </Route>
-        </Switch>
-      </Container>
+        </Container>
+      </Switch>
       <div style={{ height: theme.spacing(4) }} />
     </Router>
   );
