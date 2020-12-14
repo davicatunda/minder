@@ -3,8 +3,8 @@ import React, { FunctionComponent, useState } from "react";
 import { denormalizeRoot, normalizeRoot } from "../../utils/normalization";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
+import CardRoot from "../memory/cards/CardRoot";
 import CardView from "../memory/cards/CardView";
-import CardViewRoot from "../memory/cards/CardViewRoot";
 import { DecodedDataContext } from "../memory/useDecodedDataContext";
 import { useHistory } from "react-router-dom";
 
@@ -124,7 +124,7 @@ function MakeAProposalSection() {
     );
   }
   return (
-    <CardViewRoot
+    <CardRoot
       initialValues={{
         encryptionKey: DUMMY_KEY,
         initialData: JSON.stringify(SUGGESTED_PROPOSAL),
@@ -147,7 +147,7 @@ function MakeAProposalSection() {
           Make new proposal
         </Button>
       )}
-    </CardViewRoot>
+    </CardRoot>
   );
 }
 type AllProposalsSectionProps = {

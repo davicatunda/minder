@@ -76,19 +76,19 @@ export function normalizeRoot(
 ): Store {
   const parsedDate = JSON.parse(decodedData);
   const {
-    title = overrides.title ?? "Primary",
+    title,
     created = new Date(),
     updated = new Date(),
     key = ROOT_KEY,
-    encryptionKey = overrides.encryptionKey,
+    encryptionKey,
     ...values
   } = parsedDate;
   const nodes = {};
   const rootNodeValue = recursivelyAddNodes(nodes, ROOT_KEY, values);
   const store: Store = {
     rootNode: {
-      title,
-      encryptionKey,
+      title: overrides.title ?? title ?? "Primary",
+      encryptionKey: overrides.encryptionKey ?? encryptionKey,
       created: new Date(created),
       updated: new Date(updated),
       key,

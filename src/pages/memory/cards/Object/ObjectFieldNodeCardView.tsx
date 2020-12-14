@@ -34,13 +34,15 @@ export default function ObjectFieldNodeCardView({
     parentKey,
   });
   const needsToExpand = useNeedsToExpand(name, value);
-  const [isMinimized, setIsMinimized] = useState(!needsToExpand);
+  const [isMinimized, setIsMinimized] = useState(true);
   return (
     <Grid
       item
       xs={12}
-      sm={isMinimized || !needsToExpand ? 6 : 12}
-      md={isMinimized || !needsToExpand ? 4 : 12}
+      sm={12}
+      md={isMinimized || !needsToExpand ? 6 : 12}
+      lg={isMinimized || !needsToExpand ? 3 : 12}
+      xl={isMinimized || !needsToExpand ? 2 : 12}
       {...draggableContainerProps}
     >
       <div {...dropTargetProps} />

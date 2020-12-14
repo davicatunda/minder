@@ -8,7 +8,7 @@ type Props = {
 export default function BlurredBar({ style }: Props) {
   const theme = useTheme();
   return (
-    <div
+    <span
       style={{
         backgroundColor: theme.palette.text.primary,
         opacity: 0.1,

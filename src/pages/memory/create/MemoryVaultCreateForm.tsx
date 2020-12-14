@@ -5,6 +5,7 @@ import {
   ExpandLess,
   ExpandMore,
   GetApp,
+  HelpOutline,
 } from "@material-ui/icons";
 import {
   Button,
@@ -13,7 +14,6 @@ import {
   FormLabel,
   IconButton,
   InputAdornment,
-  Paper,
   Radio,
   RadioGroup,
   TextField,
@@ -22,26 +22,10 @@ import {
   useTheme,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { createKey, isKeyValid, useDataDecryption } from "../../../utils/encryption";
 
-import { CardDataProps } from "../cards/CardViewRoot";
+import { CardDataProps } from "../cards/CardRoot";
 import DragAndDrop from "./DragAndDrop";
-import { createKey } from "../../../utils/encryption";
-
-type OfflinePageResponse = {
-  standardProposal: {
-    version: string;
-    data: string;
-  };
-};
-const QUERY = gql`
-  query OfflinePage {
-    standardProposal {
-      version
-      data
-    }
-  }
-`;
 
 enum DataOptions {
   STANDARD = "STANDARD",
@@ -49,64 +33,100 @@ enum DataOptions {
   CUSTOM = "CUSTOM",
 }
 type Props = {
+  standardProposal: {
+    version: string;
+    data: string;
+  };
+  onChange(card: CardDataProps): void;
   onSubmit(card: CardDataProps): void;
+  onCancel(): void;
 };
-export default function MemoryVaultCreateForm({ onSubmit }: Props) {
+export default function MemoryVaultCreateForm({
+  standardProposal,
+  onSubmit,
+  onChange,
+  onCancel,
+}: Props) {
   const theme = useTheme();
-  const [initialData, setInitialData] = useState<string | null>(null);
-  const [title, setTitle] = useState("");
-  const [encryptionKey, setEncryptionKey] = useState("");
-  const { data } = useQuery<OfflinePageResponse>(QUERY, {
-    onCompleted: (data) => {
-      setInitialData(data.standardProposal.data);
+  const initialCardData = {
+    title: "",
+    initialValues: {
+      encryptionKey: "",
+      initialData: standardProposal.data,
     },
-  });
-  if (data == null) {
-    return null;
+  };
+  const [cardData, setCardData] = useState<CardDataProps>(initialCardData);
+
+  function setEncryptionKey(newEncryptionKey: string) {
+    const newCardData = {
+      ...cardData,
+      initialValues: {
+        ...cardData.initialValues,
+        encryptionKey: newEncryptionKey,
+      },
+    };
+    setCardData(newCardData);
+    onChange(newCardData);
   }
+
+  function setInitialData(newInitialData: string) {
+    const newCardData = {
+      ...cardData,
+      initialValues: {
+        ...cardData.initialValues,
+        initialData: newInitialData,
+      },
+    };
+    setCardData(newCardData);
+    onChange(newCardData);
+  }
+
+  function setTitle(newTitle: string) {
+    const newCardData = { ...cardData, title: newTitle };
+    setCardData(newCardData);
+    onChange(newCardData);
+  }
+
+  const { hasFailed } = useDataDecryption(
+    cardData.initialValues.initialData,
+    cardData.initialValues.encryptionKey,
+  );
+  const { encryptionKey, initialData } = cardData.initialValues;
   return (
-    <Paper
-      style={{
-        padding: theme.spacing(4),
-        margin: "auto",
-        maxWidth: 480,
-        width: "100%",
-      }}
-    >
-      <Typography align="center" variant="h3">
-        Start
-      </Typography>
-      <div style={{ height: theme.spacing(4) }} />
-      <CreateCardTitleInput title={title} setTitle={setTitle} />
+    <div style={{ padding: theme.spacing(2) }}>
+      <CreateCardTitleInput title={cardData.title ?? ""} setTitle={setTitle} />
       <CreateCardKeyInput
         encryptionKey={encryptionKey}
         setEncryptionKey={setEncryptionKey}
       />
       <CreateCardDataSection
-        standardProposal={data.standardProposal}
+        standardProposal={standardProposal}
         setInitialData={setInitialData}
       />
-      <div style={{ height: theme.spacing(1) }} />
+      <div style={{ height: theme.spacing(2) }} />
+      {initialData !== "" && encryptionKey !== null && hasFailed && (
+        <Typography variant="body2" color="error" align="center">
+          Key and data don't match
+        </Typography>
+      )}
       <Button
         fullWidth
         variant="contained"
-        disabled={encryptionKey === "" || initialData === null}
+        disabled={hasFailed || encryptionKey.length === 0}
         color="primary"
-        size="large"
+        size="small"
         startIcon={<Add />}
         onClick={() => {
-          onSubmit({
-            title: title !== "" ? title : "Primary",
-            initialValues: {
-              encryptionKey,
-              initialData: initialData as string,
-            },
-          });
+          onSubmit(cardData);
+          setCardData(initialCardData);
         }}
       >
         Open
       </Button>
-    </Paper>
+      <Button fullWidth size="small" onClick={onCancel}>
+        Cancel
+      </Button>
+    </div>
   );
 }
 
@@ -118,7 +138,7 @@ function CreateCardTitleInput({ title, setTitle }: CreateCardTitleInputProps) {
   return (
     <TextField
       variant="outlined"
-      margin="normal"
+      margin="dense"
       fullWidth
       label="Title"
       autoComplete="title"
@@ -141,7 +161,8 @@ function CreateCardKeyInput({
     <DragAndDrop onDrop={(file) => readFile(file, setEncryptionKey)}>
       <TextField
         variant="outlined"
-        margin="normal"
+        margin="dense"
+        error={encryptionKey.length > 0 && !isKeyValid(encryptionKey)}
         required
         fullWidth
         label="Encryption Key"
@@ -157,7 +178,7 @@ function CreateCardKeyInput({
                   aria-label="generate encryption Key"
                   onClick={() => createKey().then(setEncryptionKey)}
                 >
-                  <Cached />
+                  <Cached fontSize="small" />
                 </IconButton>
               </Tooltip>
             </InputAdornment>
@@ -169,7 +190,7 @@ function CreateCardKeyInput({
 }
 
 type CreateCardDataSectionProps = {
-  setInitialData: (initialData: string | null) => void;
+  setInitialData: (initialData: string) => void;
   standardProposal: {
     version: string;
     data: string;
@@ -212,7 +233,7 @@ function CreateCardDataSection({
             selectDataOption(dataOption);
             switch (dataOption) {
               case DataOptions.CUSTOM:
-                return setInitialData(encryptedData);
+                return setInitialData(encryptedData ?? "");
               case DataOptions.EMPTY:
                 return setInitialData("{}");
               case DataOptions.STANDARD:
@@ -222,18 +243,33 @@ function CreateCardDataSection({
         >
           <FormControlLabel
             value={DataOptions.STANDARD}
-            control={<Radio />}
+            control={<Radio size="small" />}
             label={`Standard v${standardProposal.version}`}
           />
           <FormControlLabel
             value={DataOptions.EMPTY}
-            control={<Radio />}
+            control={<Radio size="small" />}
             label="Empty"
           />
           <FormControlLabel
             value={DataOptions.CUSTOM}
-            control={<Radio />}
-            label="My own"
+            control={<Radio size="small" />}
+            label={
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                My own <span style={{ width: theme.spacing(1) }} />
+                <Tooltip
+                  title="Your encrypted data or a strigfied json"
+                  placement="top"
+                >
+                  <HelpOutline fontSize="inherit" />
+                </Tooltip>
+              </span>
+            }
           />
         </RadioGroup>
         {DataOptions.CUSTOM === dataOption && (
@@ -271,9 +307,7 @@ function CreateCardDataSection({
                 }
               />
               {encryptedData === null ? (
-                <Typography variant="body1">
-                  Drag or upload your encrypted data
-                </Typography>
+                <Typography variant="body1">Drag or upload your data</Typography>
               ) : (
                 <Typography variant="body1">Done</Typography>
               )}

@@ -74,43 +74,28 @@ export async function createKey(): Promise<string> {
   return arraybuffer2base64UTF16(exportedKey);
 }
 
-export function useDataEncryptionInSync(
-  title: string,
-  encryptionKey: string,
-  initialData: string,
+export function isKeyValid(key: string): boolean {
+  const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+  return base64regex.test(key) && key.length === 44;
+}
+
+export function useDataAsStore(
+  decodedData: string | null,
+  encryptionKey?: string,
+  title?: string,
 ): {
   store: Store;
   updateNodes: (nodes: TNode[]) => void;
-  encryptedData: string;
 } | null {
-  const isProbablyJson = initialData[0] === "{";
-
-  const initialStore = isProbablyJson
-    ? () => normalizeRoot(initialData, { title, encryptionKey })
-    : null;
-  const [store, setStore] = useState<Store | null>(initialStore);
-
-  // decrypted initial encryption data
-  const initialEncryptedData = isProbablyJson ? null : initialData;
+  const [store, setStore] = useState<Store | null>(null);
   useEffect(() => {
-    if (initialEncryptedData == null) {
+    if (decodedData === null) {
       return;
     }
-    decrypt(initialEncryptedData, encryptionKey).then((message) => {
-      setStore(normalizeRoot(message, { title, encryptionKey }));
-    });
-  }, [initialEncryptedData, encryptionKey, title]);
+    setStore(normalizeRoot(decodedData, { title, encryptionKey }));
+  }, [decodedData, encryptionKey, title]);
 
-  // keep store always encrypted
-  const [encryptedData, setEncryptedData] = useState<string | null>(null);
-  useEffect(() => {
-    if (store == null) {
-      return;
-    }
-    encrypt(denormalizeRoot(store), encryptionKey).then(setEncryptedData);
-  }, [store, encryptionKey]);
-
-  if (store === null || encryptedData === null) {
+  if (store === null) {
     return null;
   }
 
@@ -128,6 +113,44 @@ export function useDataEncryptionInSync(
       };
       setStore(newStore);
     },
-    encryptedData,
   };
+}
+
+export function useDataDecryption(initialData: string, encryptionKey: string) {
+  const [decryptedData, setDecryptedData] = useState<string | null>(null);
+  const [hasFailed, setHasFailed] = useState<boolean>(false);
+  useEffect(() => {
+    const isDecryptedAlready = initialData[0] === "{";
+    if (isDecryptedAlready) {
+      setDecryptedData(initialData);
+      setHasFailed(false);
+    } else {
+      decrypt(initialData, encryptionKey)
+        .then((data) => {
+          setDecryptedData(data);
+          setHasFailed(false);
+        })
+        .catch(() => {
+          setHasFailed(true);
+          setDecryptedData("{}");
+        });
+    }
+  }, [initialData, encryptionKey]);
+  return { decryptedData, hasFailed };
+}
+
+export function useDataEncryption(store: Store) {
+  const [encryptedData, setEncryptedData] = useState<string | null>(null);
+  useEffect(() => {
+    encryptData(store, setEncryptedData);
+  }, [store, store.rootNode.encryptionKey]);
+  return encryptedData;
+}
+
+export function encryptData(
+  store: Store,
+  onComplete: (encryptedData: string) => void,
+) {
+  const plainText = denormalizeRoot(store);
+  encrypt(plainText, store.rootNode.encryptionKey).then(onComplete);
 }

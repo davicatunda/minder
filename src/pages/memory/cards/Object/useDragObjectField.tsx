@@ -123,7 +123,6 @@ export default function useDragObjectField(
         const boundingBox = ref.current.getBoundingClientRect();
         const halfWidth = boundingBox.width / 2;
         const centerX = boundingBox.left + halfWidth;
-        console.log("is happening");
         setHover(event.pageX > centerX ? "AFTER" : "BEFORE");
         event.preventDefault();
       },

@@ -1,4 +1,5 @@
-import { IconButton, Paper, Tooltip, Typography, useTheme } from "@material-ui/core";
+import { IconButton, Paper, Tooltip, useTheme } from "@material-ui/core";
+import { useDataAsStore, useDataDecryption } from "../../../utils/encryption";
 import useDraggableItemsProvider, {
   DraggableItemsContext,
 } from "../useDraggableItemsContext";
@@ -9,11 +10,11 @@ import { Close } from "@material-ui/icons";
 import { DecodedDataContext } from "../useDecodedDataContext";
 import React from "react";
 import { Store } from "../../../utils/normalization";
-import { useDataEncryptionInSync } from "../../../utils/encryption";
 
 export type CardDataProps = {
   children?(store: Store): void;
-  title: string;
+  title?: string;
+  isReadOnly?: boolean;
   initialValues: {
     encryptionKey: string;
     initialData: string;
@@ -22,22 +23,26 @@ export type CardDataProps = {
 type Props = CardDataProps & {
   onClose: () => void;
 };
-export default function CardViewRoot({
+export default function CardRoot({
   children,
   title,
+  isReadOnly = false,
   initialValues: { encryptionKey, initialData },
   onClose,
 }: Props) {
   const theme = useTheme();
   const draggableData = useDraggableItemsProvider();
-  const data = useDataEncryptionInSync(title, encryptionKey, initialData);
+  const { decryptedData } = useDataDecryption(initialData, encryptionKey);
+  const data = useDataAsStore(decryptedData, encryptionKey, title);
   if (!data) {
     return null;
   }
-  const { store, updateNodes, encryptedData } = data;
+  const { store, updateNodes } = data;
   return (
     <DraggableItemsContext.Provider value={draggableData}>
-      <DecodedDataContext.Provider value={{ store, updateNodes }}>
+      <DecodedDataContext.Provider
+        value={{ store, updateNodes: isReadOnly ? null : updateNodes }}
+      >
         <Paper style={{ position: "relative", padding: theme.spacing(3) }}>
           <div
             style={{
@@ -52,9 +57,8 @@ export default function CardViewRoot({
               </IconButton>
             </Tooltip>
           </div>
-          <CardInfo rootNode={store.rootNode} encryptedData={encryptedData} />
+          <CardInfo />
           <div style={{ height: theme.spacing(3) }} />
-          <Typography variant="h2">Data</Typography>
           <CardView nodeKey={store.rootNode.value} />
           {children && children(store)}
         </Paper>

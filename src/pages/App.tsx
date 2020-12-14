@@ -5,11 +5,11 @@ import NavBar from "./shared-layout/NavBar";
 import React from "react";
 import loadable from "@loadable/component";
 
-const Home = loadable(() => import("./home/HomePage"));
-const Offline = loadable(() => import("./memory/MemoryPage"));
-const Standard = loadable(() => import("./standard/StandardPage"));
-const Proposal = loadable(() => import("./proposal/ProposalPage"));
-const Login = loadable(() => import("./login/LoginPage"));
+const HomePage = loadable(() => import("./home/HomePage"));
+const MemoryPage = loadable(() => import("./memory/MemoryPage"));
+const StandardPage = loadable(() => import("./standard/StandardPage"));
+const ProposalPage = loadable(() => import("./proposal/ProposalPage"));
+const LoginPage = loadable(() => import("./login/LoginPage"));
 
 function App() {
   const theme = useTheme();
@@ -18,28 +18,28 @@ function App() {
       <NavBar />
       <Switch>
         <Route exact path="/minder/">
-          <Home />
+          <HomePage />
+          <div style={{ height: theme.spacing(8) }} />
+        </Route>
+        <Route exact path="/minder/memories">
+          <MemoryPage />
         </Route>
         <Container
           maxWidth="md"
           style={{ display: "flex", flexDirection: "column", flex: 1 }}
         >
           <div style={{ height: theme.spacing(2) }} />
-          <Route exact path="/minder/memories">
-            <Offline />
-          </Route>
           <Route path="/minder/standard">
-            <Standard />
+            <StandardPage />
           </Route>
           <Route path="/minder/proposal/:proposalId">
-            <Proposal />
+            <ProposalPage />
           </Route>
           <Route path="/minder/login">
-            <Login />
+            <LoginPage />
           </Route>
         </Container>
       </Switch>
-      <div style={{ height: theme.spacing(4) }} />
     </Router>
   );
 }

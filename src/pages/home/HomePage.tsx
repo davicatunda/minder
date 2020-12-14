@@ -21,13 +21,28 @@ import {
   useTheme,
 } from "@material-ui/core";
 import React, { useEffect } from "react";
+import { gql, useQuery } from "@apollo/client";
 
+import { createKey } from "../../utils/encryption";
 import { useHistory } from "react-router-dom";
 
+type HomePageResponse = {
+  standardProposal: {
+    data: string;
+  };
+};
+const QUERY = gql`
+  query HomePage {
+    standardProposal {
+      data
+    }
+  }
+`;
 export default function HomePage() {
   useGithubPagesHasNoRouting();
   const theme = useTheme();
   const history = useHistory();
+  const { data } = useQuery<HomePageResponse>(QUERY);
 
   return (
     <div>
@@ -61,8 +76,8 @@ export default function HomePage() {
                 display="block"
                 gutterBottom
               >
-                Store anything you might want to remember on a simple Client to
-                Client encryption platform.
+                Store anything you might want to remember on a fully encrypted
+                platform.
               </Typography>
               <div style={{ height: theme.spacing(2) }} />
               <Typography
@@ -71,10 +86,11 @@ export default function HomePage() {
                 display="block"
                 gutterBottom
               >
-                Imagine all the things that that you will eventually need, for
-                example, your family medical history, or previous addresses, but that
-                is long forgotten or lost. All these things can be stored and shared
-                on Minder with the safety of a client to client encrytion.
+                Imagine all the things that you need to remember, for example,
+                medical history, previous addresses, favorite restaurants from your
+                home town. Chances are that some are long forgotten. Luckily for you
+                all these things can be stored and shared on Minder with the safety
+                of a fully encrypted platform.
               </Typography>
               <div style={{ height: theme.spacing(2) }} />
               <Button size="large" variant="contained" color="primary">
@@ -204,7 +220,16 @@ export default function HomePage() {
               <Button
                 variant="outlined"
                 size="large"
-                onClick={() => history.push("minder/offline")}
+                onClick={() => {
+                  createKey().then((key) => {
+                    const value =
+                      data?.standardProposal?.data ??
+                      '{"Personal":{},"Community":{},"Education":{},"Work":{},"Health":{}}';
+                    history.push(
+                      `minder/memories?title=Demo&key=${key}&data=${value}&readOnly=false`,
+                    );
+                  });
+                }}
               >
                 Try it
               </Button>
