@@ -65,9 +65,7 @@ export default function ObjectNodeCardView({ node }: Props) {
               key={field.value}
             />
           ))}
-        <Grid item xs={12} sm={6} md={4} style={{ display: "flex" }}>
-          <NewFieldDialogButton parentNode={node} />
-        </Grid>
+        <NewFieldDialogButton parentNode={node} />
       </Grid>
     </>
   );

@@ -62,28 +62,37 @@ export default function ObjectFieldNodeCardView({
             >
               <NodeTypeIcon nodeKey={value} />
               <span style={{ width: theme.spacing(1) }} />
-              {isMinimized && name.length > 19 ? `${name.slice(0, 18)}...` : name}
-            </Typography>
-            {!isMinimized && (
               <span
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                  position: "absolute",
-                  top: theme.spacing(2),
-                  right: theme.spacing(2),
-                }}
+                style={
+                  isMinimized
+                    ? {
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        flexGrow: 1,
+                      }
+                    : { flexGrow: 1 }
+                }
               >
-                <EditFieldDialog name={name} value={value} parentKey={parentKey} />
+                {name}
               </span>
-            )}
+              {!isMinimized && (
+                <span onClick={(e) => e.stopPropagation()}>
+                  <EditFieldDialog name={name} value={value} parentKey={parentKey} />
+                </span>
+              )}
+            </Typography>
             {isMinimized ? (
               <BlurredBar
-                style={{ width: "80%", height: 12, marginTop: theme.spacing(2) }}
+                style={{
+                  width: "80%",
+                  height: 11,
+                  marginTop: theme.spacing(2),
+                  display: "block",
+                }}
               />
             ) : (
-              <div onClick={(e) => e.stopPropagation()}>
-                <CardView nodeKey={value} />
-              </div>
+              <CardView nodeKey={value} />
             )}
           </CardContent>
         </CardActionArea>
