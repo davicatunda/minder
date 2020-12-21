@@ -10,121 +10,158 @@ import {
   Typography,
   useTheme,
 } from "@material-ui/core";
+import {
+  GoogleLoginResponse,
+  useGoogleLogin,
+  useGoogleLogout,
+} from "react-google-login";
 import React, { ReactNode, useRef, useState } from "react";
-import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
+import { gql, useApolloClient, useMutation } from "@apollo/client";
 import { useHistory, useLocation } from "react-router-dom";
 
 import Logo from "./Logo";
+import autoRefreshToken from "./autoRefreshToken";
 import { useTogglePaletteContext } from "./useTogglePaletteContext";
 
-const QUERY = gql`
-  query NavBarLoggedIn {
-    user {
-      username
-    }
-  }
-`;
-
-type NavBarLoggedInResponse = {
-  user?: {
-    username: string;
-  };
-};
+const GOOGLE_CLIENT_ID =
+  "79887996241-lkot8h9s6ehcv4cd07kl9nsugt965pr8.apps.googleusercontent.com";
 
 export default function NavBar() {
   const theme = useTheme();
   const { togglePalette } = useTogglePaletteContext();
-  const { data, loading } = useQuery<NavBarLoggedInResponse>(QUERY);
   return (
     <AppBar
       position="static"
       color={theme.palette.type === "light" ? "primary" : "default"}
     >
       <Toolbar>
-        <NavBarButton icon={<Logo size={36} />} route="/minder" label="Minder" />
-        <NavBarButton route="/minder/memories" label="Memories" />
-        <NavBarButton route="/minder/standard" label="Standard" />
+        <NavBarRouteButton
+          startIcon={<Logo size={36} />}
+          route="/minder"
+          label="Minder"
+        />
+        <NavBarRouteButton route="/minder/memories" label="Memories" />
+        <NavBarRouteButton route="/minder/standard" label="Standard" />
         <div style={{ flexGrow: 1 }} />
         <IconButton onClick={togglePalette}>
           <Brightness4 />
         </IconButton>
         <div style={{ width: theme.spacing(2) }} />
-        {loading ? null : data?.user != null ? (
-          <LoggedInButton username={data.user.username} />
-        ) : (
-          <NavBarButton route="/minder/login" label="Log in" />
-        )}
+        <LogInButton />
       </Toolbar>
     </AppBar>
   );
 }
 
-function LoggedInButton({ username }: { username: string }) {
-  const history = useHistory();
+function LogInButton() {
   const client = useApolloClient();
-  const anchorRef = useRef(null);
-  const [isShowingPopover, setIsShowingPopover] = useState(false);
-  const [logout] = useMutation(
+  const [signin] = useMutation<{ signin: boolean }>(
     gql`
-      mutation Logout {
-        logout
+      mutation Signin {
+        signin
       }
     `,
   );
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { signIn } = useGoogleLogin({
+    clientId: GOOGLE_CLIENT_ID,
+    cookiePolicy: "single_host_origin",
+    isSignedIn: true,
+    onSuccess: (response) => {
+      setIsLoggedIn(true);
+      const googleUser = response as GoogleLoginResponse;
+      localStorage.setItem("token", googleUser.getAuthResponse().id_token);
+      client
+        .resetStore()
+        .then(() => signin())
+        .then(({ data }) => {
+          if (data?.signin === true) {
+            autoRefreshToken(googleUser);
+          } else {
+            localStorage.setItem("token", "");
+            client.resetStore();
+          }
+        });
+    },
+    onFailure: (response) => {
+      setIsLoggedIn(false);
+    },
+  });
+
+  const { signOut } = useGoogleLogout({
+    clientId: GOOGLE_CLIENT_ID,
+    cookiePolicy: "single_host_origin",
+    onLogoutSuccess: () => {
+      setIsLoggedIn(false);
+      localStorage.setItem("token", "");
+      client.resetStore();
+    },
+    onFailure: () => {},
+  });
+
+  const anchorRef = useRef(null);
+  const [isShowingPopover, setIsShowingPopover] = useState(false);
   return (
     <>
-      <Button
-        color="inherit"
-        startIcon={<AccountCircle />}
-        onClick={() => setIsShowingPopover(true)}
-        ref={anchorRef}
-      >
-        <Typography variant="h6">{username}</Typography>
-      </Button>
+      <span ref={anchorRef}>
+        {isLoggedIn ? (
+          <IconButton onClick={() => setIsShowingPopover(true)}>
+            <AccountCircle />
+          </IconButton>
+        ) : (
+          <NavBarButtonLayout onClick={() => setIsShowingPopover(true)}>
+            Log in
+          </NavBarButtonLayout>
+        )}
+      </span>
       <Menu
         anchorEl={anchorRef.current}
         open={isShowingPopover}
         onClose={() => setIsShowingPopover(false)}
       >
-        <MenuItem
-          onClick={() => {
-            logout().then(() => {
+        {isLoggedIn ? (
+          <MenuItem
+            onClick={() => {
               setIsShowingPopover(false);
-              localStorage.setItem("token", "");
-              client.resetStore().then(() => {
-                history.push("/minder/");
-              });
-            });
-          }}
-        >
-          <ListItemIcon style={{ minWidth: 36 }}>
-            <MeetingRoom fontSize="small" color="action" />
-          </ListItemIcon>
-          <Typography>Logout</Typography>
-        </MenuItem>
+              signOut();
+            }}
+          >
+            <ListItemIcon style={{ minWidth: 36 }}>
+              <MeetingRoom fontSize="small" color="action" />
+            </ListItemIcon>
+            <Typography>Logout</Typography>
+          </MenuItem>
+        ) : (
+          <MenuItem
+            onClick={() => {
+              setIsShowingPopover(false);
+              signIn();
+            }}
+          >
+            <ListItemIcon style={{ minWidth: 36 }}>
+              <MeetingRoom fontSize="small" color="action" />
+            </ListItemIcon>
+            <Typography>Sign in with Google</Typography>
+          </MenuItem>
+        )}
       </Menu>
     </>
   );
 }
 
-type NavBarButtonProps = {
+type NavBarRouteButtonProps = {
   route: string;
-  icon?: ReactNode;
+  startIcon?: ReactNode;
   label: string;
 };
-function NavBarButton({ route, icon, label }: NavBarButtonProps) {
+function NavBarRouteButton({ route, startIcon, label }: NavBarRouteButtonProps) {
   const theme = useTheme();
   const location = useLocation();
   const history = useHistory();
   const hasSelectedStyle = location.pathname === route && route !== "/minder";
   return (
-    <Button
-      color="inherit"
-      onClick={() => history.push(route)}
-      startIcon={icon}
-      style={{ textTransform: "none" }}
-      disableRipple
-    >
+    <NavBarButtonLayout onClick={() => history.push(route)} startIcon={startIcon}>
       {hasSelectedStyle && (
         <span
           style={{
@@ -137,7 +174,30 @@ function NavBarButton({ route, icon, label }: NavBarButtonProps) {
           }}
         />
       )}
-      <Typography variant="h6">{label}</Typography>
+      {label}
+    </NavBarButtonLayout>
+  );
+}
+
+type NavBarButtonLayoutProps = {
+  onClick(): void;
+  startIcon?: ReactNode;
+  children: ReactNode;
+};
+function NavBarButtonLayout({
+  onClick,
+  startIcon,
+  children,
+}: NavBarButtonLayoutProps) {
+  return (
+    <Button
+      color="inherit"
+      onClick={onClick}
+      startIcon={startIcon}
+      style={{ textTransform: "none" }}
+      disableRipple
+    >
+      <Typography variant="h6">{children}</Typography>
     </Button>
   );
 }

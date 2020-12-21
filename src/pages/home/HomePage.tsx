@@ -93,8 +93,22 @@ export default function HomePage() {
                 of a fully encrypted platform.
               </Typography>
               <div style={{ height: theme.spacing(2) }} />
-              <Button size="large" variant="contained" color="primary">
-                Sign up
+              <Button
+                size="large"
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  createKey().then((key) => {
+                    const value =
+                      data?.standardProposal?.data ??
+                      '{"Personal":{},"Community":{},"Education":{},"Work":{},"Health":{}}';
+                    history.push(
+                      `minder/memories?title=Demo&key=${key}&data=${value}&readOnly=false`,
+                    );
+                  });
+                }}
+              >
+                Try it
               </Button>
             </Grid>
             <Grid item xs={12} sm={12} md={8}>
@@ -140,8 +154,8 @@ export default function HomePage() {
                 {[
                   "encryption client to client layer",
                   "initial CRUD operations",
-                ].map((completedItem) => (
-                  <ListItem style={{ paddingLeft: 0 }}>
+                ].map((completedItem, index) => (
+                  <ListItem style={{ paddingLeft: 0 }} key={index}>
                     <ListItemIcon>
                       <CheckBox />
                     </ListItemIcon>
@@ -152,8 +166,8 @@ export default function HomePage() {
                   "build User Voted Standard for the recommend fields everyone should have",
                   "create partial copies of your data into shareable units for 3rd parties to consume",
                   "Based on standard create a backend backed by graphql for automatization",
-                ].map((todoItem) => (
-                  <ListItem style={{ paddingLeft: 0 }}>
+                ].map((todoItem, index) => (
+                  <ListItem style={{ paddingLeft: 0 }} key={index}>
                     <ListItemIcon>
                       <CheckBoxOutlineBlank />
                     </ListItemIcon>
@@ -205,8 +219,8 @@ export default function HomePage() {
                   "Consult your data, add new items, reorder them",
                   "Save your key and encrypted data on somewhere safe",
                   "Live your life, and come back whenever your memory fails you",
-                ].map((step) => (
-                  <ListItem style={{ paddingLeft: 0 }}>
+                ].map((step, index) => (
+                  <ListItem style={{ paddingLeft: 0 }} key={index}>
                     <ListItemIcon style={{ paddingRight: 0 }}>
                       <SubdirectoryArrowRight />
                     </ListItemIcon>
@@ -237,6 +251,7 @@ export default function HomePage() {
           </Grid>
         </Grid>
       </Container>
+      <div style={{ height: theme.spacing(10) }} />
     </div>
   );
 }
