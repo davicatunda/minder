@@ -14,12 +14,13 @@ type Props = {
   };
 };
 export default function PreviewCardRoot({
-  title,
+  title = "",
   initialValues: { encryptionKey, initialData },
 }: Props) {
   const theme = useTheme();
   const { decryptedData, hasFailed } = useDataDecryption(initialData, encryptionKey);
-  const data = useDataAsStore(decryptedData, encryptionKey, title);
+  const titleWithFallback = title === "" ? "Title" : title;
+  const data = useDataAsStore(decryptedData, encryptionKey, titleWithFallback);
   if (!data) {
     return null;
   }

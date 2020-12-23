@@ -37,64 +37,55 @@ type Props = {
     version: string;
     data: string;
   };
-  onChange(card: CardDataProps): void;
-  onSubmit(card: CardDataProps): void;
+  value: CardDataProps;
+  setValue(card: CardDataProps): void;
+  onSubmit(): void;
   onCancel(): void;
 };
 export default function MemoryVaultCreateForm({
   standardProposal,
+  value,
+  setValue,
   onSubmit,
-  onChange,
   onCancel,
 }: Props) {
   const theme = useTheme();
-  const initialCardData = {
-    title: "",
-    initialValues: {
-      encryptionKey: "",
-      initialData: standardProposal.data,
-    },
-  };
-  const [cardData, setCardData] = useState<CardDataProps>(initialCardData);
 
   function setEncryptionKey(newEncryptionKey: string) {
     const newCardData = {
-      ...cardData,
+      ...value,
       initialValues: {
-        ...cardData.initialValues,
+        ...value.initialValues,
         encryptionKey: newEncryptionKey,
       },
     };
-    setCardData(newCardData);
-    onChange(newCardData);
+    setValue(newCardData);
   }
 
   function setInitialData(newInitialData: string) {
     const newCardData = {
-      ...cardData,
+      ...value,
       initialValues: {
-        ...cardData.initialValues,
+        ...value.initialValues,
         initialData: newInitialData,
       },
     };
-    setCardData(newCardData);
-    onChange(newCardData);
+    setValue(newCardData);
   }
 
   function setTitle(newTitle: string) {
-    const newCardData = { ...cardData, title: newTitle };
-    setCardData(newCardData);
-    onChange(newCardData);
+    const newCardData = { ...value, title: newTitle };
+    setValue(newCardData);
   }
 
   const { hasFailed } = useDataDecryption(
-    cardData.initialValues.initialData,
-    cardData.initialValues.encryptionKey,
+    value.initialValues.initialData,
+    value.initialValues.encryptionKey,
   );
-  const { encryptionKey, initialData } = cardData.initialValues;
+  const { encryptionKey, initialData } = value.initialValues;
   return (
-    <div style={{ padding: theme.spacing(2) }}>
-      <CreateCardTitleInput title={cardData.title ?? ""} setTitle={setTitle} />
+    <>
+      <CreateCardTitleInput title={value.title ?? ""} setTitle={setTitle} />
       <CreateCardKeyInput
         encryptionKey={encryptionKey}
         setEncryptionKey={setEncryptionKey}
@@ -117,8 +108,7 @@ export default function MemoryVaultCreateForm({
         size="small"
         startIcon={<Add />}
         onClick={() => {
-          onSubmit(cardData);
-          setCardData(initialCardData);
+          onSubmit();
         }}
       >
         Open
@@ -126,7 +116,7 @@ export default function MemoryVaultCreateForm({
       <Button fullWidth size="small" onClick={onCancel}>
         Cancel
       </Button>
-    </div>
+    </>
   );
 }
 

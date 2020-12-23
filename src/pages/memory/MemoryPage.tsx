@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Paper,
   useTheme,
 } from "@material-ui/core";
 import React, { ReactNode, useState } from "react";
@@ -33,34 +34,36 @@ const QUERY = gql`
   }
 `;
 
-type CardItem = {
-  cardProps: CardDataProps;
+type CardListItem = {
   id: string;
   isOpen: boolean;
-  isReadOnly: boolean;
+  cardProps: CardDataProps;
 };
 export default function MemoryPage() {
   const theme = useTheme();
-  const cardFromUrl = useCardFromUrl();
-  const [cards, setCards] = useState<CardItem[]>(cardFromUrl ? [cardFromUrl] : []);
-  const [previewCard, setPreviewCard] = useState<CardItem | null>(null);
-  const allCards = previewCard ? [previewCard, ...cards] : cards;
+  const { initialCard, initialPreviewCard } = useCardFromUrl();
+  const [cardListItems, setCardListItems] = useState<CardListItem[]>(
+    initialCard ? [{ id: uuid(), isOpen: true, cardProps: initialCard }] : [],
+  );
+  const [previewCard, setPreviewCard] = useState<CardDataProps | null>(
+    initialPreviewCard,
+  );
   const [isCreating, setIsCreating] = useState(false);
   const { data } = useQuery<MemoryPageResponse>(QUERY);
   return (
     <MemoryPageLayout
       leftNav={
         <>
-          {allCards.length > 0 && (
+          {cardListItems.length > 0 && (
             <>
               <List component="nav">
-                {allCards.map((card) => (
+                {cardListItems.map((card) => (
                   <ListItem
                     button
                     key={card.cardProps.initialValues.encryptionKey}
                     onClick={() =>
-                      setCards((oldCards) =>
-                        oldCards.map((c) =>
+                      setCardListItems((oldItems) =>
+                        oldItems.map((c) =>
                           card.id === c.id ? { ...c, isOpen: !c.isOpen } : c,
                         ),
                       )
@@ -88,66 +91,82 @@ export default function MemoryPage() {
                   </ListItem>
                 ))}
               </List>
-              <Divider />{" "}
+              <Divider />
             </>
           )}
           <List component="nav">
-            {isCreating && data ? (
-              <MemoryVaultCreateForm
-                standardProposal={data.standardProposal}
-                onChange={(card) => {
-                  setPreviewCard({
-                    cardProps: card,
-                    isOpen: true,
-                    id: "preview",
-                    isReadOnly: true,
-                  });
-                }}
-                onSubmit={(newCard) => {
-                  setIsCreating(false);
-                  setPreviewCard(null);
-                  setCards((old) => [
-                    {
-                      cardProps: newCard,
-                      isOpen: true,
-                      isReadOnly: false,
-                      id: uuid(),
-                    },
-                    ...old,
-                  ]);
-                }}
-                onCancel={() => {
-                  setIsCreating(false);
-                  setPreviewCard(null);
-                }}
-              />
-            ) : (
-              <ListItem button onClick={() => setIsCreating(true)}>
-                <ListItemIcon>
-                  <Add />
-                </ListItemIcon>
-                <ListItemText primary="Open" />
-              </ListItem>
-            )}
+            <ListItem
+              button
+              disabled={isCreating || data === null}
+              onClick={() => {
+                setIsCreating(true);
+                setPreviewCard({
+                  title: "",
+                  initialValues: {
+                    encryptionKey: "",
+                    initialData: data?.standardProposal.data ?? "",
+                  },
+                  isReadOnly: true,
+                });
+              }}
+            >
+              <ListItemIcon>
+                <Add />
+              </ListItemIcon>
+              <ListItemText primary="Open" />
+            </ListItem>
           </List>
         </>
       }
       body={
         <>
-          {previewCard && (
+          {isCreating && data && previewCard && (
             <>
-              <PreviewCardRoot {...previewCard.cardProps} />
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={4} xl={3}>
+                  <Paper style={{ padding: theme.spacing(2) }}>
+                    <MemoryVaultCreateForm
+                      standardProposal={data.standardProposal}
+                      value={previewCard}
+                      setValue={setPreviewCard}
+                      onSubmit={() => {
+                        setIsCreating(false);
+                        setPreviewCard(null);
+                        setCardListItems((oldCards) => [
+                          {
+                            cardProps: {
+                              ...previewCard,
+                              isReadOnly: false,
+                            },
+                            isOpen: true,
+                            id: uuid(),
+                          },
+                          ...oldCards,
+                        ]);
+                      }}
+                      onCancel={() => {
+                        setIsCreating(false);
+                        setPreviewCard(null);
+                      }}
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={8} xl={9}>
+                  <PreviewCardRoot {...previewCard} />
+                </Grid>
+              </Grid>
               <div style={{ height: theme.spacing(2) }} />
             </>
           )}
-          {cards
+          {cardListItems
             .filter((c) => c.isOpen)
             .map((card) => (
               <div key={card.id}>
                 <CardRoot
                   {...card.cardProps}
-                  isReadOnly={card.isReadOnly}
-                  onClose={() => setCards(cards.filter((c) => card.id !== c.id))}
+                  onClose={() =>
+                    setCardListItems(cardListItems.filter((c) => card.id !== c.id))
+                  }
                 />
                 <div style={{ height: theme.spacing(2) }} />
               </div>
@@ -163,25 +182,28 @@ type RouteParams = {
   data?: string;
   readOnly?: string;
 };
-function useCardFromUrl(): CardItem | null {
+function useCardFromUrl():
+  | { initialCard: CardDataProps; initialPreviewCard: null }
+  | { initialCard: null; initialPreviewCard: CardDataProps } {
   const { search } = useLocation();
   const params: RouteParams = queryString.parse(search);
-  if (params.key == null || params.data == null) {
-    return null;
-  }
-  return {
-    id: uuid(),
-    isOpen: true,
-    isReadOnly: params.readOnly !== "false",
-    cardProps: {
-      title: params.title,
-      initialValues: {
-        encryptionKey: params.key.split(" ").join("+"),
-        initialData: params.data.split(" ").join("+"),
-      },
-    },
+
+  const title = params.title ?? "";
+  const isReadOnly = params.readOnly !== "false";
+  const encryptionKey = params.key ? params.key.split(" ").join("+") : "";
+  const initialData = params.data ? params.data.split(" ").join("+") : "";
+  const hasIncompleteData = params.key == null || params.data == null;
+
+  const card = {
+    title,
+    initialValues: { encryptionKey, initialData },
+    isReadOnly,
   };
+  return hasIncompleteData
+    ? { initialCard: null, initialPreviewCard: card }
+    : { initialCard: card, initialPreviewCard: null };
 }
+
 function MemoryPageLayout({
   leftNav,
   body,
