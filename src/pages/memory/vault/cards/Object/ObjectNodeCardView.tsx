@@ -7,7 +7,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import NewFieldDialogButton from "./NewFieldDialogButton";
 import ObjectFieldNodeCardView from "./ObjectFieldNodeCardView";
 import SearchIcon from "@material-ui/icons/Search";
-import { TObjectNode } from "../../../../utils/normalization";
+import { TObjectNode } from "../../../../../utils/normalization";
 import useSearchTextOnNodeRecursively from "./useSearchTextOnNodeRecursively";
 
 type Props = { node: TObjectNode };

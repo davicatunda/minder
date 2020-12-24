@@ -3,10 +3,10 @@ import {
   RefinedType,
   TObjectField,
   TObjectNode,
-} from "../../../../utils/normalization";
+} from "../../../../../utils/normalization";
 
-import { DraggableItemsContext } from "../../useDraggableItemsContext";
-import useDecodedDataContext from "../../useDecodedDataContext";
+import { DraggableItemsContext } from "../../../useDraggableItemsContext";
+import useDecodedDataContext from "../../../useDecodedDataContext";
 import { useTheme } from "@material-ui/core";
 
 type useDragObjectFieldReturn = {

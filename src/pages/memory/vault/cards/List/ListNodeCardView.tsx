@@ -4,7 +4,7 @@ import {
   TListNode,
   TNode,
   defaultNodeValue,
-} from "../../../../utils/normalization";
+} from "../../../../../utils/normalization";
 
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
@@ -27,7 +27,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import NodeTypeIcon from "../NodeTypeIcon";
 import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
-import useDecodedDataContext from "../../useDecodedDataContext";
+import useDecodedDataContext from "../../../useDecodedDataContext";
 import useSearchTextOnNodeRecursively from "../Object/useSearchTextOnNodeRecursively";
 
 export default function ListNodeCardView(props: { node: TListNode }) {

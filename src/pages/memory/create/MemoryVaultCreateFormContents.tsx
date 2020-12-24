@@ -1,7 +1,7 @@
 import { Button, Typography, useTheme } from "@material-ui/core";
 
 import { Add } from "@material-ui/icons";
-import { CardDataProps } from "../cards/CardRoot";
+import { CardDataProps } from "../vault/MemoryVault";
 import MemoryVaultDataInput from "./inputs/MemoryVaultDataInput";
 import MemoryVaultKeyInput from "./inputs/MemoryVaultKeyInput";
 import MemoryVaultTitleInput from "./inputs/MemoryVaultTitleInput";

@@ -1,4 +1,4 @@
-import { CardDataProps } from "./cards/CardRoot";
+import { CardDataProps } from "./vault/MemoryVault";
 import queryString from "query-string";
 import { useLocation } from "react-router-dom";
 

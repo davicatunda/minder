@@ -1,5 +1,5 @@
 import React from "react";
-import { TNullNode } from "../../../../utils/normalization";
+import { TNullNode } from "../../../../../utils/normalization";
 import { Typography } from "@material-ui/core";
 
 export default function NullNodeCardView(props: { node: TNullNode }) {

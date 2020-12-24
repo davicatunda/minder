@@ -1,7 +1,7 @@
 import { Paper, Typography, useTheme } from "@material-ui/core";
 import React, { Dispatch, SetStateAction } from "react";
 
-import { CardDataProps } from "../cards/CardRoot";
+import { CardDataProps } from "../vault/MemoryVault";
 import { CardListItem } from "../MemoryPage";
 import MemoryVaultCreateFormContents from "./MemoryVaultCreateFormContents";
 import { v4 as uuid } from "uuid";

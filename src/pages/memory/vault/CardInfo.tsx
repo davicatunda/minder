@@ -11,11 +11,11 @@ import {
 import React, { useState } from "react";
 
 import BlurredBar from "../../../components/BlurredBar";
-import { date2HumanValue } from "./Date/DateNodeCardView";
+import { date2HumanValue } from "./cards/Date/DateNodeCardView";
 import { encryptData } from "../../../utils/encryption";
 import useDecodedDataContext from "../useDecodedDataContext";
 
-export default function CardInfo() {
+export default function MemoryVaultInfo() {
   const [isKeyHidden, setIsKeyHidden] = useState(true);
   const { store } = useDecodedDataContext();
   return (

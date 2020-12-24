@@ -3,11 +3,11 @@ import FolderOpenOutlinedIcon from "@material-ui/icons/FolderOpenOutlined";
 import HelpOutlineOutlinedIcon from "@material-ui/icons/HelpOutlineOutlined";
 import ListOutlinedIcon from "@material-ui/icons/ListOutlined";
 import React from "react";
-import { RefinedType } from "../../../utils/normalization";
+import { RefinedType } from "../../../../utils/normalization";
 import SubjectOutlinedIcon from "@material-ui/icons/SubjectOutlined";
 import TodayOutlinedIcon from "@material-ui/icons/TodayOutlined";
 import ToggleOnOutlinedIcon from "@material-ui/icons/ToggleOnOutlined";
-import useDecodedDataContext from "../useDecodedDataContext";
+import useDecodedDataContext from "../../useDecodedDataContext";
 
 function NodeTypeIcon(props: { nodeKey: string }) {
   const { store } = useDecodedDataContext();

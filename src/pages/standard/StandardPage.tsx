@@ -3,9 +3,9 @@ import React, { FunctionComponent, useState } from "react";
 import { denormalizeRoot, normalizeRoot } from "../../utils/normalization";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
-import CardRoot from "../memory/cards/CardRoot";
-import CardView from "../memory/cards/CardView";
+import CardView from "../memory/vault/cards/CardView";
 import { DecodedDataContext } from "../memory/useDecodedDataContext";
+import MemoryVault from "../memory/vault/MemoryVault";
 import { useHistory } from "react-router-dom";
 
 const ADD_PROPOSAL = gql`
@@ -124,7 +124,7 @@ function MakeAProposalSection() {
     );
   }
   return (
-    <CardRoot
+    <MemoryVault
       initialValues={{
         encryptionKey: DUMMY_KEY,
         initialData: JSON.stringify(SUGGESTED_PROPOSAL),
@@ -147,7 +147,7 @@ function MakeAProposalSection() {
           Make new proposal
         </Button>
       )}
-    </CardRoot>
+    </MemoryVault>
   );
 }
 type AllProposalsSectionProps = {

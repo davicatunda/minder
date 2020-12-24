@@ -1,5 +1,5 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
-import { TBooleanNode, TNode } from "../../../../utils/normalization";
+import { TBooleanNode, TNode } from "../../../../../utils/normalization";
 
 import React from "react";
 

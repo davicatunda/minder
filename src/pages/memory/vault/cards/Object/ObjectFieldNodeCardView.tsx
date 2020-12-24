@@ -1,8 +1,8 @@
 import { Card, CardActionArea, CardContent, useTheme } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { RefinedType, TObjectField } from "../../../../utils/normalization";
+import { RefinedType, TObjectField } from "../../../../../utils/normalization";
 
-import BlurredBar from "../../../../components/BlurredBar";
+import BlurredBar from "../../../../../components/BlurredBar";
 import Button from "@material-ui/core/Button";
 import CardView from "../CardView";
 import CreateIcon from "@material-ui/icons/Create";
@@ -16,7 +16,7 @@ import IconButton from "@material-ui/core/IconButton";
 import NodeTypeIcon from "../NodeTypeIcon";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import useDecodedDataContext from "../../useDecodedDataContext";
+import useDecodedDataContext from "../../../useDecodedDataContext";
 import useDragObjectField from "./useDragObjectField";
 
 // replace this generic grow to show with something better by type

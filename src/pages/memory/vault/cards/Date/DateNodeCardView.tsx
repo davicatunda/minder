@@ -1,4 +1,4 @@
-import { TDateNode } from "../../../../utils/normalization";
+import { TDateNode } from "../../../../../utils/normalization";
 
 export default function DateNodeCardView(props: { node: TDateNode }) {
   return <span>{date2HumanValue(props.node.date)}</span>;

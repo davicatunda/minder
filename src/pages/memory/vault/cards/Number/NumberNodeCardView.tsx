@@ -1,11 +1,11 @@
 import React from "react";
-import { TBooleanNode } from "../../../../utils/normalization";
+import { TNumberNode } from "../../../../../utils/normalization";
 import { Typography } from "@material-ui/core";
 
-export default function BooleanNodeCardView(props: { node: TBooleanNode }) {
+export default function NumberNodeCardView(props: { node: TNumberNode }) {
   return (
     <Typography variant="body2" color="textSecondary" component="p">
-      {props.node.value ? "Yes" : "No"}
+      {props.node.value}
     </Typography>
   );
 }

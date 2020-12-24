@@ -1,4 +1,4 @@
-import { RefinedType, TNode } from "../../../utils/normalization";
+import { RefinedType, TNode } from "../../../../utils/normalization";
 
 import EditBooleanInput from "./Boolean/EditBooleanInput";
 import EditDateInput from "./Date/EditDateInput";

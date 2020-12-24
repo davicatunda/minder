@@ -5,9 +5,9 @@ import NullNodeCardView from "./Null/NullNodeCardView";
 import NumberNodeCardView from "./Number/NumberNodeCardView";
 import ObjectNodeCardView from "./Object/ObjectNodeCardView";
 import React from "react";
-import { RefinedType } from "../../../utils/normalization";
+import { RefinedType } from "../../../../utils/normalization";
 import StringNodeCardView from "./String/StringNodeCardView";
-import useDecodedDataContext from "../useDecodedDataContext";
+import useDecodedDataContext from "../../useDecodedDataContext";
 
 type Props = { nodeKey: string };
 export default function CardView({ nodeKey }: Props) {

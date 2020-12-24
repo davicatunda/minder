@@ -4,10 +4,10 @@ import useDraggableItemsProvider, {
   DraggableItemsContext,
 } from "../useDraggableItemsContext";
 
-import CardInfo from "./CardInfo";
-import CardView from "./CardView";
+import CardView from "./cards/CardView";
 import { Close } from "@material-ui/icons";
 import { DecodedDataContext } from "../useDecodedDataContext";
+import MemoryVaultInfo from "./CardInfo";
 import React from "react";
 import { Store } from "../../../utils/normalization";
 
@@ -23,7 +23,7 @@ export type CardDataProps = {
 type Props = CardDataProps & {
   onClose: () => void;
 };
-export default function CardRoot({
+export default function MemoryVault({
   children,
   title,
   isReadOnly = false,
@@ -57,7 +57,7 @@ export default function CardRoot({
               </IconButton>
             </Tooltip>
           </div>
-          <CardInfo />
+          <MemoryVaultInfo />
           <div style={{ height: theme.spacing(3) }} />
           <CardView nodeKey={store.rootNode.value} />
           {children && children(store)}

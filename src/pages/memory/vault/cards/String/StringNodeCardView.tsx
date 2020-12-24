@@ -1,5 +1,5 @@
 import React from "react";
-import { TStringNode } from "../../../../utils/normalization";
+import { TStringNode } from "../../../../../utils/normalization";
 import { Typography } from "@material-ui/core";
 
 export default function StringNodeCardView(props: { node: TStringNode }) {

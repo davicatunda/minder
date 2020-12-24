@@ -6,7 +6,7 @@ import {
   TNode,
   TObjectNode,
   defaultNodeValue,
-} from "../../../../utils/normalization";
+} from "../../../../../utils/normalization";
 
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
@@ -20,7 +20,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
-import useDecodedDataContext from "../../useDecodedDataContext";
+import useDecodedDataContext from "../../../useDecodedDataContext";
 
 export default function NewFieldDialogButton(props: { parentNode: TObjectNode }) {
   const theme = useTheme();

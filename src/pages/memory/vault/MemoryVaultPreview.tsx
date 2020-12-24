@@ -1,9 +1,9 @@
 import { Paper, Typography, useTheme } from "@material-ui/core";
 import { useDataAsStore, useDataDecryption } from "../../../utils/encryption";
 
-import CardInfo from "./CardInfo";
-import CardView from "./CardView";
+import CardView from "./cards/CardView";
 import { DecodedDataContext } from "../useDecodedDataContext";
+import MemoryVaultInfo from "./CardInfo";
 import React from "react";
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
     initialData: string;
   };
 };
-export default function PreviewCardRoot({
+export default function MemoryVaultPreview({
   title = "",
   initialValues: { encryptionKey, initialData },
 }: Props) {
@@ -51,7 +51,7 @@ export default function PreviewCardRoot({
         >
           <Typography variant="h3">Preview</Typography>
         </div>
-        <CardInfo />
+        <MemoryVaultInfo />
         <div style={{ height: theme.spacing(3) }} />
         {!hasFailed ? (
           <CardView nodeKey={store.rootNode.value} />

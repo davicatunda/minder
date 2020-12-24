@@ -1,4 +1,3 @@
-import CardRoot, { CardDataProps } from "./cards/CardRoot";
 import {
   Divider,
   Grid,
@@ -8,6 +7,7 @@ import {
   ListItemText,
   useTheme,
 } from "@material-ui/core";
+import MemoryVault, { CardDataProps } from "./vault/MemoryVault";
 import React, { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 
@@ -15,7 +15,7 @@ import { Add } from "@material-ui/icons";
 import CardNavBar from "./navbar/CardNavBar";
 import MemoryPageLayout from "./MemoryPageLayout";
 import MemoryVaultCreateForm from "./create/MemoryVaultCreateForm";
-import PreviewCardRoot from "./cards/PreviewCardRoot";
+import MemoryVaultPreview from "./vault/MemoryVaultPreview";
 import useCardFromUrl from "./useCardFromUrl";
 import { v4 as uuid } from "uuid";
 
@@ -101,7 +101,7 @@ export default function MemoryPage() {
             />
           </Grid>
           <Grid item xs={12} md={8} xl={9}>
-            <PreviewCardRoot {...previewCard} />
+            <MemoryVaultPreview {...previewCard} />
           </Grid>
         </Grid>
       )}
@@ -110,7 +110,7 @@ export default function MemoryPage() {
         .filter((c) => c.isOpen)
         .map((card) => (
           <div key={card.id}>
-            <CardRoot
+            <MemoryVault
               {...card.cardProps}
               onClose={() =>
                 setCardListItems(cardListItems.filter((c) => card.id !== c.id))

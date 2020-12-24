@@ -1,7 +1,7 @@
 import { Paper, Typography } from "@material-ui/core";
 import { gql, useQuery } from "@apollo/client";
 
-import CardView from "../memory/cards/CardView";
+import CardView from "../memory/vault/cards/CardView";
 import { DecodedDataContext } from "../memory/useDecodedDataContext";
 import React from "react";
 import { normalizeRoot } from "../../utils/normalization";
