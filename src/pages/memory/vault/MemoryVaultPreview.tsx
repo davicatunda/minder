@@ -3,7 +3,7 @@ import { useDataAsStore, useDataDecryption } from "../../../utils/encryption";
 
 import CardView from "./cards/CardView";
 import { DecodedDataContext } from "../useDecodedDataContext";
-import MemoryVaultInfo from "./CardInfo";
+import MemoryVaultInfo from "./MemoryVaultInfo";
 import React from "react";
 
 type Props = {

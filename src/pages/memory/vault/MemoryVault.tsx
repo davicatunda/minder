@@ -7,7 +7,7 @@ import useDraggableItemsProvider, {
 import CardView from "./cards/CardView";
 import { Close } from "@material-ui/icons";
 import { DecodedDataContext } from "../useDecodedDataContext";
-import MemoryVaultInfo from "./CardInfo";
+import MemoryVaultInfo from "./MemoryVaultInfo";
 import React from "react";
 import { Store } from "../../../utils/normalization";
 
