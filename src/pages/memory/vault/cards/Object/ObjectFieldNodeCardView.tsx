@@ -170,8 +170,24 @@ function EditFieldDialog({ name, value, parentKey }: TObjectField) {
             <EditValueInput node={valueNode} onChange={setValueNode} />
           </DialogContent>
           <DialogActions>
+            <Button
+              onClick={() => {
+                const newParentNode = {
+                  ...oldParentNode,
+                  fields: oldParentNode.fields.filter(
+                    (originalField) => originalField.value !== value,
+                  ),
+                };
+                updateNodes([newParentNode]);
+                setIsEditting(false);
+              }}
+            >
+              Delete
+            </Button>
+            <span style={{ flex: 1 }} />
             <Button onClick={() => setIsEditting(false)}>Cancel</Button>
             <Button
+              color="primary"
               onClick={() => {
                 const newParentNode = {
                   ...oldParentNode,
