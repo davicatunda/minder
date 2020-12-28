@@ -35,13 +35,9 @@ export default function GoogleMemoryCard({
     [card.resourceId, setGoogleCards],
   );
   if (card.vaultData.initialData === "") {
-    return (
-      <GoogleMemoryVaultLoadingState
-        vaultData={card.vaultData}
-        resourceId={card.resourceId}
-        onClose={closeCard}
-      />
-    );
+    return card.isOpen ? (
+      <GoogleMemoryVaultLoadingState onClose={closeCard} />
+    ) : null;
   } else if (card.isCreating) {
     return (
       <GoogleMemoryVaultCreatingState

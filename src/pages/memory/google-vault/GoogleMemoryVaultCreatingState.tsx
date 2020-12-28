@@ -25,7 +25,7 @@ export default function GoogleMemoryVaultCreatingState({
   const { hasFailed } = useDataDecryption(initialData, encryptionKey);
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={4} xl={3} style={{ display: "flex", minHeight: 440 }}>
+      <Grid item xs={12} md={4} xl={3} style={{ display: "flex", minHeight: 500 }}>
         <Paper
           style={{
             padding: theme.spacing(2),

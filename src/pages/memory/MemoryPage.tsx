@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import { Divider, Grid, List, useTheme } from "@material-ui/core";
+import React, { CSSProperties, useState } from "react";
 
 import GoogleMemoryCard from "./google-vault/GoogleMemoryCard";
 import LeftNavAddCardItem from "./navbar/LeftNavAddCardItem";
 import LeftNavCardItem from "./navbar/LeftNavCardItem";
 import LeftNavGoogleItem from "./navbar/LeftNavGoogleItem";
-import { List } from "@material-ui/core";
 import MemoryCard from "./vault/MemoryCard";
-import MemoryPageLayout from "./MemoryPageLayout";
 import { VaultData } from "./vault/MemoryVault";
 import useCardsFromGoogleDrive from "./useCardsFromGoogleDrive";
 import useCardsFromUrl from "./useCardsFromUrl";
@@ -26,6 +25,7 @@ export type GoogleCardListItem = {
 };
 
 export default function MemoryPage() {
+  const theme = useTheme();
   const [googleCards, setGoogleCards] = useState<GoogleCardListItem[]>([]);
   useCardsFromGoogleDrive(setGoogleCards);
 
@@ -33,7 +33,7 @@ export default function MemoryPage() {
   useCardsFromUrl(setCards);
 
   const createdCards = cards.filter((card) => !card.isCreating);
-  const LeftNavSections = [
+  const leftNavSections = [
     <LeftNavAddCardItem
       key="PreviewCardNavBar"
       addCard={(newCard) => setCards((oldCards) => [newCard, ...oldCards])}
@@ -58,10 +58,11 @@ export default function MemoryPage() {
     ),
   ];
 
-  const BodyCards = [
+  const bodyCards = [
     ...cards.map((card) => (
       <div style={{ display: card.isOpen ? "initial" : "none" }} key={card.id}>
         <MemoryCard card={card} setCards={setCards} />
+        <div style={{ height: theme.spacing(2) }} />
       </div>
     )),
     ...googleCards.map((card) => (
@@ -70,11 +71,29 @@ export default function MemoryPage() {
         key={card.resourceId}
       >
         <GoogleMemoryCard card={card} setGoogleCards={setGoogleCards} />
+        <div style={{ height: theme.spacing(2) }} />
       </div>
     )),
   ];
 
+  const leftNavStyle: CSSProperties = {
+    borderRightColor: theme.palette.divider,
+    borderRightWidth: 1,
+    borderRightStyle: "solid",
+  };
+  const bodyStyle: CSSProperties = { padding: theme.spacing(2) };
   return (
-    <MemoryPageLayout leftNavSections={LeftNavSections} bodyCards={BodyCards} />
+    <Grid container style={{ flex: 1 }}>
+      <Grid item xs={12} sm={4} md={3} lg={2} style={leftNavStyle}>
+        {leftNavSections.map((child, index) =>
+          index === leftNavSections.length - 1
+            ? child
+            : [child, <Divider key={`LeftNavSection-${index}`} />],
+        )}
+      </Grid>
+      <Grid item xs={12} sm={8} md={9} lg={10} style={bodyStyle}>
+        {bodyCards}
+      </Grid>
+    </Grid>
   );
 }
