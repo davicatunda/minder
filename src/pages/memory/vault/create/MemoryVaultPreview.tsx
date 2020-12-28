@@ -23,13 +23,15 @@ export default function MemoryVaultPreview({
   const theme = useTheme();
   const { decryptedData, hasFailed } = useDataDecryption(initialData, encryptionKey);
   const titleWithFallback = title === "" ? "Title" : title;
-  const data = useDataAsStore(decryptedData, encryptionKey, titleWithFallback);
+  const data = useDataAsStore(decryptedData, {
+    title: titleWithFallback,
+  });
   if (!data) {
     return null;
   }
   const { store } = data;
   return (
-    <DecodedDataContext.Provider value={{ store, updateNodes: null }}>
+    <DecodedDataContext.Provider value={{ store, updateNodes: null, encryptionKey }}>
       <Paper
         style={{
           flex: 1,

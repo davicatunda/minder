@@ -5,9 +5,12 @@ import React, { useRef, useState } from "react";
 import useDecodedDataContext from "../../useDecodedDataContext";
 
 export default function MemoryVaultSaveKeyButton() {
-  const { store } = useDecodedDataContext();
+  const { encryptionKey } = useDecodedDataContext();
   const anchorRef = useRef(null);
   const [isShowingPopover, setIsShowingPopover] = useState(false);
+  if (!encryptionKey) {
+    return null;
+  }
   return (
     <>
       <Button
@@ -27,7 +30,7 @@ export default function MemoryVaultSaveKeyButton() {
           onClick={() => {
             setIsShowingPopover(false);
           }}
-          href={`data:text/plain;charset=base64,${store.rootNode.encryptionKey}`}
+          href={`data:text/plain;charset=base64,${encryptionKey}`}
           download="key.ish"
         >
           <ListItemIcon style={{ minWidth: 36 }}>
@@ -37,7 +40,7 @@ export default function MemoryVaultSaveKeyButton() {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            navigator.clipboard.writeText(store.rootNode.encryptionKey).then(() => {
+            navigator.clipboard.writeText(encryptionKey).then(() => {
               setIsShowingPopover(false);
             });
           }}

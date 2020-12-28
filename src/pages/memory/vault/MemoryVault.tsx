@@ -35,7 +35,7 @@ export default function MemoryVault({
   const theme = useTheme();
   const draggableData = useDraggableItemsProvider();
   const { decryptedData } = useDataDecryption(initialData, encryptionKey);
-  const data = useDataAsStore(decryptedData, encryptionKey, title);
+  const data = useDataAsStore(decryptedData, { title });
   if (!data) {
     return null;
   }
@@ -43,7 +43,11 @@ export default function MemoryVault({
   return (
     <DraggableItemsContext.Provider value={draggableData}>
       <DecodedDataContext.Provider
-        value={{ store, updateNodes: isReadOnly ? null : updateNodes }}
+        value={{
+          store,
+          encryptionKey,
+          updateNodes: isReadOnly ? null : updateNodes,
+        }}
       >
         <Paper style={{ position: "relative", padding: theme.spacing(3) }}>
           <div

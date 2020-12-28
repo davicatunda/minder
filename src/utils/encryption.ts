@@ -81,19 +81,21 @@ export function isKeyValid(key: string): boolean {
 
 export function useDataAsStore(
   decodedData: string | null,
-  encryptionKey?: string,
-  title?: string,
+  overrides: {
+    title?: string;
+  },
 ): {
   store: Store;
   updateNodes: (nodes: TNode[]) => void;
 } | null {
   const [store, setStore] = useState<Store | null>(null);
+  const { title } = overrides;
   useEffect(() => {
     if (decodedData === null) {
       return;
     }
-    setStore(normalizeRoot(decodedData, { title, encryptionKey }));
-  }, [decodedData, encryptionKey, title]);
+    setStore(normalizeRoot(decodedData, { title }));
+  }, [decodedData, title]);
 
   if (store === null) {
     return null;
@@ -139,18 +141,19 @@ export function useDataDecryption(initialData: string, encryptionKey: string) {
   return { decryptedData, hasFailed };
 }
 
-export function useDataEncryption(store: Store) {
+export function useDataEncryption(store: Store, encryptionKey: string) {
   const [encryptedData, setEncryptedData] = useState<string | null>(null);
   useEffect(() => {
-    encryptData(store, setEncryptedData);
-  }, [store, store.rootNode.encryptionKey]);
+    encryptData(store, encryptionKey, setEncryptedData);
+  }, [store, encryptionKey]);
   return encryptedData;
 }
 
 export function encryptData(
   store: Store,
+  encryptionKey: string,
   onComplete: (encryptedData: string) => void,
 ) {
   const plainText = denormalizeRoot(store);
-  encrypt(plainText, store.rootNode.encryptionKey).then(onComplete);
+  encrypt(plainText, encryptionKey).then(onComplete);
 }

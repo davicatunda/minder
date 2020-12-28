@@ -13,22 +13,26 @@ import { VaultData } from "../vault/MemoryVault";
 
 export default function GoogleMemoryVault({
   vaultData: { title, encryptionKey, initialData },
+  resourceId,
   onClose,
 }: {
   vaultData: VaultData;
+  resourceId: string;
   onClose: () => void;
 }) {
   const theme = useTheme();
   const draggableData = useDraggableItemsProvider();
   const { decryptedData } = useDataDecryption(initialData, encryptionKey);
-  const data = useDataAsStore(decryptedData, encryptionKey, title);
+  const data = useDataAsStore(decryptedData, { title });
   if (!data) {
     return null;
   }
   const { store, updateNodes } = data;
   return (
     <DraggableItemsContext.Provider value={draggableData}>
-      <DecodedDataContext.Provider value={{ store, updateNodes }}>
+      <DecodedDataContext.Provider
+        value={{ store, updateNodes, googleResourceId: resourceId, encryptionKey }}
+      >
         <Paper style={{ position: "relative", padding: theme.spacing(3) }}>
           <div
             style={{

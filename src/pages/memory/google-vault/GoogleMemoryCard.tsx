@@ -48,6 +48,12 @@ export default function GoogleMemoryCard({
       />
     );
   } else {
-    return <GoogleMemoryVault vaultData={card.vaultData} onClose={closeCard} />;
+    return (
+      <GoogleMemoryVault
+        vaultData={card.vaultData}
+        onClose={closeCard}
+        resourceId={card.resourceId}
+      />
+    );
   }
 }
