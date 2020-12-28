@@ -9,9 +9,9 @@ import {
 } from "@material-ui/core";
 import { CloudDownload, FileCopy, HelpOutline } from "@material-ui/icons";
 import React, { useRef, useState } from "react";
+import { Store, denormalizeRoot } from "../../../../utils/normalization";
 
 import { Icon } from "@iconify/react";
-import { Store } from "../../../../utils/normalization";
 import { encryptData } from "../../../../utils/encryption";
 import googleDrive from "@iconify-icons/mdi/google-drive";
 import useDecodedDataContext from "../../useDecodedDataContext";
@@ -61,12 +61,29 @@ export default function MemoryVaultSaveDataButton() {
         <MenuItem
           onClick={() => {
             setIsShowingPopover(false);
+            encryptData(store, (data) => {
+              navigator.clipboard.writeText(data).then(() => {
+                setIsShowingPopover(false);
+              });
+            });
           }}
         >
           <ListItemIcon style={{ minWidth: 36 }}>
             <FileCopy fontSize="small" color="action" />
           </ListItemIcon>
           <Typography>Copy</Typography>
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigator.clipboard.writeText(denormalizeRoot(store)).then(() => {
+              setIsShowingPopover(false);
+            });
+          }}
+        >
+          <ListItemIcon style={{ minWidth: 36 }}>
+            <FileCopy fontSize="small" color="action" />
+          </ListItemIcon>
+          <Typography>Copy as JSON</Typography>
         </MenuItem>
         <MenuItem
           onClick={() => {

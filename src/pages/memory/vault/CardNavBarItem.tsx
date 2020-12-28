@@ -22,8 +22,6 @@ export default function CardNavBarItem({ card, toogleCardVisibility }: Props) {
       <ListItemText
         primary={card.vaultData.title}
         primaryTypographyProps={{ style: oneLineStyle }}
-        secondary={card.vaultData.encryptionKey}
-        secondaryTypographyProps={{ style: oneLineStyle }}
       />
     </ListItem>
   );

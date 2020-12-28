@@ -4,48 +4,20 @@ import {
   CardContent,
   CardHeader,
   Grid,
-  Tooltip,
   Typography,
 } from "@material-ui/core";
-import React, { useState } from "react";
 
-import BlurredBar from "../../../../components/BlurredBar";
 import MemoryVaultSaveDataButton from "./MemoryVaultSaveDataButton";
 import MemoryVaultSaveKeyButton from "./MemoryVaultSaveKeyButton";
+import React from "react";
 import { date2HumanValue } from "../cards/Date/DateNodeCardView";
 import useDecodedDataContext from "../../useDecodedDataContext";
 
 export default function MemoryVaultInfo() {
-  const [isKeyHidden, setIsKeyHidden] = useState(true);
   const { store } = useDecodedDataContext();
   return (
     <Card style={{ maxWidth: 400 }} variant="outlined">
-      <CardHeader
-        title={store.rootNode.title}
-        subheader={
-          <Tooltip title="double click to show" placement="top">
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              gutterBottom
-              onDoubleClick={() => setIsKeyHidden((v) => !v)}
-            >
-              {!isKeyHidden ? (
-                store.rootNode.encryptionKey
-              ) : (
-                <BlurredBar
-                  style={{
-                    height: 12,
-                    width: "100%",
-                    marginTop: 8,
-                    display: "block",
-                  }}
-                />
-              )}
-            </Typography>
-          </Tooltip>
-        }
-      />
+      <CardHeader title={store.rootNode.title} />
       <CardContent>
         <Grid container spacing={1}>
           <Grid item xs={6}>

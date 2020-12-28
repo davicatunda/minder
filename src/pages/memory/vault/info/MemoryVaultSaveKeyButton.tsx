@@ -37,7 +37,9 @@ export default function MemoryVaultSaveKeyButton() {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            setIsShowingPopover(false);
+            navigator.clipboard.writeText(store.rootNode.encryptionKey).then(() => {
+              setIsShowingPopover(false);
+            });
           }}
         >
           <ListItemIcon style={{ minWidth: 36 }}>
