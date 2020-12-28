@@ -10,21 +10,12 @@ import {
   Typography,
   useTheme,
 } from "@material-ui/core";
-import {
-  GoogleLoginResponse,
-  useGoogleLogin,
-  useGoogleLogout,
-} from "react-google-login";
 import React, { ReactNode, useRef, useState } from "react";
-import { gql, useApolloClient, useMutation } from "@apollo/client";
 import { useHistory, useLocation } from "react-router-dom";
 
 import Logo from "./Logo";
-import autoRefreshToken from "./autoRefreshToken";
+import useLoginLogout from "../../google-integration/useLoginLogout";
 import { useTogglePaletteContext } from "./useTogglePaletteContext";
-
-const GOOGLE_CLIENT_ID =
-  "79887996241-lkot8h9s6ehcv4cd07kl9nsugt965pr8.apps.googleusercontent.com";
 
 export default function NavBar() {
   const theme = useTheme();
@@ -54,52 +45,7 @@ export default function NavBar() {
 }
 
 function LogInButton() {
-  const client = useApolloClient();
-  const [signin] = useMutation<{ signin: boolean }>(
-    gql`
-      mutation Signin {
-        signin
-      }
-    `,
-  );
-
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { signIn } = useGoogleLogin({
-    clientId: GOOGLE_CLIENT_ID,
-    cookiePolicy: "single_host_origin",
-    isSignedIn: true,
-    onSuccess: (response) => {
-      setIsLoggedIn(true);
-      const googleUser = response as GoogleLoginResponse;
-      localStorage.setItem("token", googleUser.getAuthResponse().id_token);
-      client
-        .resetStore()
-        .then(() => signin())
-        .then(({ data }) => {
-          if (data?.signin === true) {
-            autoRefreshToken(googleUser);
-          } else {
-            localStorage.setItem("token", "");
-            client.resetStore();
-          }
-        });
-    },
-    onFailure: (response) => {
-      setIsLoggedIn(false);
-    },
-  });
-
-  const { signOut } = useGoogleLogout({
-    clientId: GOOGLE_CLIENT_ID,
-    cookiePolicy: "single_host_origin",
-    onLogoutSuccess: () => {
-      setIsLoggedIn(false);
-      localStorage.setItem("token", "");
-      client.resetStore();
-    },
-    onFailure: () => {},
-  });
-
+  const { logIn, logOut, isLoggedIn, isLoading } = useLoginLogout();
   const anchorRef = useRef(null);
   const [isShowingPopover, setIsShowingPopover] = useState(false);
   return (
@@ -124,8 +70,9 @@ function LogInButton() {
           <MenuItem
             onClick={() => {
               setIsShowingPopover(false);
-              signOut();
+              logOut();
             }}
+            disabled={isLoading}
           >
             <ListItemIcon style={{ minWidth: 36 }}>
               <MeetingRoom fontSize="small" color="action" />
@@ -136,8 +83,9 @@ function LogInButton() {
           <MenuItem
             onClick={() => {
               setIsShowingPopover(false);
-              signIn();
+              logIn();
             }}
+            disabled={isLoading}
           >
             <ListItemIcon style={{ minWidth: 36 }}>
               <MeetingRoom fontSize="small" color="action" />

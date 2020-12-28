@@ -1,22 +1,25 @@
-import { Paper, Typography, useTheme } from "@material-ui/core";
-import { useDataAsStore, useDataDecryption } from "../../../utils/encryption";
+import { IconButton, Paper, Typography, useTheme } from "@material-ui/core";
+import { useDataAsStore, useDataDecryption } from "../../../../utils/encryption";
 
-import CardView from "./cards/CardView";
-import { DecodedDataContext } from "../useDecodedDataContext";
-import MemoryVaultInfo from "./MemoryVaultInfo";
+import CardView from "../cards/CardView";
+import { Close } from "@material-ui/icons";
+import { DecodedDataContext } from "../../useDecodedDataContext";
+import MemoryVaultInfo from "../info/MemoryVaultInfo";
 import React from "react";
 
-type Props = {
-  title?: string;
-  initialValues: {
-    encryptionKey: string;
-    initialData: string;
-  };
+type CreatingPreviewVaultData = {
+  title: string;
+  encryptionKey: string;
+  initialData: string;
+  onClose: () => void;
 };
+
 export default function MemoryVaultPreview({
-  title = "",
-  initialValues: { encryptionKey, initialData },
-}: Props) {
+  title,
+  encryptionKey,
+  initialData,
+  onClose,
+}: CreatingPreviewVaultData) {
   const theme = useTheme();
   const { decryptedData, hasFailed } = useDataDecryption(initialData, encryptionKey);
   const titleWithFallback = title === "" ? "Title" : title;
@@ -29,11 +32,24 @@ export default function MemoryVaultPreview({
     <DecodedDataContext.Provider value={{ store, updateNodes: null }}>
       <Paper
         style={{
+          flex: 1,
           position: "relative",
           overflow: "hidden",
           padding: theme.spacing(3),
         }}
       >
+        <div
+          style={{
+            position: "absolute",
+            right: theme.spacing(1),
+            top: theme.spacing(1),
+            zIndex: 2,
+          }}
+        >
+          <IconButton aria-label="cancel creation" onClick={onClose}>
+            <Close />
+          </IconButton>
+        </div>
         <div
           style={{
             backgroundColor: theme.palette.background.default,

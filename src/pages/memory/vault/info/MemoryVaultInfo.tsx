@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -10,10 +9,11 @@ import {
 } from "@material-ui/core";
 import React, { useState } from "react";
 
-import BlurredBar from "../../../components/BlurredBar";
-import { date2HumanValue } from "./cards/Date/DateNodeCardView";
-import { encryptData } from "../../../utils/encryption";
-import useDecodedDataContext from "../useDecodedDataContext";
+import BlurredBar from "../../../../components/BlurredBar";
+import MemoryVaultSaveDataButton from "./MemoryVaultSaveDataButton";
+import MemoryVaultSaveKeyButton from "./MemoryVaultSaveKeyButton";
+import { date2HumanValue } from "../cards/Date/DateNodeCardView";
+import useDecodedDataContext from "../../useDecodedDataContext";
 
 export default function MemoryVaultInfo() {
   const [isKeyHidden, setIsKeyHidden] = useState(true);
@@ -63,34 +63,8 @@ export default function MemoryVaultInfo() {
         </Grid>
       </CardContent>
       <CardActions>
-        <Button
-          size="small"
-          color="primary"
-          href={`data:text/plain;charset=base64,${store.rootNode.encryptionKey}`}
-          download="key.ish"
-        >
-          Save Key
-        </Button>
-        <Button
-          size="small"
-          color="primary"
-          onClick={() => {
-            encryptData(store, (data) => {
-              const element = document.createElement("a");
-              element.setAttribute(
-                "href",
-                "data:text/plain;charset=base64," + encodeURIComponent(data),
-              );
-              element.setAttribute("download", "data.ish");
-              element.style.display = "none";
-              document.body.appendChild(element);
-              element.click();
-              document.body.removeChild(element);
-            });
-          }}
-        >
-          Save Data
-        </Button>
+        <MemoryVaultSaveKeyButton />
+        <MemoryVaultSaveDataButton />
       </CardActions>
     </Card>
   );

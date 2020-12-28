@@ -125,11 +125,11 @@ function MakeAProposalSection() {
   }
   return (
     <MemoryVault
-      initialValues={{
+      vaultData={{
+        title,
         encryptionKey: DUMMY_KEY,
         initialData: JSON.stringify(SUGGESTED_PROPOSAL),
       }}
-      title={title}
       onClose={() => setIsCreating(false)}
     >
       {(store) => (

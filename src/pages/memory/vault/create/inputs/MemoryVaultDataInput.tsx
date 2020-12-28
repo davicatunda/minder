@@ -21,6 +21,7 @@ import React, { useState } from "react";
 
 import DragAndDrop from "../DragAndDrop";
 import readFile from "./readFile";
+import useStandardProposal from "../../../useStandardProposal";
 
 enum DataOptions {
   STANDARD = "STANDARD",
@@ -30,19 +31,18 @@ enum DataOptions {
 
 type Props = {
   setInitialData: (initialData: string) => void;
-  standardProposal: {
-    version: string;
-    data: string;
-  };
 };
-export default function MemoryVaultDataInput({
-  standardProposal,
-  setInitialData,
-}: Props) {
+export default function MemoryVaultDataInput({ setInitialData }: Props) {
   const theme = useTheme();
   const [expanded, setExpanded] = useState(false);
   const [dataOption, selectDataOption] = useState<DataOptions>(DataOptions.STANDARD);
   const [encryptedData, setEncryptedData] = useState<string | null>(null);
+
+  const standardProposal = useStandardProposal(({ standardProposal }) => {
+    if (dataOption === DataOptions.STANDARD) {
+      setInitialData(standardProposal.data);
+    }
+  });
   return (
     <>
       <div
@@ -76,14 +76,14 @@ export default function MemoryVaultDataInput({
               case DataOptions.EMPTY:
                 return setInitialData("{}");
               case DataOptions.STANDARD:
-                return setInitialData(standardProposal.data);
+                return setInitialData(standardProposal?.data ?? "");
             }
           }}
         >
           <FormControlLabel
             value={DataOptions.STANDARD}
             control={<Radio size="small" />}
-            label={`Standard v${standardProposal.version}`}
+            label={`Standard v${standardProposal?.version ?? "*"}`}
           />
           <FormControlLabel
             value={DataOptions.EMPTY}

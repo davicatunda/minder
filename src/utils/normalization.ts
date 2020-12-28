@@ -57,7 +57,6 @@ export enum RefinedType {
   Null = "Null",
 }
 
-const ROOT_KEY = "ROOT";
 export type RootNode = {
   title: string;
   encryptionKey: string;
@@ -79,19 +78,20 @@ export function normalizeRoot(
     title,
     created = new Date(),
     updated = new Date(),
-    key = ROOT_KEY,
+    key,
     encryptionKey,
     ...values
   } = parsedDate;
+  const rootKey = key ?? uuid();
   const nodes = {};
-  const rootNodeValue = recursivelyAddNodes(nodes, ROOT_KEY, values);
+  const rootNodeValue = recursivelyAddNodes(nodes, rootKey, values);
   const store: Store = {
     rootNode: {
       title: overrides.title ?? title ?? "Primary",
       encryptionKey: overrides.encryptionKey ?? encryptionKey,
       created: new Date(created),
       updated: new Date(updated),
-      key,
+      key: rootKey,
       value: rootNodeValue.key,
     },
     nodes,

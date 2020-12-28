@@ -4,34 +4,20 @@ import useDraggableItemsProvider, {
   DraggableItemsContext,
 } from "../useDraggableItemsContext";
 
-import CardView from "./cards/CardView";
+import CardView from "../vault/cards/CardView";
 import { Close } from "@material-ui/icons";
 import { DecodedDataContext } from "../useDecodedDataContext";
-import MemoryVaultInfo from "./info/MemoryVaultInfo";
+import MemoryVaultInfo from "../vault/info/MemoryVaultInfo";
 import React from "react";
-import { Store } from "../../../utils/normalization";
+import { VaultData } from "../vault/MemoryVault";
 
-export type VaultData = {
-  title: string;
-  encryptionKey: string;
-  initialData: string;
-};
-
-type Props = {
-  vaultData: VaultData;
-  onChange?: (vaultData: VaultData) => void;
-  children?(store: Store): void;
-  isReadOnly?: boolean;
-  onClose: () => void;
-};
-
-export default function MemoryVault({
+export default function GoogleMemoryVault({
   vaultData: { title, encryptionKey, initialData },
-  onChange,
-  children,
-  isReadOnly = false,
   onClose,
-}: Props) {
+}: {
+  vaultData: VaultData;
+  onClose: () => void;
+}) {
   const theme = useTheme();
   const draggableData = useDraggableItemsProvider();
   const { decryptedData } = useDataDecryption(initialData, encryptionKey);
@@ -42,9 +28,7 @@ export default function MemoryVault({
   const { store, updateNodes } = data;
   return (
     <DraggableItemsContext.Provider value={draggableData}>
-      <DecodedDataContext.Provider
-        value={{ store, updateNodes: isReadOnly ? null : updateNodes }}
-      >
+      <DecodedDataContext.Provider value={{ store, updateNodes }}>
         <Paper style={{ position: "relative", padding: theme.spacing(3) }}>
           <div
             style={{
@@ -62,7 +46,6 @@ export default function MemoryVault({
           <MemoryVaultInfo />
           <div style={{ height: theme.spacing(3) }} />
           <CardView nodeKey={store.rootNode.value} />
-          {children && children(store)}
         </Paper>
       </DecodedDataContext.Provider>
     </DraggableItemsContext.Provider>

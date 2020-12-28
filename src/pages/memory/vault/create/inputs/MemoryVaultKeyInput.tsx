@@ -1,5 +1,5 @@
 import { IconButton, InputAdornment, TextField, Tooltip } from "@material-ui/core";
-import { createKey, isKeyValid } from "../../../../utils/encryption";
+import { createKey, isKeyValid } from "../../../../../utils/encryption";
 
 import { Cached } from "@material-ui/icons";
 import DragAndDrop from "../DragAndDrop";

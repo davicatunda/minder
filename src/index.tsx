@@ -1,7 +1,5 @@
 import "fontsource-roboto";
 
-import * as serviceWorker from "./serviceWorker";
-
 import {
   ApolloClient,
   ApolloProvider,
@@ -13,6 +11,7 @@ import App from "./pages/App";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { CustomThemeProvider } from "./pages/shared-layout/useTogglePaletteContext";
 import DateFnsUtils from "@date-io/date-fns";
+import { GoogleAuthProvider } from "./google-integration/useGoogleAuthProvider";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -38,10 +37,12 @@ function Root() {
   return (
     <ApolloProvider client={client}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <CustomThemeProvider>
-          <CssBaseline />
-          <App />
-        </CustomThemeProvider>
+        <GoogleAuthProvider>
+          <CustomThemeProvider>
+            <CssBaseline />
+            <App />
+          </CustomThemeProvider>
+        </GoogleAuthProvider>
       </MuiPickersUtilsProvider>
     </ApolloProvider>
   );

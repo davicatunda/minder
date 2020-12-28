@@ -1,125 +1,80 @@
-import {
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  useTheme,
-} from "@material-ui/core";
-import MemoryVault, { CardDataProps } from "./vault/MemoryVault";
 import React, { useState } from "react";
-import { gql, useQuery } from "@apollo/client";
 
-import { Add } from "@material-ui/icons";
-import CardNavBar from "./navbar/CardNavBar";
+import GoogleMemoryCard from "./google-vault/GoogleMemoryCard";
+import LeftNavAddCardItem from "./navbar/LeftNavAddCardItem";
+import LeftNavCardItem from "./navbar/LeftNavCardItem";
+import LeftNavGoogleItem from "./navbar/LeftNavGoogleItem";
+import { List } from "@material-ui/core";
+import MemoryCard from "./vault/MemoryCard";
 import MemoryPageLayout from "./MemoryPageLayout";
-import MemoryVaultCreateForm from "./create/MemoryVaultCreateForm";
-import MemoryVaultPreview from "./vault/MemoryVaultPreview";
-import useCardFromUrl from "./useCardFromUrl";
-import { v4 as uuid } from "uuid";
-
-type MemoryPageResponse = {
-  standardProposal: {
-    version: string;
-    data: string;
-  };
-};
-const QUERY = gql`
-  query MemoryPage {
-    standardProposal {
-      version
-      data
-    }
-  }
-`;
+import { VaultData } from "./vault/MemoryVault";
+import useCardsFromGoogleDrive from "./useCardsFromGoogleDrive";
+import useCardsFromUrl from "./useCardsFromUrl";
 
 export type CardListItem = {
+  vaultData: VaultData;
   id: string;
   isOpen: boolean;
-  cardProps: CardDataProps;
+  isCreating: boolean;
+  isReadOnly: boolean;
 };
-export default function MemoryPage() {
-  const theme = useTheme();
-  const { initialCard, initialPreviewCard } = useCardFromUrl();
-  const [cardListItems, setCardListItems] = useState<CardListItem[]>(
-    initialCard ? [{ id: uuid(), isOpen: true, cardProps: initialCard }] : [],
-  );
-  const [previewCard, setPreviewCard] = useState<CardDataProps | null>(
-    initialPreviewCard,
-  );
-  const [isCreating, setIsCreating] = useState(false);
-  const { data } = useQuery<MemoryPageResponse>(QUERY);
-  const initialData = data && {
-    title: "",
-    initialValues: {
-      encryptionKey: "",
-      initialData: data.standardProposal.data,
-    },
-    isReadOnly: true,
-  };
-  const LeftNav = (
-    <>
-      <CardNavBar
-        cardListItems={cardListItems}
-        setCardListItems={setCardListItems}
-      />
-      {cardListItems.length > 0 && <Divider />}
-      <List component="nav">
-        <ListItem
-          button
-          disabled={isCreating || !initialData}
-          onClick={() => {
-            if (!initialData) {
-              return;
-            }
-            setIsCreating(true);
-            setPreviewCard(initialData);
-          }}
-        >
-          <ListItemIcon>
-            <Add />
-          </ListItemIcon>
-          <ListItemText primary="Open" />
-        </ListItem>
-      </List>
-    </>
-  );
+export type GoogleCardListItem = {
+  vaultData: VaultData;
+  resourceId: string;
+  isCreating: boolean;
+  isOpen: boolean;
+};
 
-  const isShowingCreationCard = isCreating && data && previewCard;
-  const Body = (
-    <>
-      {isShowingCreationCard && data && previewCard && (
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={4} xl={3}>
-            <MemoryVaultCreateForm
-              standardProposal={data.standardProposal}
-              previewCard={previewCard}
-              setIsCreating={setIsCreating}
-              setPreviewCard={setPreviewCard}
-              setCardListItems={setCardListItems}
-            />
-          </Grid>
-          <Grid item xs={12} md={8} xl={9}>
-            <MemoryVaultPreview {...previewCard} />
-          </Grid>
-        </Grid>
-      )}
-      {isShowingCreationCard && <div style={{ height: theme.spacing(2) }} />}
-      {cardListItems
-        .filter((c) => c.isOpen)
-        .map((card) => (
-          <div key={card.id}>
-            <MemoryVault
-              {...card.cardProps}
-              onClose={() =>
-                setCardListItems(cardListItems.filter((c) => card.id !== c.id))
-              }
-            />
-            <div style={{ height: theme.spacing(2) }} />
-          </div>
+export default function MemoryPage() {
+  const [googleCards, setGoogleCards] = useState<GoogleCardListItem[]>([]);
+  useCardsFromGoogleDrive(setGoogleCards);
+
+  const [cards, setCards] = useState<CardListItem[]>([]);
+  useCardsFromUrl(setCards);
+
+  const createdCards = cards.filter((card) => !card.isCreating);
+  const LeftNavSections = [
+    <LeftNavAddCardItem
+      key="PreviewCardNavBar"
+      addCard={(newCard) => setCards((oldCards) => [newCard, ...oldCards])}
+    />,
+    createdCards.length > 0 && (
+      <List component="nav" key="CardNavBar">
+        {createdCards.map((card) => (
+          <LeftNavCardItem key={card.id} card={card} setCards={setCards} />
         ))}
-    </>
+      </List>
+    ),
+    googleCards.length > 0 && (
+      <List component="nav" key="GoogleCardsNavBar">
+        {googleCards.map((card) => (
+          <LeftNavGoogleItem
+            key={card.resourceId}
+            card={card}
+            setGoogleCards={setGoogleCards}
+          />
+        ))}
+      </List>
+    ),
+  ];
+
+  const BodyCards = [
+    ...cards.map((card) => (
+      <div style={{ display: card.isOpen ? "initial" : "none" }} key={card.id}>
+        <MemoryCard card={card} setCards={setCards} />
+      </div>
+    )),
+    ...googleCards.map((card) => (
+      <div
+        style={{ display: card.isOpen ? "initial" : "none" }}
+        key={card.resourceId}
+      >
+        <GoogleMemoryCard card={card} setGoogleCards={setGoogleCards} />
+      </div>
+    )),
+  ];
+
+  return (
+    <MemoryPageLayout leftNavSections={LeftNavSections} bodyCards={BodyCards} />
   );
-  return <MemoryPageLayout leftNav={LeftNav} body={Body} />;
 }
