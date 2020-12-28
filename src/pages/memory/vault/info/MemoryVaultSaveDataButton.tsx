@@ -10,20 +10,23 @@ import {
 } from "@material-ui/core";
 import { CloudDownload, FileCopy, HelpOutline } from "@material-ui/icons";
 import React, { useRef, useState } from "react";
-import { Store, denormalizeRoot } from "../../../../utils/normalization";
 
 import { Icon } from "@iconify/react";
+import { denormalizeRoot } from "../../../../utils/normalization";
 import { encryptData } from "../../../../utils/encryption";
 import googleDrive from "@iconify-icons/mdi/google-drive";
 import updateFileContent from "../../../../google-integration/updateFileContent";
 import uploadFile from "../../../../google-integration/uploadFile";
 import useDecodedDataContext from "../../useDecodedDataContext";
+import { useGoogleAuthContext } from "../../../../google-integration/useGoogleAuthProvider";
 
 export default function MemoryVaultSaveDataButton() {
   const { store, encryptionKey, googleResourceId } = useDecodedDataContext();
   const theme = useTheme();
   const anchorRef = useRef(null);
   const [isShowingPopover, setIsShowingPopover] = useState(false);
+  const auth = useGoogleAuthContext();
+  const isSignedIn = auth?.currentUser.get()?.isSignedIn() === true;
   return (
     <>
       <Button
@@ -93,61 +96,59 @@ export default function MemoryVaultSaveDataButton() {
           </ListItemIcon>
           <Typography>Copy as JSON</Typography>
         </MenuItem>
-        <Divider />
-        {encryptionKey && (
-          <MenuItem
-            onClick={() => {
-              setIsShowingPopover(false);
-              uploadFile(store, encryptionKey, { withKey: false });
-            }}
-          >
-            <ListItemIcon style={{ minWidth: 36 }}>
-              <Icon icon={googleDrive} width={20} height={20} />
-            </ListItemIcon>
-            <Typography>{googleResourceId ? "Save as copy" : "Save"}</Typography>
-          </MenuItem>
-        )}
-        {encryptionKey && (
-          <MenuItem
-            onClick={() => {
-              setIsShowingPopover(false);
-              uploadFile(store, encryptionKey, { withKey: true });
-            }}
-          >
-            <ListItemIcon style={{ minWidth: 36 }}>
-              <Icon icon={googleDrive} width={20} height={20} />
-            </ListItemIcon>
-            <Typography>
-              {googleResourceId ? "Save with key as copy" : "Save with key"}
-            </Typography>
-            <span style={{ width: theme.spacing(1) }} />
-            <Tooltip
-              title="This option is not recommended as it relies on your Google account not being compromised, prefer saving your key offline for extra safety"
-              placement="bottom"
-            >
-              <HelpOutline fontSize="inherit" />
-            </Tooltip>
-          </MenuItem>
-        )}
-        {googleResourceId && encryptionKey && (
-          <MenuItem
-            onClick={() => {
-              setIsShowingPopover(false);
-              updateFileContent(store, encryptionKey, googleResourceId);
-            }}
-          >
-            <ListItemIcon style={{ minWidth: 36 }}>
-              <Icon icon={googleDrive} width={20} height={20} />
-            </ListItemIcon>
-            <Typography>Update</Typography>
-            <span style={{ width: theme.spacing(1) }} />
-            <Tooltip
-              title="This option is not recommended as it relies on your Google account not being compromised, prefer saving your key offline for extra safety"
-              placement="bottom"
-            >
-              <HelpOutline fontSize="inherit" />
-            </Tooltip>
-          </MenuItem>
+        {isSignedIn && (
+          <>
+            <Divider />
+            {encryptionKey && (
+              <MenuItem
+                onClick={() => {
+                  setIsShowingPopover(false);
+                  uploadFile(store, encryptionKey, { withKey: false });
+                }}
+              >
+                <ListItemIcon style={{ minWidth: 36 }}>
+                  <Icon icon={googleDrive} width={20} height={20} />
+                </ListItemIcon>
+                <Typography>{googleResourceId ? "Save as copy" : "Save"}</Typography>
+              </MenuItem>
+            )}
+            {encryptionKey && (
+              <MenuItem
+                onClick={() => {
+                  setIsShowingPopover(false);
+                  uploadFile(store, encryptionKey, { withKey: true });
+                }}
+              >
+                <ListItemIcon style={{ minWidth: 36 }}>
+                  <Icon icon={googleDrive} width={20} height={20} />
+                </ListItemIcon>
+                <Typography>
+                  {googleResourceId ? "Save with key as copy" : "Save with key"}
+                </Typography>
+                <span style={{ width: theme.spacing(1) }} />
+                <Tooltip
+                  title="This option is not recommended as it relies on your Google account not being compromised, prefer saving your key offline for extra safety"
+                  placement="bottom"
+                >
+                  <HelpOutline fontSize="inherit" />
+                </Tooltip>
+              </MenuItem>
+            )}
+            {googleResourceId && encryptionKey && (
+              <MenuItem
+                onClick={() => {
+                  setIsShowingPopover(false);
+                  updateFileContent(store, encryptionKey, googleResourceId);
+                }}
+              >
+                <ListItemIcon style={{ minWidth: 36 }}>
+                  <Icon icon={googleDrive} width={20} height={20} />
+                </ListItemIcon>
+                <Typography>Update</Typography>
+                <span style={{ width: theme.spacing(1) }} />
+              </MenuItem>
+            )}
+          </>
         )}
       </Menu>
     </>

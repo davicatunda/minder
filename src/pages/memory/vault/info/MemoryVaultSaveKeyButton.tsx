@@ -29,9 +29,17 @@ export default function MemoryVaultSaveKeyButton() {
         <MenuItem
           onClick={() => {
             setIsShowingPopover(false);
+            const element = document.createElement("a");
+            element.setAttribute(
+              "href",
+              `data:text/plain;charset=base64,${encryptionKey}`,
+            );
+            element.setAttribute("download", "key.ish");
+            element.style.display = "none";
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
           }}
-          href={`data:text/plain;charset=base64,${encryptionKey}`}
-          download="key.ish"
         >
           <ListItemIcon style={{ minWidth: 36 }}>
             <CloudDownload fontSize="small" color="action" />

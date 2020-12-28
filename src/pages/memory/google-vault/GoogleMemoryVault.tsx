@@ -1,4 +1,4 @@
-import { IconButton, Paper, Tooltip, useTheme } from "@material-ui/core";
+import { Paper, useTheme } from "@material-ui/core";
 import { useDataAsStore, useDataDecryption } from "../../../utils/encryption";
 import useDraggableItemsProvider, {
   DraggableItemsContext,
