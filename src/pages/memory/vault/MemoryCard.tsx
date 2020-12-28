@@ -3,6 +3,7 @@ import React, { Dispatch, SetStateAction } from "react";
 
 import { CardListItem } from "../MemoryPage";
 import MemoryVaultCreatingState from "./create/MemoryVaultCreatingState";
+import MemoryVaultLoadingState from "./MemoryVaultLoadingState";
 
 type MemoryCardProps = {
   card: CardListItem;
@@ -24,7 +25,12 @@ export default function MemoryCard({ card, setCards }: MemoryCardProps) {
     );
   };
   if (!card.isCreating && card.vaultData.initialData === "") {
-    return <span> Warming up the server just for you... </span>;
+    return (
+      <MemoryVaultLoadingState
+        vaultData={card.vaultData}
+        onChange={changeCardVaultData}
+      />
+    );
   } else if (card.isCreating) {
     return (
       <MemoryVaultCreatingState
