@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   ListItemIcon,
   Menu,
   MenuItem,
@@ -60,6 +61,7 @@ export default function MemoryVaultSaveDataButton() {
             <Typography>Download</Typography>
           </MenuItem>
         )}
+        <Divider />
         {encryptionKey && (
           <MenuItem
             onClick={() => {
@@ -89,6 +91,7 @@ export default function MemoryVaultSaveDataButton() {
           </ListItemIcon>
           <Typography>Copy as JSON</Typography>
         </MenuItem>
+        <Divider />
         {encryptionKey && (
           <MenuItem
             onClick={() => {
