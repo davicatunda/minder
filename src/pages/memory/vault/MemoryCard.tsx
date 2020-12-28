@@ -10,7 +10,7 @@ type MemoryCardProps = {
   setCards: Dispatch<SetStateAction<CardListItem[]>>;
 };
 export default function MemoryCard({ card, setCards }: MemoryCardProps) {
-  const closeCard = () => {
+  const deleteCard = () => {
     setCards((old) => old.filter((c) => card.id !== c.id));
   };
   const createCard = () => {
@@ -36,7 +36,7 @@ export default function MemoryCard({ card, setCards }: MemoryCardProps) {
       <MemoryVaultCreatingState
         vaultData={card.vaultData}
         onSubmit={createCard}
-        onClose={closeCard}
+        onDelete={deleteCard}
         onChange={changeCardVaultData}
       />
     );
@@ -44,9 +44,8 @@ export default function MemoryCard({ card, setCards }: MemoryCardProps) {
     return (
       <MemoryVault
         vaultData={card.vaultData}
-        onChange={changeCardVaultData}
         isReadOnly={card.isReadOnly}
-        onClose={closeCard}
+        onDelete={deleteCard}
       />
     );
   }

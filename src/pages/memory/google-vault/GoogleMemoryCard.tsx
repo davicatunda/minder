@@ -5,6 +5,7 @@ import GoogleMemoryVault from "./GoogleMemoryVault";
 import GoogleMemoryVaultCreatingState from "./GoogleMemoryVaultCreatingState";
 import GoogleMemoryVaultLoadingState from "./GoogleMemoryVaultLoadingState";
 import { VaultData } from "../vault/MemoryVault";
+import deleteFile from "../../../google-integration/deleteFile";
 
 type GoogleMemoryCardProps = {
   card: GoogleCardListItem;
@@ -14,8 +15,11 @@ export default function GoogleMemoryCard({
   card,
   setGoogleCards,
 }: GoogleMemoryCardProps) {
-  const closeCard = () =>
-    setGoogleCards((old) => old.filter((c) => card.resourceId !== c.resourceId));
+  const deleteCard = () => {
+    deleteFile(card.resourceId).then(() => {
+      setGoogleCards((old) => old.filter((c) => card.resourceId !== c.resourceId));
+    });
+  };
   const createCard = () => {
     const newCard = { ...card, isCreating: false, isReadOnly: false };
     setGoogleCards((old) =>
@@ -36,14 +40,14 @@ export default function GoogleMemoryCard({
   );
   if (card.vaultData.initialData === "") {
     return card.isOpen ? (
-      <GoogleMemoryVaultLoadingState onClose={closeCard} />
+      <GoogleMemoryVaultLoadingState onDelete={deleteCard} />
     ) : null;
   } else if (card.isCreating) {
     return (
       <GoogleMemoryVaultCreatingState
         vaultData={card.vaultData}
         onChange={changeCardVaultData}
-        onClose={closeCard}
+        onDelete={deleteCard}
         onSubmit={createCard}
       />
     );
@@ -51,7 +55,7 @@ export default function GoogleMemoryCard({
     return (
       <GoogleMemoryVault
         vaultData={card.vaultData}
-        onClose={closeCard}
+        onDelete={deleteCard}
         resourceId={card.resourceId}
       />
     );

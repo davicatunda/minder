@@ -1,24 +1,24 @@
-import { IconButton, Paper, Typography, useTheme } from "@material-ui/core";
+import { Paper, Typography, useTheme } from "@material-ui/core";
 import { useDataAsStore, useDataDecryption } from "../../../../utils/encryption";
 
 import CardView from "../cards/CardView";
-import { Close } from "@material-ui/icons";
 import { DecodedDataContext } from "../../useDecodedDataContext";
 import MemoryVaultInfo from "../info/MemoryVaultInfo";
+import MemoryVaultSettingsMenu from "../MemoryVaultSettingsMenu";
 import React from "react";
 
 type CreatingPreviewVaultData = {
   title: string;
   encryptionKey: string;
   initialData: string;
-  onClose: () => void;
+  onDelete: () => void;
 };
 
 export default function MemoryVaultPreview({
   title,
   encryptionKey,
   initialData,
-  onClose,
+  onDelete,
 }: CreatingPreviewVaultData) {
   const theme = useTheme();
   const { decryptedData, hasFailed } = useDataDecryption(initialData, encryptionKey);
@@ -48,9 +48,7 @@ export default function MemoryVaultPreview({
             zIndex: 2,
           }}
         >
-          <IconButton aria-label="cancel creation" onClick={onClose}>
-            <Close />
-          </IconButton>
+          <MemoryVaultSettingsMenu onDelete={onDelete} />
         </div>
         <div
           style={{

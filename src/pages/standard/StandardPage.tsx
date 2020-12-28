@@ -130,7 +130,7 @@ function MakeAProposalSection() {
         encryptionKey: DUMMY_KEY,
         initialData: JSON.stringify(SUGGESTED_PROPOSAL),
       }}
-      onClose={() => setIsCreating(false)}
+      onDelete={() => setIsCreating(false)}
     >
       {(store) => (
         <Button

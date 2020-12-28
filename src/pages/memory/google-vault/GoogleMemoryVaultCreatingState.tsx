@@ -10,13 +10,13 @@ import { useDataDecryption } from "../../../utils/encryption";
 
 type Props = {
   vaultData: VaultData;
-  onClose: () => void;
+  onDelete: () => void;
   onChange: (vaultData: VaultData) => void;
   onSubmit: () => void;
 };
 export default function GoogleMemoryVaultCreatingState({
   vaultData,
-  onClose,
+  onDelete,
   onChange,
   onSubmit,
 }: Props) {
@@ -73,7 +73,7 @@ export default function GoogleMemoryVaultCreatingState({
           title={title}
           encryptionKey={encryptionKey}
           initialData={initialData}
-          onClose={onClose}
+          onDelete={onDelete}
         />
       </Grid>
     </Grid>

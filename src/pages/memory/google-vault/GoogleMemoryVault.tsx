@@ -5,20 +5,20 @@ import useDraggableItemsProvider, {
 } from "../useDraggableItemsContext";
 
 import CardView from "../vault/cards/CardView";
-import { Close } from "@material-ui/icons";
 import { DecodedDataContext } from "../useDecodedDataContext";
 import MemoryVaultInfo from "../vault/info/MemoryVaultInfo";
+import MemoryVaultSettingsMenu from "../vault/MemoryVaultSettingsMenu";
 import React from "react";
 import { VaultData } from "../vault/MemoryVault";
 
 export default function GoogleMemoryVault({
   vaultData: { title, encryptionKey, initialData },
   resourceId,
-  onClose,
+  onDelete,
 }: {
   vaultData: VaultData;
   resourceId: string;
-  onClose: () => void;
+  onDelete: () => void;
 }) {
   const theme = useTheme();
   const draggableData = useDraggableItemsProvider();
@@ -41,11 +41,7 @@ export default function GoogleMemoryVault({
               top: theme.spacing(1),
             }}
           >
-            <Tooltip title="Did you save? Just checking" arrow>
-              <IconButton aria-label="close card" onClick={onClose}>
-                <Close />
-              </IconButton>
-            </Tooltip>
+            <MemoryVaultSettingsMenu onDelete={onDelete} />
           </div>
           <MemoryVaultInfo />
           <div style={{ height: theme.spacing(3) }} />

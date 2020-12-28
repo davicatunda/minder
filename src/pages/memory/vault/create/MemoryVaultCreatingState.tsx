@@ -6,14 +6,14 @@ import { VaultData } from "../MemoryVault";
 
 type Props = {
   vaultData: VaultData;
-  onClose: () => void;
+  onDelete: () => void;
   onSubmit: () => void;
   onChange: (vaultData: VaultData) => void;
 };
 
 export default function MemoryVaultCreatingState({
   vaultData,
-  onClose,
+  onDelete,
   onSubmit,
   onChange,
 }: Props) {
@@ -27,7 +27,7 @@ export default function MemoryVaultCreatingState({
         />
       </Grid>
       <Grid item xs={12} md={8} xl={9} style={{ display: "flex" }}>
-        <MemoryVaultPreview {...vaultData} onClose={onClose} />
+        <MemoryVaultPreview {...vaultData} onDelete={onDelete} />
       </Grid>
     </Grid>
   );

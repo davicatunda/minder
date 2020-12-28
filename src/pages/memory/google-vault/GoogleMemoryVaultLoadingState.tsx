@@ -1,19 +1,13 @@
-import { Add, Close } from "@material-ui/icons";
-import {
-  Button,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
-  useTheme,
-} from "@material-ui/core";
+import { Button, Grid, Paper, Typography, useTheme } from "@material-ui/core";
 
+import { Add } from "@material-ui/icons";
+import MemoryVaultSettingsMenu from "../vault/MemoryVaultSettingsMenu";
 import React from "react";
 
 type Props = {
-  onClose: () => void;
+  onDelete: () => void;
 };
-export default function GoogleMemoryVaultLoadingState({ onClose }: Props) {
+export default function GoogleMemoryVaultLoadingState({ onDelete }: Props) {
   const theme = useTheme();
   return (
     <Grid container spacing={2}>
@@ -59,9 +53,7 @@ export default function GoogleMemoryVaultLoadingState({ onClose }: Props) {
               zIndex: 2,
             }}
           >
-            <IconButton aria-label="cancel creation" onClick={onClose}>
-              <Close />
-            </IconButton>
+            <MemoryVaultSettingsMenu onDelete={onDelete} />
           </div>
           <div
             style={{
