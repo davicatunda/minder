@@ -4,7 +4,7 @@ import { gql, useQuery } from "@apollo/client";
 import CardView from "../memory/vault/cards/CardView";
 import { DecodedDataContext } from "../memory/useDecodedDataContext";
 import React from "react";
-import { VerticalSpace } from "../shared-layout/Spacing";
+import { VerticalSpace } from "../core/Spacing";
 import { css } from "@emotion/css";
 import { normalizeRoot } from "../../utils/normalization";
 import { useParams } from "react-router-dom";

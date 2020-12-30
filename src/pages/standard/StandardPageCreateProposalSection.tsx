@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 
 import MemoryVault from "../memory/vault/MemoryVault";
-import { VerticalSpace } from "../shared-layout/Spacing";
+import { VerticalSpace } from "../core/Spacing";
 import { css } from "@emotion/css";
 import { denormalizeRoot } from "../../utils/normalization";
 
@@ -51,7 +51,7 @@ export default function StandardPageCreateProposalSection() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <VerticalSpace s2 grow={1} />
+        <VerticalSpace s2 grow />
         <Button
           size="large"
           fullWidth

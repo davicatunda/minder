@@ -1,5 +1,5 @@
 import { Divider, Paper, Typography, useTheme } from "@material-ui/core";
-import { HorizontalSpace, VerticalSpace } from "../shared-layout/Spacing";
+import { HorizontalSpace, VerticalSpace } from "../core/Spacing";
 import React, { ReactNode } from "react";
 
 import { css } from "@emotion/css";
@@ -42,7 +42,7 @@ export default function HomePageCard({
         {subtitle}
       </Typography>
       {body}
-      <VerticalSpace s2 grow={1} />
+      <VerticalSpace s2 grow />
       <Divider />
       <VerticalSpace s2 />
       {button}

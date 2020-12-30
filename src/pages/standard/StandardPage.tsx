@@ -5,7 +5,7 @@ import { Container } from "@material-ui/core";
 import StandardPageAllProposalsSection from "./StandardPageAllProposalsSection";
 import StandardPageCreateProposalSection from "./StandardPageCreateProposalSection";
 import StandardPageProposedAPISection from "./StandardPageProposedAPISection";
-import { VerticalSpace } from "../shared-layout/Spacing";
+import { VerticalSpace } from "../core/Spacing";
 
 type StandardPageResponse = {
   user?: {

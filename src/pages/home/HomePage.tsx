@@ -5,7 +5,7 @@ import { gql, useQuery } from "@apollo/client";
 import HomePageBanner from "./HomePageBanner";
 import HomePageProgressCard from "./HomePageProgressCard";
 import HomePageUsageCard from "./HomePageUsageCard";
-import { VerticalSpace } from "../shared-layout/Spacing";
+import { VerticalSpace } from "../core/Spacing";
 import { createKey } from "../../utils/encryption";
 import { css } from "@emotion/css";
 import { useHistory } from "react-router-dom";

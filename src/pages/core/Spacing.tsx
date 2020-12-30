@@ -1,4 +1,3 @@
-import { Property } from "csstype";
 import { css } from "@emotion/css";
 import { useTheme } from "@material-ui/core";
 
@@ -13,17 +12,31 @@ type Props = {
   s4?: boolean;
   s8?: boolean;
   s16?: boolean;
-  grow?: Property.FlexGrow;
+  grow?: boolean;
 };
-export function VerticalSpace({ grow = "initial", ...spacingProps }: Props) {
+export function VerticalSpace({ grow = false, ...spacingProps }: Props) {
   const theme = useTheme();
-  const space = theme.spacing(spacing(spacingProps));
-  return <div className={css({ height: space, flexGrow: grow, flexShrink: 0 })} />;
+  return (
+    <div
+      className={css({
+        height: theme.spacing(spacing(spacingProps)),
+        flexGrow: grow ? 1 : "initial",
+        flexShrink: 0,
+      })}
+    />
+  );
 }
-export function HorizontalSpace({ grow = "initial", ...spacingProps }: Props) {
+export function HorizontalSpace({ grow = false, ...spacingProps }: Props) {
   const theme = useTheme();
-  const space = theme.spacing(spacing(spacingProps));
-  return <span className={css({ width: space, flexGrow: grow, flexShrink: 0 })} />;
+  return (
+    <span
+      className={css({
+        width: theme.spacing(spacing(spacingProps)),
+        flexGrow: grow ? 1 : "initial",
+        flexShrink: 0,
+      })}
+    />
+  );
 }
 function spacing({ s1, s2, s3, s4, s8, s16 }: Props) {
   return (

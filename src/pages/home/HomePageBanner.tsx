@@ -2,7 +2,7 @@ import { Button, Container, Grid, Typography, useTheme } from "@material-ui/core
 
 import { Lock } from "@material-ui/icons";
 import React from "react";
-import { VerticalSpace } from "../shared-layout/Spacing";
+import { VerticalSpace } from "../core/Spacing";
 import { css } from "@emotion/css";
 
 type Props = { onTryClick: () => void };
