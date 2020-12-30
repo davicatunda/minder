@@ -53,16 +53,7 @@ export default function GoogleMemoryVaultLoadingState({ onDelete }: Props) {
             padding: theme.spacing(3),
           })}
         >
-          <div
-            className={css({
-              position: "absolute",
-              right: theme.spacing(1),
-              top: theme.spacing(1),
-              zIndex: 2,
-            })}
-          >
-            <MemoryVaultSettingsMenu onDelete={onDelete} />
-          </div>
+          <MemoryVaultSettingsMenu onDelete={onDelete} />
           <div
             className={css({
               backgroundColor: theme.palette.background.default,

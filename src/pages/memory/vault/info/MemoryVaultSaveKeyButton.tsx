@@ -1,8 +1,7 @@
-import { Button, ListItemIcon, Menu, MenuItem, Typography } from "@material-ui/core";
-import { CloudDownload, MeetingRoom } from "@material-ui/icons";
 import React, { useRef, useState } from "react";
 
-import { css } from "@emotion/css";
+import { Button } from "@material-ui/core";
+import MemoryVaultSaveKeyMenu from "./MemoryVaultSaveKeyMenu";
 import useDecodedDataContext from "../../useDecodedDataContext";
 
 export default function MemoryVaultSaveKeyButton() {
@@ -22,44 +21,14 @@ export default function MemoryVaultSaveKeyButton() {
       >
         Save Key
       </Button>
-      <Menu
-        anchorEl={anchorRef.current}
-        open={isShowingPopover}
+      <MemoryVaultSaveKeyMenu
         onClose={() => setIsShowingPopover(false)}
-      >
-        <MenuItem
-          onClick={() => {
-            setIsShowingPopover(false);
-            const element = document.createElement("a");
-            element.setAttribute(
-              "href",
-              `data:text/plain;charset=base64,${encryptionKey}`,
-            );
-            element.setAttribute("download", "key.ish");
-            element.style.display = "none";
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-          }}
-        >
-          <ListItemIcon className={css({ minWidth: 36 })}>
-            <CloudDownload fontSize="small" color="action" />
-          </ListItemIcon>
-          <Typography>Download</Typography>
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            navigator.clipboard.writeText(encryptionKey).then(() => {
-              setIsShowingPopover(false);
-            });
-          }}
-        >
-          <ListItemIcon className={css({ minWidth: 36 })}>
-            <MeetingRoom fontSize="small" color="action" />
-          </ListItemIcon>
-          <Typography>Copy</Typography>
-        </MenuItem>
-      </Menu>
+        menuProps={{
+          onClose: () => setIsShowingPopover(false),
+          open: isShowingPopover,
+          anchorEl: anchorRef.current,
+        }}
+      />
     </>
   );
 }

@@ -10,6 +10,7 @@ import {
   Menu,
   MenuItem,
   Typography,
+  useTheme,
 } from "@material-ui/core";
 import { Delete, MoreHoriz } from "@material-ui/icons";
 import React, { useRef, useState } from "react";
@@ -21,12 +22,24 @@ type Props = {
 };
 
 export default function MemoryVaultSettingsMenu({ onDelete }: Props) {
+  const theme = useTheme();
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      <IconButton onClick={() => setIsOpen(true)} ref={ref}>
+      <IconButton
+        onClick={() => setIsOpen(true)}
+        ref={ref}
+        classes={{
+          root: css({
+            position: "absolute",
+            right: theme.spacing(1),
+            top: theme.spacing(1),
+            zIndex: 2,
+          }),
+        }}
+      >
         <MoreHoriz />
       </IconButton>
       <Menu anchorEl={ref.current} open={isOpen} onClose={() => setIsOpen(false)}>

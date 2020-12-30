@@ -50,15 +50,7 @@ export default function MemoryVault({
         }}
       >
         <Paper className={css({ position: "relative", padding: theme.spacing(3) })}>
-          <div
-            className={css({
-              position: "absolute",
-              right: theme.spacing(1),
-              top: theme.spacing(1),
-            })}
-          >
-            <MemoryVaultSettingsMenu onDelete={onDelete} />
-          </div>
+          <MemoryVaultSettingsMenu onDelete={onDelete} />
           <MemoryVaultInfo />
           <VerticalSpace s3 />
           <CardView nodeKey={store.rootNode.value} />
