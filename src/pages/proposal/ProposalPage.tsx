@@ -1,9 +1,11 @@
-import { Paper, Typography } from "@material-ui/core";
+import { Container, Paper, Typography } from "@material-ui/core";
 import { gql, useQuery } from "@apollo/client";
 
 import CardView from "../memory/vault/cards/CardView";
 import { DecodedDataContext } from "../memory/useDecodedDataContext";
 import React from "react";
+import { VerticalSpace } from "../shared-layout/Spacing";
+import { css } from "@emotion/css";
 import { normalizeRoot } from "../../utils/normalization";
 import { useParams } from "react-router-dom";
 
@@ -29,12 +31,15 @@ export default function ProposalPage() {
   }
   const store = normalizeRoot(data.proposal.data, {});
   return (
-    <DecodedDataContext.Provider value={{ store, updateNodes: null }}>
-      <Paper style={{ position: "relative", padding: 24 }}>
-        <Typography variant="h3">Proposals {proposalId}</Typography>
-        <CardView nodeKey={store.rootNode.value} />
-      </Paper>
-    </DecodedDataContext.Provider>
+    <Container maxWidth="md">
+      <VerticalSpace s2 />
+      <DecodedDataContext.Provider value={{ store, updateNodes: null }}>
+        <Paper className={css({ position: "relative", padding: 24 })}>
+          <Typography variant="h3">Proposals {proposalId}</Typography>
+          <CardView nodeKey={store.rootNode.value} />
+        </Paper>
+      </DecodedDataContext.Provider>
+    </Container>
   );
 }
 

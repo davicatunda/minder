@@ -18,12 +18,12 @@ type Props = {
 export function VerticalSpace({ grow = "initial", ...spacingProps }: Props) {
   const theme = useTheme();
   const space = theme.spacing(spacing(spacingProps));
-  return <div className={css({ height: space, flexGrow: grow })} />;
+  return <div className={css({ height: space, flexGrow: grow, flexShrink: 0 })} />;
 }
 export function HorizontalSpace({ grow = "initial", ...spacingProps }: Props) {
   const theme = useTheme();
   const space = theme.spacing(spacing(spacingProps));
-  return <span className={css({ width: space, flexGrow: grow })} />;
+  return <span className={css({ width: space, flexGrow: grow, flexShrink: 0 })} />;
 }
 function spacing({ s1, s2, s3, s4, s8, s16 }: Props) {
   return (
