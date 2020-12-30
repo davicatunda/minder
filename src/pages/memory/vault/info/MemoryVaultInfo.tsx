@@ -10,13 +10,14 @@ import {
 import MemoryVaultSaveDataButton from "./MemoryVaultSaveDataButton";
 import MemoryVaultSaveKeyButton from "./MemoryVaultSaveKeyButton";
 import React from "react";
+import { css } from "@emotion/css";
 import { date2HumanValue } from "../cards/Date/DateNodeCardView";
 import useDecodedDataContext from "../../useDecodedDataContext";
 
 export default function MemoryVaultInfo() {
   const { store } = useDecodedDataContext();
   return (
-    <Card style={{ maxWidth: 400 }} variant="outlined">
+    <Card className={css({ maxWidth: 400 })} variant="outlined">
       <CardHeader title={store.rootNode.title} />
       <CardContent>
         <Grid container spacing={1}>

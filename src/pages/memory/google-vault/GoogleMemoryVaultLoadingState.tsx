@@ -3,6 +3,8 @@ import { Button, Grid, Paper, Typography, useTheme } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import MemoryVaultSettingsMenu from "../vault/MemoryVaultSettingsMenu";
 import React from "react";
+import { VerticalSpace } from "../../core/Spacing";
+import { css } from "@emotion/css";
 
 type Props = {
   onDelete: () => void;
@@ -11,19 +13,25 @@ export default function GoogleMemoryVaultLoadingState({ onDelete }: Props) {
   const theme = useTheme();
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={4} xl={3} style={{ display: "flex", minHeight: 500 }}>
+      <Grid
+        item
+        xs={12}
+        md={4}
+        xl={3}
+        className={css({ display: "flex", minHeight: 500 })}
+      >
         <Paper
-          style={{
+          className={css({
             padding: theme.spacing(2),
             display: "flex",
             flexDirection: "column",
             flexGrow: 1,
-          }}
+          })}
         >
           <Typography variant="h4" color="textPrimary" gutterBottom align="center">
             Open
           </Typography>
-          <div style={{ flexGrow: 1, flexShrink: 0, flexBasis: theme.spacing(2) }} />
+          <VerticalSpace s2 grow />
           <Button
             fullWidth
             variant="contained"
@@ -36,27 +44,27 @@ export default function GoogleMemoryVaultLoadingState({ onDelete }: Props) {
           </Button>
         </Paper>
       </Grid>
-      <Grid item xs={12} md={8} xl={9} style={{ display: "flex" }}>
+      <Grid item xs={12} md={8} xl={9} className={css({ display: "flex" })}>
         <Paper
-          style={{
+          className={css({
             flex: 1,
             position: "relative",
             overflow: "hidden",
             padding: theme.spacing(3),
-          }}
+          })}
         >
           <div
-            style={{
+            className={css({
               position: "absolute",
               right: theme.spacing(1),
               top: theme.spacing(1),
               zIndex: 2,
-            }}
+            })}
           >
             <MemoryVaultSettingsMenu onDelete={onDelete} />
           </div>
           <div
-            style={{
+            className={css({
               backgroundColor: theme.palette.background.default,
               opacity: 0.8,
               position: "absolute",
@@ -68,8 +76,8 @@ export default function GoogleMemoryVaultLoadingState({ onDelete }: Props) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-            }}
-          ></div>
+            })}
+          />
         </Paper>
       </Grid>
     </Grid>

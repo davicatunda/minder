@@ -10,6 +10,8 @@ import MemoryVaultInfo from "../vault/info/MemoryVaultInfo";
 import MemoryVaultSettingsMenu from "../vault/MemoryVaultSettingsMenu";
 import React from "react";
 import { VaultData } from "../vault/MemoryVault";
+import { VerticalSpace } from "../../core/Spacing";
+import { css } from "@emotion/css";
 
 export default function GoogleMemoryVault({
   vaultData: { title, encryptionKey, initialData },
@@ -33,18 +35,18 @@ export default function GoogleMemoryVault({
       <DecodedDataContext.Provider
         value={{ store, updateNodes, googleResourceId: resourceId, encryptionKey }}
       >
-        <Paper style={{ position: "relative", padding: theme.spacing(3) }}>
+        <Paper className={css({ position: "relative", padding: theme.spacing(3) })}>
           <div
-            style={{
+            className={css({
               position: "absolute",
               right: theme.spacing(1),
               top: theme.spacing(1),
-            }}
+            })}
           >
             <MemoryVaultSettingsMenu onDelete={onDelete} />
           </div>
           <MemoryVaultInfo />
-          <div style={{ height: theme.spacing(3) }} />
+          <VerticalSpace s3 />
           <CardView nodeKey={store.rootNode.value} />
         </Paper>
       </DecodedDataContext.Provider>

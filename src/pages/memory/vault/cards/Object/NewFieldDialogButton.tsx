@@ -1,4 +1,5 @@
 import { Close, Minimize } from "@material-ui/icons";
+import { HorizontalSpace, VerticalSpace } from "../../../../core/Spacing";
 import { IconButton, useTheme } from "@material-ui/core";
 import React, { useState } from "react";
 import {
@@ -20,6 +21,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
+import { css } from "@emotion/css";
 import useDecodedDataContext from "../../../useDecodedDataContext";
 
 export default function NewFieldDialogButton(props: { parentNode: TObjectNode }) {
@@ -40,7 +42,7 @@ export default function NewFieldDialogButton(props: { parentNode: TObjectNode })
   };
   return (
     <span
-      style={{ display: "flex", alignItems: "center" }}
+      className={css({ display: "flex", alignItems: "center" })}
       onClick={(event) => event.stopPropagation()}
     >
       <IconButton
@@ -59,24 +61,24 @@ export default function NewFieldDialogButton(props: { parentNode: TObjectNode })
       >
         <DialogTitle id="new-item-dialog-title">Add New Item</DialogTitle>
         <div
-          style={{
+          className={css({
             position: "absolute",
             display: "flex",
             alignItems: "center",
             right: theme.spacing(1),
             top: theme.spacing(1),
-          }}
+          })}
         >
           <IconButton aria-label="minimize" onClick={() => setIsDialogOpen(false)}>
-            <Minimize style={{ transform: "translate(0px, -7px)" }} />
+            <Minimize className={css({ transform: "translate(0px, -7px)" })} />
           </IconButton>
           <IconButton aria-label="close" onClick={closeAndClearDialog}>
             <Close />
           </IconButton>
         </div>
-        <DialogContent dividers style={{ minHeight: 180 }}>
-          <div style={{ display: "flex" }}>
-            <FormControl variant="filled" style={{ minWidth: 120 }}>
+        <DialogContent dividers className={css({ minHeight: 180 })}>
+          <div className={css({ display: "flex" })}>
+            <FormControl variant="filled" className={css({ minWidth: 120 })}>
               <InputLabel>Type</InputLabel>
               <Select
                 label="Type"
@@ -94,7 +96,7 @@ export default function NewFieldDialogButton(props: { parentNode: TObjectNode })
                 <MenuItem value={RefinedType.String}>Text</MenuItem>
               </Select>
             </FormControl>
-            <span style={{ width: theme.spacing(1) }} />
+            <HorizontalSpace s1 />
             <TextField
               label="Name"
               variant="filled"
@@ -105,7 +107,7 @@ export default function NewFieldDialogButton(props: { parentNode: TObjectNode })
               fullWidth
             />
           </div>
-          <div style={{ height: theme.spacing(1) }} />
+          <VerticalSpace />
           <EditValueInput node={valueNode} onChange={setValueNode} />
         </DialogContent>
         <DialogActions>

@@ -1,16 +1,11 @@
 import { Drafts, Mail } from "@material-ui/icons";
 import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
-import React, { CSSProperties } from "react";
 
 import { GoogleCardListItem } from "../MemoryPage";
 import { Icon } from "@iconify/react";
+import React from "react";
+import { css } from "@emotion/css";
 import googleDrive from "@iconify-icons/mdi/google-drive";
-
-const oneLineStyle: CSSProperties = {
-  whiteSpace: "nowrap",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-};
 
 type Props = {
   card: GoogleCardListItem;
@@ -26,7 +21,13 @@ export default function GoogleCardNavBarItem({ card, onClick }: Props) {
       </ListItemIcon>
       <ListItemText
         primary={card.vaultData.title}
-        primaryTypographyProps={{ style: oneLineStyle }}
+        primaryTypographyProps={{
+          className: css({
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }),
+        }}
       />
     </ListItem>
   );

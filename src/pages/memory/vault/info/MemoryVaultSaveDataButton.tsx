@@ -11,7 +11,9 @@ import {
 import { CloudDownload, FileCopy, HelpOutline } from "@material-ui/icons";
 import React, { useRef, useState } from "react";
 
+import { HorizontalSpace } from "../../../core/Spacing";
 import { Icon } from "@iconify/react";
+import { css } from "@emotion/css";
 import { denormalizeRoot } from "../../../../utils/normalization";
 import { encryptData } from "../../../../utils/encryption";
 import googleDrive from "@iconify-icons/mdi/google-drive";
@@ -21,7 +23,7 @@ import useDecodedDataContext from "../../useDecodedDataContext";
 import { useGoogleAuthContext } from "../../../../google-integration/useGoogleAuthProvider";
 
 export default function MemoryVaultSaveDataButton() {
-  const { store, encryptionKey, googleResourceId } = useDecodedDataContext();
+    const { store, encryptionKey, googleResourceId } = useDecodedDataContext();
   const theme = useTheme();
   const anchorRef = useRef(null);
   const [isShowingPopover, setIsShowingPopover] = useState(false);
@@ -60,7 +62,7 @@ export default function MemoryVaultSaveDataButton() {
               });
             }}
           >
-            <ListItemIcon style={{ minWidth: 36 }}>
+            <ListItemIcon className={css({ minWidth: 36 })}>
               <CloudDownload fontSize="small" color="action" />
             </ListItemIcon>
             <Typography>Download</Typography>
@@ -78,7 +80,7 @@ export default function MemoryVaultSaveDataButton() {
               });
             }}
           >
-            <ListItemIcon style={{ minWidth: 36 }}>
+            <ListItemIcon className={css({ minWidth: 36 })}>
               <FileCopy fontSize="small" color="action" />
             </ListItemIcon>
             <Typography>Copy</Typography>
@@ -91,7 +93,7 @@ export default function MemoryVaultSaveDataButton() {
             });
           }}
         >
-          <ListItemIcon style={{ minWidth: 36 }}>
+          <ListItemIcon className={css({ minWidth: 36 })}>
             <FileCopy fontSize="small" color="action" />
           </ListItemIcon>
           <Typography>Copy as JSON</Typography>
@@ -106,7 +108,7 @@ export default function MemoryVaultSaveDataButton() {
                   uploadFile(store, encryptionKey, { withKey: false });
                 }}
               >
-                <ListItemIcon style={{ minWidth: 36 }}>
+                <ListItemIcon className={css({ minWidth: 36 })}>
                   <Icon icon={googleDrive} width={20} height={20} />
                 </ListItemIcon>
                 <Typography>{googleResourceId ? "Save as copy" : "Save"}</Typography>
@@ -119,13 +121,13 @@ export default function MemoryVaultSaveDataButton() {
                   uploadFile(store, encryptionKey, { withKey: true });
                 }}
               >
-                <ListItemIcon style={{ minWidth: 36 }}>
+                <ListItemIcon className={css({ minWidth: 36 })}>
                   <Icon icon={googleDrive} width={20} height={20} />
                 </ListItemIcon>
                 <Typography>
                   {googleResourceId ? "Save with key as copy" : "Save with key"}
                 </Typography>
-                <span style={{ width: theme.spacing(1) }} />
+                <HorizontalSpace s1 />
                 <Tooltip
                   title="This option is not recommended as it relies on your Google account not being compromised, prefer saving your key offline for extra safety"
                   placement="bottom"
@@ -141,11 +143,11 @@ export default function MemoryVaultSaveDataButton() {
                   updateFileContent(store, encryptionKey, googleResourceId);
                 }}
               >
-                <ListItemIcon style={{ minWidth: 36 }}>
+                <ListItemIcon className={css({ minWidth: 36 })}>
                   <Icon icon={googleDrive} width={20} height={20} />
                 </ListItemIcon>
                 <Typography>Update</Typography>
-                <span style={{ width: theme.spacing(1) }} />
+                <HorizontalSpace s1 />
               </MenuItem>
             )}
           </>

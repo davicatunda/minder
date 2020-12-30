@@ -14,6 +14,8 @@ import {
 import { Delete, MoreHoriz } from "@material-ui/icons";
 import React, { useRef, useState } from "react";
 
+import { css } from "@emotion/css";
+
 type Props = {
   onDelete: () => void;
 };
@@ -44,7 +46,7 @@ function DeleteItem({ onDelete }: Props) {
   return (
     <div>
       <MenuItem onClick={() => setIsOpen(true)}>
-        <ListItemIcon style={{ minWidth: 36 }}>
+        <ListItemIcon className={css({ minWidth: 36 })}>
           <Delete fontSize="small" color="action" />
         </ListItemIcon>
         <Typography>Delete</Typography>

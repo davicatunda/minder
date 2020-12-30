@@ -2,6 +2,7 @@ import { Button, ListItemIcon, Menu, MenuItem, Typography } from "@material-ui/c
 import { CloudDownload, MeetingRoom } from "@material-ui/icons";
 import React, { useRef, useState } from "react";
 
+import { css } from "@emotion/css";
 import useDecodedDataContext from "../../useDecodedDataContext";
 
 export default function MemoryVaultSaveKeyButton() {
@@ -41,7 +42,7 @@ export default function MemoryVaultSaveKeyButton() {
             document.body.removeChild(element);
           }}
         >
-          <ListItemIcon style={{ minWidth: 36 }}>
+          <ListItemIcon className={css({ minWidth: 36 })}>
             <CloudDownload fontSize="small" color="action" />
           </ListItemIcon>
           <Typography>Download</Typography>
@@ -53,7 +54,7 @@ export default function MemoryVaultSaveKeyButton() {
             });
           }}
         >
-          <ListItemIcon style={{ minWidth: 36 }}>
+          <ListItemIcon className={css({ minWidth: 36 })}>
             <MeetingRoom fontSize="small" color="action" />
           </ListItemIcon>
           <Typography>Copy</Typography>

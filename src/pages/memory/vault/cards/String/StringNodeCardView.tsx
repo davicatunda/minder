@@ -1,6 +1,7 @@
 import React from "react";
 import { TStringNode } from "../../../../../utils/normalization";
 import { Typography } from "@material-ui/core";
+import { css } from "@emotion/css";
 
 export default function StringNodeCardView(props: { node: TStringNode }) {
   return (
@@ -9,7 +10,7 @@ export default function StringNodeCardView(props: { node: TStringNode }) {
       color="textSecondary"
       display="inline"
       onClick={(e) => e.stopPropagation()}
-      style={{ userSelect: "text", minWidth: 20 }}
+      className={css({ userSelect: "text", minWidth: 20 })}
     >
       {props.node.value === "" ? "Ø" : props.node.value}
     </Typography>

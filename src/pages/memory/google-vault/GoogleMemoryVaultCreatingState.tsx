@@ -6,6 +6,8 @@ import MemoryVaultPreview from "../vault/create/MemoryVaultPreview";
 import MemoryVaultTitleInput from "../vault/create/inputs/MemoryVaultTitleInput";
 import React from "react";
 import { VaultData } from "../vault/MemoryVault";
+import { VerticalSpace } from "../../core/Spacing";
+import { css } from "@emotion/css";
 import { useDataDecryption } from "../../../utils/encryption";
 
 type Props = {
@@ -25,19 +27,25 @@ export default function GoogleMemoryVaultCreatingState({
   const { hasFailed } = useDataDecryption(initialData, encryptionKey);
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={4} xl={3} style={{ display: "flex", minHeight: 500 }}>
+      <Grid
+        item
+        xs={12}
+        md={4}
+        xl={3}
+        className={css({ display: "flex", minHeight: 500 })}
+      >
         <Paper
-          style={{
+          className={css({
             padding: theme.spacing(2),
             display: "flex",
             flexDirection: "column",
             flexGrow: 1,
-          }}
+          })}
         >
           <Typography variant="h4" color="textPrimary" gutterBottom align="center">
             Open
           </Typography>
-          <div style={{ height: theme.spacing(2) }} />
+          <VerticalSpace s2 />
           <MemoryVaultTitleInput
             title={vaultData.title}
             setTitle={(title: string) => onChange({ ...vaultData, title })}
@@ -48,8 +56,7 @@ export default function GoogleMemoryVaultCreatingState({
               onChange({ ...vaultData, encryptionKey })
             }
           />
-
-          <div style={{ flexGrow: 1, flexShrink: 0, flexBasis: theme.spacing(2) }} />
+          <VerticalSpace s2 grow />
           {encryptionKey !== "" && hasFailed && (
             <Typography variant="body2" color="error" align="center">
               Key and data don't match
@@ -68,7 +75,7 @@ export default function GoogleMemoryVaultCreatingState({
           </Button>
         </Paper>
       </Grid>
-      <Grid item xs={12} md={8} xl={9} style={{ display: "flex" }}>
+      <Grid item xs={12} md={8} xl={9} className={css({ display: "flex" })}>
         <MemoryVaultPreview
           title={title}
           encryptionKey={encryptionKey}

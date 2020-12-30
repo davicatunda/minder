@@ -10,6 +10,8 @@ import MemoryVaultInfo from "./info/MemoryVaultInfo";
 import MemoryVaultSettingsMenu from "./MemoryVaultSettingsMenu";
 import React from "react";
 import { Store } from "../../../utils/normalization";
+import { VerticalSpace } from "../../core/Spacing";
+import { css } from "@emotion/css";
 
 export type VaultData = {
   title: string;
@@ -47,18 +49,18 @@ export default function MemoryVault({
           updateNodes: isReadOnly ? null : updateNodes,
         }}
       >
-        <Paper style={{ position: "relative", padding: theme.spacing(3) }}>
+        <Paper className={css({ position: "relative", padding: theme.spacing(3) })}>
           <div
-            style={{
+            className={css({
               position: "absolute",
               right: theme.spacing(1),
               top: theme.spacing(1),
-            }}
+            })}
           >
             <MemoryVaultSettingsMenu onDelete={onDelete} />
           </div>
           <MemoryVaultInfo />
-          <div style={{ height: theme.spacing(3) }} />
+          <VerticalSpace s3 />
           <CardView nodeKey={store.rootNode.value} />
           {children && children(store)}
         </Paper>

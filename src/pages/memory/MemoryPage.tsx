@@ -1,5 +1,5 @@
 import { Divider, Grid, List, useTheme } from "@material-ui/core";
-import React, { CSSProperties, useState } from "react";
+import React, { useState } from "react";
 
 import GoogleMemoryCard from "./google-vault/GoogleMemoryCard";
 import LeftNavAddCardItem from "./navbar/LeftNavAddCardItem";
@@ -7,6 +7,8 @@ import LeftNavCardItem from "./navbar/LeftNavCardItem";
 import LeftNavGoogleItem from "./navbar/LeftNavGoogleItem";
 import MemoryCard from "./vault/MemoryCard";
 import { VaultData } from "./vault/MemoryVault";
+import { VerticalSpace } from "../core/Spacing";
+import { css } from "@emotion/css";
 import useCardsFromGoogleDrive from "./useCardsFromGoogleDrive";
 import useCardsFromUrl from "./useCardsFromUrl";
 
@@ -60,38 +62,41 @@ export default function MemoryPage() {
 
   const bodyCards = [
     ...cards.map((card) => (
-      <div style={{ display: card.isOpen ? "initial" : "none" }} key={card.id}>
+      <div
+        className={css({ display: card.isOpen ? "initial" : "none" })}
+        key={card.id}
+      >
         <MemoryCard card={card} setCards={setCards} />
-        <div style={{ height: theme.spacing(2) }} />
+        <VerticalSpace s2 />
       </div>
     )),
     ...googleCards.map((card) => (
       <div
-        style={{ display: card.isOpen ? "initial" : "none" }}
+        className={css({ display: card.isOpen ? "initial" : "none" })}
         key={card.resourceId}
       >
         <GoogleMemoryCard card={card} setGoogleCards={setGoogleCards} />
-        <div style={{ height: theme.spacing(2) }} />
+        <VerticalSpace s2 />
       </div>
     )),
   ];
 
-  const leftNavStyle: CSSProperties = {
+  const leftNavStyle = css({
     borderRightColor: theme.palette.divider,
     borderRightWidth: 1,
     borderRightStyle: "solid",
-  };
-  const bodyStyle: CSSProperties = { padding: theme.spacing(2) };
+  });
+  const bodyStyle = css({ padding: theme.spacing(2) });
   return (
-    <Grid container style={{ flex: 1 }}>
-      <Grid item xs={12} sm={4} md={3} lg={2} style={leftNavStyle}>
+    <Grid container className={css({ flex: 1 })}>
+      <Grid item xs={12} sm={4} md={3} lg={2} className={leftNavStyle}>
         {leftNavSections.map((child, index) =>
           index === leftNavSections.length - 1
             ? child
             : [child, <Divider key={`LeftNavSection-${index}`} />],
         )}
       </Grid>
-      <Grid item xs={12} sm={8} md={9} lg={10} style={bodyStyle}>
+      <Grid item xs={12} sm={8} md={9} lg={10} className={bodyStyle}>
         {bodyCards}
       </Grid>
     </Grid>

@@ -1,4 +1,3 @@
-import { OutlinedInput, useTheme } from "@material-ui/core";
 import React, { useState } from "react";
 
 import FormControl from "@material-ui/core/FormControl";
@@ -6,15 +5,16 @@ import Grid from "@material-ui/core/Grid";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import NewFieldDialogButton from "./NewFieldDialogButton";
 import ObjectFieldNodeCardView from "./ObjectFieldNodeCardView";
+import { OutlinedInput } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import { TObjectNode } from "../../../../../utils/normalization";
+import { VerticalSpace } from "../../../../core/Spacing";
 import useSearchTextOnNodeRecursively from "./useSearchTextOnNodeRecursively";
 
 type Props = { node: TObjectNode };
 export default function ObjectNodeCardView({ node }: Props) {
   const [searchValue, setSearchValue] = useState("");
   const searchMatches = useSearchTextOnNodeRecursively(searchValue);
-  const theme = useTheme();
   const [searchHasFocus, setSearchHasFocus] = useState(false);
   return (
     <>
@@ -45,7 +45,7 @@ export default function ObjectNodeCardView({ node }: Props) {
               }
             />
           </FormControl>
-          <div style={{ height: theme.spacing(2) }} />
+          <VerticalSpace s2 />
         </Grid>
       ) : null}
       <Grid container spacing={1} onClick={(event) => event.stopPropagation()}>

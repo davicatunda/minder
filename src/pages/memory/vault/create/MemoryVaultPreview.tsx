@@ -6,6 +6,8 @@ import { DecodedDataContext } from "../../useDecodedDataContext";
 import MemoryVaultInfo from "../info/MemoryVaultInfo";
 import MemoryVaultSettingsMenu from "../MemoryVaultSettingsMenu";
 import React from "react";
+import { VerticalSpace } from "../../../core/Spacing";
+import { css } from "@emotion/css";
 
 type CreatingPreviewVaultData = {
   title: string;
@@ -33,25 +35,25 @@ export default function MemoryVaultPreview({
   return (
     <DecodedDataContext.Provider value={{ store, updateNodes: null, encryptionKey }}>
       <Paper
-        style={{
+        className={css({
           flex: 1,
           position: "relative",
           overflow: "hidden",
           padding: theme.spacing(3),
-        }}
+        })}
       >
         <div
-          style={{
+          className={css({
             position: "absolute",
             right: theme.spacing(1),
             top: theme.spacing(1),
             zIndex: 2,
-          }}
+          })}
         >
           <MemoryVaultSettingsMenu onDelete={onDelete} />
         </div>
         <div
-          style={{
+          className={css({
             backgroundColor: theme.palette.background.default,
             opacity: 0.8,
             position: "absolute",
@@ -63,12 +65,12 @@ export default function MemoryVaultPreview({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-          }}
+          })}
         >
           <Typography variant="h3">Preview</Typography>
         </div>
         <MemoryVaultInfo />
-        <div style={{ height: theme.spacing(3) }} />
+        <VerticalSpace s3 />
         {!hasFailed ? (
           <CardView nodeKey={store.rootNode.value} />
         ) : (

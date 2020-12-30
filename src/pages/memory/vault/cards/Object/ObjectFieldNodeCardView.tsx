@@ -11,10 +11,12 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import EditValueInput from "../EditValueInput";
 import Grid from "@material-ui/core/Grid";
+import { HorizontalSpace } from "../../../../core/Spacing";
 import IconButton from "@material-ui/core/IconButton";
 import NodeTypeIcon from "../NodeTypeIcon";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { css } from "@emotion/css";
 import useDecodedDataContext from "../../../useDecodedDataContext";
 import useDragObjectField from "./useDragObjectField";
 
@@ -57,20 +59,20 @@ export default function ObjectFieldNodeCardView({
             <Typography
               gutterBottom
               variant="h6"
-              style={{ display: "flex", alignItems: "center" }}
+              className={css({ display: "flex", alignItems: "center" })}
             >
               <NodeTypeIcon nodeKey={value} />
-              <span style={{ width: theme.spacing(1) }} />
+              <HorizontalSpace s1 />
               <span
-                style={
+                className={
                   isMinimized
-                    ? {
+                    ? css({
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         flexGrow: 1,
-                      }
-                    : { flexGrow: 1 }
+                      })
+                    : css({ flexGrow: 1 })
                 }
               >
                 {name}
@@ -83,7 +85,7 @@ export default function ObjectFieldNodeCardView({
             </Typography>
             {isMinimized ? (
               <span
-                style={{
+                className={css({
                   backgroundColor: theme.palette.text.primary,
                   opacity: 0.1,
                   filter: "blur(4px)",
@@ -91,7 +93,7 @@ export default function ObjectFieldNodeCardView({
                   height: 11,
                   marginTop: theme.spacing(2),
                   display: "block",
-                }}
+                })}
               />
             ) : (
               <CardView nodeKey={value} />
@@ -168,7 +170,7 @@ function EditFieldDialog({ name, value, parentKey }: TObjectField) {
               onChange={(event) => setNewFieldName(event.target.value)}
               fullWidth
             />
-            <span style={{ width: theme.spacing(1) }} />
+            <HorizontalSpace s1 />
             <EditValueInput node={valueNode} onChange={setValueNode} />
           </DialogContent>
           <DialogActions>
@@ -186,7 +188,7 @@ function EditFieldDialog({ name, value, parentKey }: TObjectField) {
             >
               Delete
             </Button>
-            <span style={{ flex: 1 }} />
+            <HorizontalSpace s1 grow />
             <Button onClick={() => setIsEditting(false)}>Cancel</Button>
             <Button
               color="primary"

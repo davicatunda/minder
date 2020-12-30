@@ -20,6 +20,8 @@ import {
 import React, { useState } from "react";
 
 import DragAndDrop from "../DragAndDrop";
+import { HorizontalSpace } from "../../../../core/Spacing";
+import { css } from "@emotion/css";
 import readFile from "./readFile";
 import useStandardProposal from "../../../useStandardProposal";
 
@@ -46,11 +48,11 @@ export default function MemoryVaultDataInput({ setInitialData }: Props) {
   return (
     <>
       <div
-        style={{
+        className={css({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-        }}
+        })}
       >
         <Typography variant="body1">Data Options</Typography>
         <IconButton
@@ -95,12 +97,12 @@ export default function MemoryVaultDataInput({ setInitialData }: Props) {
             control={<Radio size="small" />}
             label={
               <span
-                style={{
+                className={css({
                   display: "flex",
                   alignItems: "center",
-                }}
+                })}
               >
-                My own <span style={{ width: theme.spacing(1) }} />
+                My own <HorizontalSpace s1 />
                 <Tooltip
                   title="Your encrypted data or a strigfied json"
                   placement="top"
@@ -125,12 +127,12 @@ export default function MemoryVaultDataInput({ setInitialData }: Props) {
             <Button
               component="label"
               fullWidth
-              style={{
+              className={css({
                 textTransform: "none",
                 outlineWidth: 2,
                 outlineStyle: "dashed",
                 outlineColor: theme.palette.secondary.main,
-              }}
+              })}
               startIcon={encryptedData === null ? <GetApp /> : <Done />}
             >
               <input
