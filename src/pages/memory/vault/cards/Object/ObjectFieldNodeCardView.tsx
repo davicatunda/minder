@@ -2,7 +2,6 @@ import { Card, CardActionArea, CardContent, useTheme } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { RefinedType, TObjectField } from "../../../../../utils/normalization";
 
-import BlurredBar from "../../../../../components/BlurredBar";
 import Button from "@material-ui/core/Button";
 import CardView from "../CardView";
 import CreateIcon from "@material-ui/icons/Create";
@@ -83,8 +82,11 @@ export default function ObjectFieldNodeCardView({
               )}
             </Typography>
             {isMinimized ? (
-              <BlurredBar
+              <span
                 style={{
+                  backgroundColor: theme.palette.text.primary,
+                  opacity: 0.1,
+                  filter: "blur(4px)",
                   width: "80%",
                   height: 11,
                   marginTop: theme.spacing(2),
