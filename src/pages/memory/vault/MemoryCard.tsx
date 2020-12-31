@@ -24,13 +24,20 @@ export default function MemoryCard({ card, setCards }: MemoryCardProps) {
       ),
     );
   };
-  if (!card.isCreating && card.vaultData.initialData === "") {
-    return (
-      <MemoryVaultLoadingState
-        vaultData={card.vaultData}
-        onChange={changeCardVaultData}
-      />
+  const onDataLoaded = (data: string) =>
+    setCards((old) =>
+      old.map((oldCard) =>
+        oldCard.id === card.id
+          ? {
+              ...oldCard,
+              vaultData: { ...oldCard.vaultData, initialData: data },
+              isLoading: false,
+            }
+          : oldCard,
+      ),
     );
+  if (card.isLoading) {
+    return <MemoryVaultLoadingState onDataLoaded={onDataLoaded} />;
   } else if (card.isCreating) {
     return (
       <MemoryVaultCreatingState

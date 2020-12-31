@@ -16,6 +16,7 @@ export type CardListItem = {
   vaultData: VaultData;
   id: string;
   isOpen: boolean;
+  isLoading: boolean;
   isCreating: boolean;
   isReadOnly: boolean;
 };

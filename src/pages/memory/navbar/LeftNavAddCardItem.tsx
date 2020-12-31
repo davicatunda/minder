@@ -20,7 +20,8 @@ export default function LeftNavAddCardItem({ addCard }: Props) {
     },
     id: uuid(),
     isOpen: true,
-    isCreating: standardProposal?.data != null,
+    isLoading: standardProposal?.data == null,
+    isCreating: true,
     isReadOnly: true,
   };
 

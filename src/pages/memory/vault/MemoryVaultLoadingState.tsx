@@ -1,17 +1,15 @@
 import { Tooltip, Typography } from "@material-ui/core";
 
 import React from "react";
-import { VaultData } from "./MemoryVault";
 import useStandardProposal from "../useStandardProposal";
 
 type Props = {
-  vaultData: VaultData;
-  onChange: (vaultData: VaultData) => void;
+  onDataLoaded: (standardProposal: string) => void;
 };
 
-export default function MemoryVaultLoadingState({ vaultData, onChange }: Props) {
+export default function MemoryVaultLoadingState({ onDataLoaded }: Props) {
   useStandardProposal(({ standardProposal }) => {
-    onChange({ ...vaultData, initialData: standardProposal.data });
+    onDataLoaded(standardProposal.data);
   });
   return (
     <Tooltip

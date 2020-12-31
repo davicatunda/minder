@@ -32,6 +32,7 @@ export default function useCardsFromUrl(
       isOpen: true,
       isReadOnly: isCreating ? true : params.readOnly !== "false",
       isCreating,
+      isLoading: false,
       vaultData: {
         title: params.title ?? "",
         encryptionKey: params.key ? params.key.split(" ").join("+") : "",
