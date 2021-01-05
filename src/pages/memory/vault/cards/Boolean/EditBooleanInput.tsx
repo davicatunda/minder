@@ -10,7 +10,7 @@ type Props = {
 export default function EditBooleanInput({ node, onChange }: Props) {
   return (
     <FormControl variant="filled" fullWidth>
-      <InputLabel>Initial value</InputLabel>
+      <InputLabel>Value</InputLabel>
       <Select
         label="Type"
         value={node.value}

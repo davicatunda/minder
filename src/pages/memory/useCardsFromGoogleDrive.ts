@@ -24,7 +24,8 @@ function filetoListItem(file: gapi.client.drive.File): GoogleCardListItem {
       encryptionKey: file.appProperties?.encryptionKey ?? "",
       initialData: "",
     },
-    isCreating: true,
+    isLoading: false,
+    isCreating: false,
     isOpen: false,
   };
 }

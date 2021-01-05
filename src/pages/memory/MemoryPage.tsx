@@ -1,4 +1,11 @@
-import { Divider, Grid, List, useTheme } from "@material-ui/core";
+import {
+  Button,
+  Divider,
+  List,
+  SwipeableDrawer,
+  useMediaQuery,
+  useTheme,
+} from "@material-ui/core";
 import React, { useState } from "react";
 
 import GoogleMemoryCard from "./google-vault/GoogleMemoryCard";
@@ -6,8 +13,8 @@ import LeftNavAddCardItem from "./navbar/LeftNavAddCardItem";
 import LeftNavCardItem from "./navbar/LeftNavCardItem";
 import LeftNavGoogleItem from "./navbar/LeftNavGoogleItem";
 import MemoryCard from "./vault/MemoryCard";
+import { MoreHoriz } from "@material-ui/icons";
 import { VaultData } from "./vault/MemoryVault";
-import { VerticalSpace } from "../core/Spacing";
 import { css } from "@emotion/css";
 import useCardsFromGoogleDrive from "./useCardsFromGoogleDrive";
 import useCardsFromUrl from "./useCardsFromUrl";
@@ -23,6 +30,7 @@ export type CardListItem = {
 export type GoogleCardListItem = {
   vaultData: VaultData;
   resourceId: string;
+  isLoading: boolean;
   isCreating: boolean;
   isOpen: boolean;
 };
@@ -59,47 +67,80 @@ export default function MemoryPage() {
         ))}
       </List>
     ),
-  ];
+  ].map((child, index, all) =>
+    index === all.length - 1
+      ? child
+      : [child, <Divider key={`LeftNavSection-${index}`} />],
+  );
 
   const bodyCards = [
     ...cards.map((card) => (
-      <div
-        className={css({ display: card.isOpen ? "initial" : "none" })}
-        key={card.id}
-      >
-        <MemoryCard card={card} setCards={setCards} />
-        <VerticalSpace s2 />
-      </div>
+      <MemoryCard card={card} setCards={setCards} key={card.id} />
     )),
     ...googleCards.map((card) => (
-      <div
-        className={css({ display: card.isOpen ? "initial" : "none" })}
+      <GoogleMemoryCard
+        card={card}
+        setGoogleCards={setGoogleCards}
         key={card.resourceId}
-      >
-        <GoogleMemoryCard card={card} setGoogleCards={setGoogleCards} />
-        <VerticalSpace s2 />
-      </div>
+      />
     )),
   ];
 
-  const leftNavStyle = css({
-    borderRightColor: theme.palette.divider,
-    borderRightWidth: 1,
-    borderRightStyle: "solid",
-  });
-  const bodyStyle = css({ padding: theme.spacing(2) });
+  const leftNavIsFixed = useMediaQuery(theme.breakpoints.up("sm"));
+  const hasRightNav = useMediaQuery(theme.breakpoints.up("xl"));
+  const [open, setOpen] = useState(true);
   return (
-    <Grid container className={css({ flex: 1 })}>
-      <Grid item xs={12} sm={4} md={3} lg={2} className={leftNavStyle}>
-        {leftNavSections.map((child, index) =>
-          index === leftNavSections.length - 1
-            ? child
-            : [child, <Divider key={`LeftNavSection-${index}`} />],
+    <>
+      <div className={css({ display: "flex", flexGrow: 1 })}>
+        {leftNavIsFixed ? (
+          <div
+            className={css({
+              flexBasis: 200,
+              flexShrink: 0,
+              borderRightColor: theme.palette.divider,
+              borderRightWidth: 1,
+              borderRightStyle: "solid",
+            })}
+          >
+            {leftNavSections}
+          </div>
+        ) : (
+          <>
+            <Button
+              onClick={() => setOpen(true)}
+              classes={{
+                root: css({
+                  borderRadius: 0,
+                  borderInlineEndWidth: 1,
+                  borderInlineEndStyle: "solid",
+                  borderInlineEndColor: theme.palette.divider,
+                }),
+              }}
+            >
+              <MoreHoriz />
+            </Button>
+            <SwipeableDrawer
+              anchor={"left"}
+              open={open}
+              onClose={() => setOpen(false)}
+              onOpen={() => setOpen(true)}
+              classes={{ paper: css({ minWidth: 250 }) }}
+            >
+              {leftNavSections}
+            </SwipeableDrawer>
+          </>
         )}
-      </Grid>
-      <Grid item xs={12} sm={8} md={9} lg={10} className={bodyStyle}>
-        {bodyCards}
-      </Grid>
-    </Grid>
+        <div className={css({ padding: theme.spacing(2), flexGrow: 1 })}>
+          {bodyCards}
+        </div>
+        {hasRightNav && (
+          <div
+            className={css({
+              flexBasis: 250,
+            })}
+          ></div>
+        )}
+      </div>
+    </>
   );
 }

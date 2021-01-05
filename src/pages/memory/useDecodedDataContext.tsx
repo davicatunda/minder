@@ -3,7 +3,6 @@ import { createContext, useContext } from "react";
 
 type TDecodedDataContext = {
   encryptionKey?: string;
-  googleResourceId?: string;
   store: Store;
   updateNodes: ((nodes: TNode[]) => void) | null;
 };

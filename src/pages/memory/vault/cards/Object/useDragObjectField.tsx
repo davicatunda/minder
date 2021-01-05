@@ -7,14 +7,15 @@ import {
 
 import { DraggableItemsContext } from "../../../useDraggableItemsContext";
 import useDecodedDataContext from "../../../useDecodedDataContext";
+import { useEditingContext } from "../../EditingProvider";
 import { useTheme } from "@material-ui/core";
 
 type useDragObjectFieldReturn = {
   draggableContainerProps: {
     draggable: boolean;
     style?: React.CSSProperties;
-    onDragStart?(event: React.DragEvent<HTMLDivElement>): void;
-    onDragEnd?(event: React.DragEvent<HTMLDivElement>): void;
+    onDragStart?(event: React.DragEvent<any>): void;
+    onDragEnd?(event: React.DragEvent<any>): void;
   };
   dropTargetProps: {
     ref?: React.Ref<HTMLDivElement>;
@@ -29,11 +30,12 @@ export default function useDragObjectField(
   item: TObjectField,
 ): useDragObjectFieldReturn {
   const ref = useRef<HTMLDivElement>(null);
+  const { isEditing } = useEditingContext();
   const theme = useTheme();
   const { store, updateNodes } = useDecodedDataContext();
   const [hoverStatus, setHover] = useState<"AFTER" | "BEFORE" | null>(null);
   const context = useContext(DraggableItemsContext);
-  if (updateNodes === null || context === null) {
+  if (updateNodes === null || context === null || !isEditing) {
     return {
       draggableContainerProps: {
         draggable: false,
@@ -64,10 +66,10 @@ export default function useDragObjectField(
         borderColor: theme.palette.primary.main,
         ...(isBeingDragged
           ? {
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
+              left: -2,
+              right: -2,
+              top: -2,
+              bottom: -2,
               borderWidth: 2,
               borderRadius: theme.shape.borderRadius,
               borderStyle: "dashed",
@@ -75,8 +77,8 @@ export default function useDragObjectField(
           : {
               top: 4,
               bottom: 4,
-              left: -2,
-              right: -2,
+              left: -11,
+              right: -11,
               borderWidth: 4,
               borderLeftStyle: hoverStatus === "BEFORE" ? "solid" : "none",
               borderRightStyle: hoverStatus === "AFTER" ? "solid" : "none",

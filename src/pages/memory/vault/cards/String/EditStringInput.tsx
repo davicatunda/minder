@@ -11,7 +11,7 @@ export default function EditStringInput({ node, onChange }: Props) {
   return (
     <TextField
       id="name"
-      label="Initial Value"
+      label="Value"
       variant="filled"
       type="string"
       value={node.value}

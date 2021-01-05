@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 import { GoogleCardListItem } from "../MemoryPage";
 import GoogleCardNavBarItem from "../google-vault/GoogleCardNavBarItem";
@@ -11,33 +11,40 @@ export default function LeftNavGoogleItem({
   card,
   setGoogleCards,
 }: LeftNavGoogleItemProps) {
-  const [isDownloading, setIsDownloading] = useState(false);
   const onClick = () => {
-    if (card.vaultData.initialData === "" && !isDownloading) {
-      setIsDownloading(true);
+    if (card.vaultData.initialData === "" && !card.isLoading) {
+      setGoogleCards((oldCards) =>
+        oldCards.map((oldCard) =>
+          card.resourceId === oldCard.resourceId
+            ? { ...oldCard, isLoading: true, isOpen: true }
+            : oldCard,
+        ),
+      );
       gapi.client.drive.files
         .get({ fileId: card.resourceId, alt: "media" })
         .then(({ body }: { body: string }) => {
-          setIsDownloading(false);
           setGoogleCards((oldCards) =>
             oldCards.map((oldCard) =>
               card.resourceId === oldCard.resourceId
                 ? {
                     ...oldCard,
+                    isLoading: false,
+                    isCreating: true,
                     vaultData: { ...oldCard.vaultData, initialData: body },
                   }
                 : oldCard,
             ),
           );
         });
+    } else {
+      setGoogleCards((oldCards) =>
+        oldCards.map((oldCard) =>
+          card.resourceId === oldCard.resourceId
+            ? { ...oldCard, isOpen: !oldCard.isOpen }
+            : oldCard,
+        ),
+      );
     }
-    setGoogleCards((oldCards) =>
-      oldCards.map((oldCard) =>
-        card.resourceId === oldCard.resourceId
-          ? { ...oldCard, isOpen: !oldCard.isOpen }
-          : oldCard,
-      ),
-    );
   };
   return <GoogleCardNavBarItem card={card} onClick={onClick} />;
 }

@@ -1,10 +1,10 @@
 import { Close, Minimize } from "@material-ui/icons";
+import EditValueInput, { DraftNode } from "../EditValueInput";
 import { HorizontalSpace, VerticalSpace } from "../../../../core/Spacing";
 import { IconButton, useTheme } from "@material-ui/core";
 import React, { useState } from "react";
 import {
   RefinedType,
-  TNode,
   TObjectNode,
   defaultNodeValue,
 } from "../../../../../utils/normalization";
@@ -15,7 +15,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import EditValueInput from "../EditValueInput";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -28,30 +27,34 @@ export default function NewFieldDialogButton(props: { parentNode: TObjectNode })
   const theme = useTheme();
   const { updateNodes } = useDecodedDataContext();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [valueNode, setValueNode] = useState<TNode>(
-    defaultNodeValue(RefinedType.String, props.parentNode),
-  );
+  const [draftNode, setDraftNode] = useState<DraftNode>({
+    valueNode: defaultNodeValue(RefinedType.String, props.parentNode),
+  });
   const [fieldName, setFieldName] = useState<string>("");
   if (updateNodes === null) {
     return null;
   }
   const closeAndClearDialog = () => {
     setIsDialogOpen(false);
-    setValueNode(defaultNodeValue(RefinedType.String, props.parentNode));
+    setDraftNode({
+      valueNode: defaultNodeValue(RefinedType.String, props.parentNode),
+    });
     setFieldName("");
   };
   return (
     <span
-      className={css({ display: "flex", alignItems: "center" })}
+      className={css({ margin: theme.spacing(1), display: "flex" })}
       onClick={(event) => event.stopPropagation()}
     >
-      <IconButton
-        onClick={(e) => {
-          setIsDialogOpen(true);
-        }}
+      <Button
+        variant="outlined"
+        color="primary"
+        size="small"
+        onClick={() => setIsDialogOpen(true)}
+        startIcon={<AddIcon />}
       >
-        <AddIcon fontSize="large" />
-      </IconButton>
+        Add
+      </Button>
       <Dialog
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
@@ -82,10 +85,12 @@ export default function NewFieldDialogButton(props: { parentNode: TObjectNode })
               <InputLabel>Type</InputLabel>
               <Select
                 label="Type"
-                value={valueNode.type}
+                value={draftNode.valueNode?.type ?? ""}
                 onChange={(event) => {
                   const newType: RefinedType = event.target.value as RefinedType;
-                  setValueNode(defaultNodeValue(newType, props.parentNode));
+                  setDraftNode({
+                    valueNode: defaultNodeValue(newType, props.parentNode),
+                  });
                 }}
               >
                 <MenuItem value={RefinedType.List}>List</MenuItem>
@@ -108,27 +113,32 @@ export default function NewFieldDialogButton(props: { parentNode: TObjectNode })
             />
           </div>
           <VerticalSpace />
-          <EditValueInput node={valueNode} onChange={setValueNode} />
+          <EditValueInput node={draftNode} onChange={setDraftNode} />
         </DialogContent>
         <DialogActions>
           <Button
             onClick={() => {
-              if (valueNode) {
+              if (draftNode.valueNode) {
                 const newParentNode: TObjectNode = {
                   ...props.parentNode,
                   fields: [
                     ...props.parentNode.fields,
                     {
                       name: fieldName,
-                      value: valueNode.key,
-                      parentKey: valueNode.parentKey,
+                      value: draftNode.valueNode.key,
+                      parentKey: draftNode.valueNode.parentKey,
                     },
                   ],
                 };
-                updateNodes([valueNode, newParentNode]);
+                updateNodes([
+                  ...(draftNode.childNodes ?? []),
+                  draftNode.valueNode,
+                  newParentNode,
+                ]);
               }
               closeAndClearDialog();
             }}
+            disabled={fieldName === ""}
             fullWidth
             variant="contained"
             color="primary"

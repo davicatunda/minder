@@ -1,5 +1,7 @@
-import { Paper, Typography, useTheme } from "@material-ui/core";
+import { Paper, useTheme } from "@material-ui/core";
 
+import BreadcrumbPaths from "../memory/vault/BreadcrumbPaths";
+import BreadcrumbsProvider from "../memory/vault/BreadcrumbsProvider";
 import CardView from "../memory/vault/cards/CardView";
 import { DecodedDataContext } from "../memory/useDecodedDataContext";
 import React from "react";
@@ -14,15 +16,16 @@ type Props = {
 };
 export default function StandardPageProposedAPISection({ standardProposal }: Props) {
   const theme = useTheme();
-  const store = normalizeRoot(standardProposal.data, {});
+  const title = `Proposed API ${standardProposal.version}`;
+  const store = normalizeRoot(standardProposal.data, { title });
   return (
-    <DecodedDataContext.Provider value={{ store, updateNodes: null }}>
-      <Paper className={css({ padding: theme.spacing(3) })}>
-        <Typography variant="h6" gutterBottom>
-          Proposed API {standardProposal.version}
-        </Typography>
-        <CardView nodeKey={store.rootNode.value} />
-      </Paper>
-    </DecodedDataContext.Provider>
+    <BreadcrumbsProvider>
+      <DecodedDataContext.Provider value={{ store, updateNodes: null }}>
+        <Paper className={css({ padding: theme.spacing(3) })}>
+          <BreadcrumbPaths />
+          <CardView nodeKey={store.rootNode.value} />
+        </Paper>
+      </DecodedDataContext.Provider>
+    </BreadcrumbsProvider>
   );
 }

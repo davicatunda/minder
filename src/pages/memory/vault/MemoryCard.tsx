@@ -2,8 +2,10 @@ import MemoryVault, { VaultData } from "./MemoryVault";
 import React, { Dispatch, SetStateAction } from "react";
 
 import { CardListItem } from "../MemoryPage";
+import { Collapse } from "@material-ui/core";
 import MemoryVaultCreatingState from "./create/MemoryVaultCreatingState";
 import MemoryVaultLoadingState from "./MemoryVaultLoadingState";
+import { VerticalSpace } from "../../core/Spacing";
 
 type MemoryCardProps = {
   card: CardListItem;
@@ -37,23 +39,34 @@ export default function MemoryCard({ card, setCards }: MemoryCardProps) {
       ),
     );
   if (card.isLoading) {
-    return <MemoryVaultLoadingState onDataLoaded={onDataLoaded} />;
+    return (
+      <Collapse in={card.isOpen}>
+        <MemoryVaultLoadingState onDataLoaded={onDataLoaded} />
+        <VerticalSpace s2 />
+      </Collapse>
+    );
   } else if (card.isCreating) {
     return (
-      <MemoryVaultCreatingState
-        vaultData={card.vaultData}
-        onSubmit={createCard}
-        onDelete={deleteCard}
-        onChange={changeCardVaultData}
-      />
+      <Collapse in={card.isOpen}>
+        <MemoryVaultCreatingState
+          vaultData={card.vaultData}
+          onSubmit={createCard}
+          onDelete={deleteCard}
+          onChange={changeCardVaultData}
+        />
+        <VerticalSpace s2 />
+      </Collapse>
     );
   } else {
     return (
-      <MemoryVault
-        vaultData={card.vaultData}
-        isReadOnly={card.isReadOnly}
-        onDelete={deleteCard}
-      />
+      <Collapse in={card.isOpen}>
+        <MemoryVault
+          vaultData={card.vaultData}
+          isReadOnly={card.isReadOnly}
+          onDelete={deleteCard}
+        />
+        <VerticalSpace s2 />
+      </Collapse>
     );
   }
 }

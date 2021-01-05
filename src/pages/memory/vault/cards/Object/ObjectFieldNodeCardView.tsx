@@ -1,215 +1,182 @@
-import { Card, CardActionArea, CardContent, useTheme } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Grow,
+  Paper,
+  Popover,
+  PopoverProps,
+  Typography,
+  useTheme,
+} from "@material-ui/core";
+import React, { ReactNode, useRef, useState } from "react";
 import { RefinedType, TObjectField } from "../../../../../utils/normalization";
 
-import Button from "@material-ui/core/Button";
 import CardView from "../CardView";
-import CreateIcon from "@material-ui/icons/Create";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import EditValueInput from "../EditValueInput";
-import Grid from "@material-ui/core/Grid";
+import { FileCopy } from "@material-ui/icons";
 import { HorizontalSpace } from "../../../../core/Spacing";
-import IconButton from "@material-ui/core/IconButton";
 import NodeTypeIcon from "../NodeTypeIcon";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import ObjectFieldEditButton from "./ObjectFieldEditButton";
+import ObjectFieldPopoverEditButton from "./ObjectFieldPopoverEditButton";
 import { css } from "@emotion/css";
+import textValueFromNode from "../textValueFromNode";
+import { useBreadcrumbsContext } from "../../BreadcrumbsProvider";
 import useDecodedDataContext from "../../../useDecodedDataContext";
 import useDragObjectField from "./useDragObjectField";
+import { useEditingContext } from "../../EditingProvider";
 
-// replace this generic grow to show with something better by type
-// Maybe open a preview Dialog ?
-// when entering a folder put a dark background on top of parent?
-export default function ObjectFieldNodeCardView({
-  name,
-  value,
-  parentKey,
-}: TObjectField) {
+type Props = {
+  objectField: TObjectField;
+  position: number;
+};
+export default function ObjectFieldNodeCardView({ objectField, position }: Props) {
+  const { isEditing } = useEditingContext();
   const theme = useTheme();
-  const { draggableContainerProps, dropTargetProps } = useDragObjectField({
-    name,
-    value,
-    parentKey,
-  });
-  const needsToExpand = useNeedsToExpand(name, value);
-  const [isMinimized, setIsMinimized] = useState(true);
+  const { setBreadcrumbs } = useBreadcrumbsContext();
+  const { store } = useDecodedDataContext();
+  const nodeValue = store.nodes[objectField.value];
+  const { draggableContainerProps, dropTargetProps } = useDragObjectField(
+    objectField,
+  );
+  const [isExpanded, setIsExpanded] = useState(false);
+  const anchorRef = useRef(null);
+  const [open, setOpen] = React.useState(false);
   return (
-    <Grid
-      item
-      xs={12}
-      sm={12}
-      md={isMinimized || !needsToExpand ? 6 : 12}
-      lg={isMinimized || !needsToExpand ? 3 : 12}
-      xl={isMinimized || !needsToExpand ? 2 : 12}
-      {...draggableContainerProps}
-    >
-      <div {...dropTargetProps} />
-      <Card
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsMinimized((v) => !v);
-        }}
-        variant="outlined"
-      >
-        <CardActionArea disableRipple>
-          <CardContent>
+    <>
+      <Grow in={true} timeout={position * 200} style={{ transformOrigin: "0 0 0" }}>
+        <Paper
+          {...draggableContainerProps}
+          variant="outlined"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (
+              nodeValue.type === RefinedType.Object ||
+              nodeValue.type === RefinedType.List
+            ) {
+              if (isEditing) {
+                setIsExpanded((old) => !old);
+              } else {
+                setBreadcrumbs((old) => [...old, objectField]);
+              }
+            } else {
+              setOpen((isOpen) => !isOpen);
+            }
+          }}
+          ref={anchorRef}
+          classes={{
+            root: css([
+              {
+                maxWidth: 450,
+                cursor: "pointer",
+                margin: theme.spacing(1),
+                padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+              },
+              !isEditing && { flexGrow: 1, flexBasis: 150 },
+              isEditing && isExpanded && { flexBasis: "100%", maxWidth: "100%" },
+            ]),
+          }}
+        >
+          <div {...dropTargetProps} />
+          <div className={css({ display: "flex", alignItems: "center" })}>
+            <NodeTypeIcon nodeKey={objectField.value} />
+            <HorizontalSpace s1 />
             <Typography
-              gutterBottom
-              variant="h6"
-              className={css({ display: "flex", alignItems: "center" })}
+              variant="body2"
+              classes={{
+                root: css({
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }),
+              }}
             >
-              <NodeTypeIcon nodeKey={value} />
-              <HorizontalSpace s1 />
-              <span
-                className={
-                  isMinimized
-                    ? css({
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        flexGrow: 1,
-                      })
-                    : css({ flexGrow: 1 })
-                }
-              >
-                {name}
-              </span>
-              {!isMinimized && (
-                <span onClick={(e) => e.stopPropagation()}>
-                  <EditFieldDialog name={name} value={value} parentKey={parentKey} />
-                </span>
-              )}
+              {objectField.name}
             </Typography>
-            {isMinimized ? (
-              <span
-                className={css({
-                  backgroundColor: theme.palette.text.primary,
-                  opacity: 0.1,
-                  filter: "blur(4px)",
-                  width: "80%",
-                  height: 11,
-                  marginTop: theme.spacing(2),
-                  display: "block",
-                })}
-              />
-            ) : (
-              <CardView nodeKey={value} />
-            )}
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    </Grid>
+            <HorizontalSpace s1 grow />
+            {isEditing && isExpanded && <ObjectFieldEditButton {...objectField} />}
+          </div>
+          {isExpanded && isEditing && <CardView nodeKey={objectField.value} />}
+        </Paper>
+      </Grow>
+      <ValuePreviewPopover
+        popoverProps={{
+          open,
+          onClose: () => setOpen(false),
+          anchorEl: anchorRef.current,
+        }}
+        objectField={objectField}
+      >
+        {isEditing && <ObjectFieldPopoverEditButton {...objectField} />}
+        <CopyValueToClipboardButton
+          objectField={objectField}
+          onDone={() => setOpen(false)}
+        />
+      </ValuePreviewPopover>
+    </>
   );
 }
 
-function useNeedsToExpand(name: string, nodeKey: string): boolean {
+type ValuePreviewPopoverProps = {
+  children?: ReactNode;
+  popoverProps: PopoverProps;
+  objectField: TObjectField;
+};
+function ValuePreviewPopover({
+  children,
+  popoverProps,
+  objectField,
+}: ValuePreviewPopoverProps) {
   const { store } = useDecodedDataContext();
-  if (name.length > 20) {
-    return true;
-  }
-  const node = store.nodes[nodeKey];
-  switch (node.type) {
-    case RefinedType.Boolean:
-      return false;
-    case RefinedType.Date:
-      return false;
-    case RefinedType.List:
-      return true;
-    case RefinedType.Null:
-      return false;
-    case RefinedType.Number:
-      return node.value.toString().length > 30;
-    case RefinedType.Object:
-      return true;
-    case RefinedType.String:
-      return node.value.length > 30;
-  }
+  const theme = useTheme();
+  return (
+    <Popover
+      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      transformOrigin={{ vertical: "top", horizontal: "left" }}
+      {...popoverProps}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <Paper
+        className={css({
+          maxWidth: 450,
+          display: "flex",
+          backgroundColor: theme.palette.background.default,
+        })}
+      >
+        <span className={css({ margin: theme.spacing(2), minWidth: 150 })}>
+          {textValueFromNode(store, objectField.value)}
+        </span>
+        <HorizontalSpace s1 grow />
+        {children}
+      </Paper>
+    </Popover>
+  );
 }
 
-function EditFieldDialog({ name, value, parentKey }: TObjectField) {
+type CopyValueToClipboardButtonProps = {
+  objectField: TObjectField;
+  onDone: () => void;
+};
+function CopyValueToClipboardButton({
+  objectField,
+  onDone,
+}: CopyValueToClipboardButtonProps) {
   const theme = useTheme();
-  const { store, updateNodes } = useDecodedDataContext();
-  const [newFieldName, setNewFieldName] = useState(name);
-  const oldValueNode = store.nodes[value];
-  const oldParentNode = store.nodes[parentKey];
-  const [valueNode, setValueNode] = useState(oldValueNode);
-  const [isEditting, setIsEditting] = useState(false);
-
-  // refresh if new values are passed.
-  useEffect(() => {
-    setNewFieldName(name);
-    setValueNode(oldValueNode);
-  }, [name, oldValueNode, oldParentNode]);
-  if (updateNodes === null || oldParentNode.type !== RefinedType.Object) {
-    return null;
-  }
+  const { store } = useDecodedDataContext();
   return (
-    <>
-      <IconButton onClick={() => setIsEditting(true)} size="small">
-        <CreateIcon fontSize="small" />
-      </IconButton>
-      {isEditting && (
-        <Dialog
-          open={isEditting}
-          onClose={() => setIsEditting(false)}
-          aria-labelledby="edit-dialog-title"
-          fullWidth
-          maxWidth="xs"
-        >
-          <DialogTitle id="edit-dialog-title">Edit</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Name"
-              variant="outlined"
-              type="string"
-              autoFocus
-              value={newFieldName}
-              onChange={(event) => setNewFieldName(event.target.value)}
-              fullWidth
-            />
-            <HorizontalSpace s1 />
-            <EditValueInput node={valueNode} onChange={setValueNode} />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                const newParentNode = {
-                  ...oldParentNode,
-                  fields: oldParentNode.fields.filter(
-                    (originalField) => originalField.value !== value,
-                  ),
-                };
-                updateNodes([newParentNode]);
-                setIsEditting(false);
-              }}
-            >
-              Delete
-            </Button>
-            <HorizontalSpace s1 grow />
-            <Button onClick={() => setIsEditting(false)}>Cancel</Button>
-            <Button
-              color="primary"
-              onClick={() => {
-                const newParentNode = {
-                  ...oldParentNode,
-                  fields: oldParentNode.fields.map((originalField) =>
-                    originalField.value !== value
-                      ? originalField
-                      : { ...originalField, name: newFieldName },
-                  ),
-                };
-                updateNodes([valueNode, newParentNode]);
-                setIsEditting(false);
-              }}
-            >
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-    </>
+    <Button
+      className={css({
+        flexShrink: 0,
+        display: "flex",
+        borderRadius: "0 4px 4px 0",
+        borderInlineStartWidth: 1,
+        borderInlineStartColor: theme.palette.divider,
+        borderInlineStartStyle: "solid",
+      })}
+      onClick={(e) => {
+        navigator.clipboard
+          .writeText(textValueFromNode(store, objectField.value))
+          .then(onDone);
+      }}
+    >
+      <FileCopy fontSize="small" />
+    </Button>
   );
 }

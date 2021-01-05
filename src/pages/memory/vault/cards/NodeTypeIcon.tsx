@@ -14,19 +14,19 @@ function NodeTypeIcon(props: { nodeKey: string }) {
   const node = store.nodes[props.nodeKey];
   switch (node.type) {
     case RefinedType.Boolean:
-      return <ToggleOnOutlinedIcon />;
+      return <ToggleOnOutlinedIcon style={{ fontSize: 20 }} />;
     case RefinedType.Date:
-      return <TodayOutlinedIcon />;
+      return <TodayOutlinedIcon style={{ fontSize: 20 }} />;
     case RefinedType.List:
-      return <ListOutlinedIcon />;
+      return <ListOutlinedIcon style={{ fontSize: 20 }} />;
     case RefinedType.Null:
-      return <HelpOutlineOutlinedIcon />;
+      return <HelpOutlineOutlinedIcon style={{ fontSize: 20 }} />;
     case RefinedType.Number:
-      return <Filter1OutlinedIcon />;
+      return <Filter1OutlinedIcon style={{ fontSize: 20 }} />;
     case RefinedType.Object:
-      return <FolderOpenOutlinedIcon />;
+      return <FolderOpenOutlinedIcon style={{ fontSize: 20 }} />;
     case RefinedType.String:
-      return <SubjectOutlinedIcon />;
+      return <SubjectOutlinedIcon style={{ fontSize: 20 }} />;
   }
 }
 

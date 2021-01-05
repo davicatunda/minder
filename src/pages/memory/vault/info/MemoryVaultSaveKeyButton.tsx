@@ -14,7 +14,9 @@ export default function MemoryVaultSaveKeyButton() {
   return (
     <>
       <Button
+        variant="outlined"
         size="small"
+        fullWidth
         color="primary"
         onClick={() => setIsShowingPopover(true)}
         ref={anchorRef}

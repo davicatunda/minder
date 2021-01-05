@@ -12,7 +12,7 @@ export default function EditNumberInput({ node, onChange }: Props) {
     <TextField
       variant="filled"
       id="name"
-      label="Initial Value"
+      label="Value"
       type="number"
       value={node.value}
       onChange={(event) => {

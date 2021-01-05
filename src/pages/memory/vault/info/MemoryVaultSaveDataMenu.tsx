@@ -20,6 +20,7 @@ import updateFileContent from "../../../../google-integration/updateFileContent"
 import uploadFile from "../../../../google-integration/uploadFile";
 import useDecodedDataContext from "../../useDecodedDataContext";
 import { useGoogleAuthContext } from "../../../../google-integration/useGoogleAuthProvider";
+import useGoogleCardContext from "../../google-vault/useGoogleCardContext";
 
 const listItemIconStyle = css({ minWidth: 36 });
 
@@ -101,7 +102,8 @@ function LoggedOutActions({ onItemPress }: { onItemPress: () => void }) {
 }
 
 function LoggedInActions({ onItemPress }: { onItemPress: () => void }) {
-  const { store, encryptionKey, googleResourceId } = useDecodedDataContext();
+  const googleResourceId = useGoogleCardContext();
+  const { store, encryptionKey } = useDecodedDataContext();
   return (
     <>
       <Divider />

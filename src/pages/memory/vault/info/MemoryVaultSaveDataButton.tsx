@@ -9,6 +9,8 @@ export default function MemoryVaultSaveDataButton() {
   return (
     <>
       <Button
+        variant="outlined"
+        fullWidth
         size="small"
         color="primary"
         onClick={() => setIsShowingPopover(true)}

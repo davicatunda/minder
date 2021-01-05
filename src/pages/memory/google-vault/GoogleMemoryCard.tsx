@@ -1,10 +1,12 @@
 import React, { Dispatch, SetStateAction, useCallback } from "react";
 
+import { Collapse } from "@material-ui/core";
 import { GoogleCardListItem } from "../MemoryPage";
 import GoogleMemoryVault from "./GoogleMemoryVault";
 import GoogleMemoryVaultCreatingState from "./GoogleMemoryVaultCreatingState";
 import GoogleMemoryVaultLoadingState from "./GoogleMemoryVaultLoadingState";
 import { VaultData } from "../vault/MemoryVault";
+import { VerticalSpace } from "../../core/Spacing";
 import deleteFile from "../../../google-integration/deleteFile";
 
 type GoogleMemoryCardProps = {
@@ -38,26 +40,35 @@ export default function GoogleMemoryCard({
     },
     [card.resourceId, setGoogleCards],
   );
-  if (card.vaultData.initialData === "") {
-    return card.isOpen ? (
-      <GoogleMemoryVaultLoadingState onDelete={deleteCard} />
-    ) : null;
+  if (card.isLoading) {
+    return (
+      <Collapse in={card.isOpen}>
+        <GoogleMemoryVaultLoadingState onDelete={deleteCard} />
+        <VerticalSpace s2 />
+      </Collapse>
+    );
   } else if (card.isCreating) {
     return (
-      <GoogleMemoryVaultCreatingState
-        vaultData={card.vaultData}
-        onChange={changeCardVaultData}
-        onDelete={deleteCard}
-        onSubmit={createCard}
-      />
+      <Collapse in={card.isOpen}>
+        <GoogleMemoryVaultCreatingState
+          vaultData={card.vaultData}
+          onChange={changeCardVaultData}
+          onDelete={deleteCard}
+          onSubmit={createCard}
+        />
+        <VerticalSpace s2 />
+      </Collapse>
     );
   } else {
     return (
-      <GoogleMemoryVault
-        vaultData={card.vaultData}
-        onDelete={deleteCard}
-        resourceId={card.resourceId}
-      />
+      <Collapse in={card.isOpen}>
+        <GoogleMemoryVault
+          vaultData={card.vaultData}
+          onDelete={deleteCard}
+          resourceId={card.resourceId}
+        />
+        <VerticalSpace s2 />
+      </Collapse>
     );
   }
 }

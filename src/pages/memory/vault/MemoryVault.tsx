@@ -1,17 +1,21 @@
-import { Paper, useTheme } from "@material-ui/core";
 import { useDataAsStore, useDataDecryption } from "../../../utils/encryption";
 import useDraggableItemsProvider, {
   DraggableItemsContext,
 } from "../useDraggableItemsContext";
 
+import BreadcrumbPaths from "./BreadcrumbPaths";
+import BreadcrumbsProvider from "./BreadcrumbsProvider";
 import CardView from "./cards/CardView";
 import { DecodedDataContext } from "../useDecodedDataContext";
+import EditingProvider from "./EditingProvider";
 import MemoryVaultInfo from "./info/MemoryVaultInfo";
+import MemoryVaultLayout from "./MemoryVaultLayout";
+import MemoryVaultLockEditModeButton from "./MemoryVaultLockEditModeButton";
+import MemoryVaultSaveDataButton from "./info/MemoryVaultSaveDataButton";
+import MemoryVaultSaveKeyButton from "./info/MemoryVaultSaveKeyButton";
 import MemoryVaultSettingsMenu from "./MemoryVaultSettingsMenu";
 import React from "react";
 import { Store } from "../../../utils/normalization";
-import { VerticalSpace } from "../../core/Spacing";
-import { css } from "@emotion/css";
 
 export type VaultData = {
   title: string;
@@ -32,7 +36,6 @@ export default function MemoryVault({
   isReadOnly = false,
   onDelete,
 }: Props) {
-  const theme = useTheme();
   const draggableData = useDraggableItemsProvider();
   const { decryptedData } = useDataDecryption(initialData, encryptionKey);
   const data = useDataAsStore(decryptedData, { title });
@@ -41,22 +44,31 @@ export default function MemoryVault({
   }
   const { store, updateNodes } = data;
   return (
-    <DraggableItemsContext.Provider value={draggableData}>
-      <DecodedDataContext.Provider
-        value={{
-          store,
-          encryptionKey,
-          updateNodes: isReadOnly ? null : updateNodes,
-        }}
-      >
-        <Paper className={css({ position: "relative", padding: theme.spacing(3) })}>
-          <MemoryVaultSettingsMenu onDelete={onDelete} />
-          <MemoryVaultInfo />
-          <VerticalSpace s3 />
-          <CardView nodeKey={store.rootNode.value} />
-          {children && children(store)}
-        </Paper>
-      </DecodedDataContext.Provider>
-    </DraggableItemsContext.Provider>
+    <EditingProvider>
+      <BreadcrumbsProvider>
+        <DraggableItemsContext.Provider value={draggableData}>
+          <DecodedDataContext.Provider
+            value={{
+              store,
+              encryptionKey,
+              updateNodes: isReadOnly ? null : updateNodes,
+            }}
+          >
+            <MemoryVaultLayout
+              header={<BreadcrumbPaths />}
+              body={<CardView nodeKey={store.rootNode.value} />}
+              bodyButton={<MemoryVaultLockEditModeButton />}
+              info={<MemoryVaultInfo />}
+              menuButton={<MemoryVaultSettingsMenu onDelete={onDelete} />}
+              cardButtons={[
+                <MemoryVaultSaveKeyButton />,
+                <MemoryVaultSaveDataButton />,
+              ]}
+            />
+            {children && children(store)}
+          </DecodedDataContext.Provider>
+        </DraggableItemsContext.Provider>
+      </BreadcrumbsProvider>
+    </EditingProvider>
   );
 }

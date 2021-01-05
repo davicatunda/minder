@@ -1,9 +1,8 @@
-import { Grid } from "@material-ui/core";
 import MemoryVaultCreateForm from "./MemoryVaultCreateForm";
+import MemoryVaultCreatingStateLayout from "./MemoryVaultCreatingStateLayout";
 import MemoryVaultPreview from "./MemoryVaultPreview";
 import React from "react";
 import { VaultData } from "../MemoryVault";
-import { css } from "@emotion/css";
 
 type Props = {
   vaultData: VaultData;
@@ -19,23 +18,16 @@ export default function MemoryVaultCreatingState({
   onChange,
 }: Props) {
   return (
-    <Grid container spacing={2}>
-      <Grid
-        item
-        xs={12}
-        md={4}
-        xl={3}
-        className={css({ display: "flex", minHeight: 500 })}
-      >
+    <MemoryVaultCreatingStateLayout
+      form={
         <MemoryVaultCreateForm
           vaultData={vaultData}
           onChange={onChange}
-          onSubmit={onSubmit}
+          onDelete={onDelete}
         />
-      </Grid>
-      <Grid item xs={12} md={8} xl={9} className={css({ display: "flex" })}>
-        <MemoryVaultPreview {...vaultData} onDelete={onDelete} />
-      </Grid>
-    </Grid>
+      }
+      preview={<MemoryVaultPreview {...vaultData} />}
+      onSubmit={onSubmit}
+    />
   );
 }

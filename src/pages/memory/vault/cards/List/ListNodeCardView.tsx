@@ -1,21 +1,21 @@
+import EditValueInput, { DraftNode } from "../EditValueInput";
+import { Grow, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import {
   RefinedType,
   TListNode,
-  TNode,
   defaultNodeValue,
 } from "../../../../../utils/normalization";
 
-import AddIcon from "@material-ui/icons/Add";
+import { Add } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import CardView from "../CardView";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import EditValueInput from "../EditValueInput";
 import FormControl from "@material-ui/core/FormControl";
+import { HorizontalSpace } from "../../../../core/Spacing";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -27,11 +27,14 @@ import MenuItem from "@material-ui/core/MenuItem";
 import NodeTypeIcon from "../NodeTypeIcon";
 import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
+import { css } from "@emotion/css";
 import useDecodedDataContext from "../../../useDecodedDataContext";
+import { useEditingContext } from "../../EditingProvider";
 import useSearchTextOnNodeRecursively from "../Object/useSearchTextOnNodeRecursively";
 
 export default function ListNodeCardView(props: { node: TListNode }) {
   const [searchValue, setSearchValue] = useState("");
+  const { isEditing } = useEditingContext();
   const searchMatches = useSearchTextOnNodeRecursively(searchValue);
   return (
     <div>
@@ -52,20 +55,27 @@ export default function ListNodeCardView(props: { node: TListNode }) {
         ) : null}
       </div>
       <List>
-        {props.node.children.filter(searchMatches).map((key) => (
-          <ListItem button>
-            <ListItemIcon>
-              <NodeTypeIcon nodeKey={key} />
-            </ListItemIcon>
-            <ListItemText primary={<CardView nodeKey={key} />} />
-          </ListItem>
+        {!isEditing && props.node.children.length === 0 && (
+          <Typography variant="body1">List is empty</Typography>
+        )}
+        {props.node.children.filter(searchMatches).map((key, position) => (
+          <Grow in={true} timeout={position * 200}>
+            <ListItem button>
+              <ListItemIcon>
+                <NodeTypeIcon nodeKey={key} />
+              </ListItemIcon>
+              <ListItemText primary={<CardView nodeKey={key} />} />
+            </ListItem>
+          </Grow>
         ))}
-        <ListItem>
-          <ListItemText
-            onClick={(e) => e.stopPropagation()}
-            primary={<NewListItemDialogButton parentNode={props.node} />}
-          />
-        </ListItem>
+        {isEditing && (
+          <ListItem>
+            <ListItemText
+              onClick={(e) => e.stopPropagation()}
+              primary={<NewListItemDialogButton parentNode={props.node} />}
+            />
+          </ListItem>
+        )}
       </List>
     </div>
   );
@@ -73,15 +83,16 @@ export default function ListNodeCardView(props: { node: TListNode }) {
 
 function NewListItemDialogButton(props: { parentNode: TListNode }) {
   const { store, updateNodes } = useDecodedDataContext();
-  const templateNode =
+  const templateNode = defaultNodeValue(
     props.parentNode.children.length > 0
-      ? defaultNodeValue(
-          store.nodes[props.parentNode.children[0]].type,
-          props.parentNode,
-        )
-      : null;
+      ? store.nodes[props.parentNode.children[0]].type
+      : RefinedType.String,
+    props.parentNode,
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [valueNode, setValueNode] = useState<TNode | null>(templateNode);
+  const [draftNode, setDraftNode] = useState<DraftNode>({
+    valueNode: templateNode,
+  });
   if (updateNodes == null) {
     return null;
   }
@@ -92,41 +103,43 @@ function NewListItemDialogButton(props: { parentNode: TListNode }) {
         color="primary"
         size="small"
         onClick={() => setIsDialogOpen(true)}
-        startIcon={<AddIcon />}
+        startIcon={<Add />}
       >
-        Add{" "}
+        Add
       </Button>
       <Dialog
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         aria-labelledby="new-field-dialog-title"
+        fullWidth
+        maxWidth="xs"
       >
         <DialogTitle id="new-field-dialog-title">Add New List Item</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            All items on a list must have the same type.
-          </DialogContentText>
-          {!templateNode && (
-            <FormControl>
-              <InputLabel id="select-type-label">Type</InputLabel>
-              <Select
-                labelId="select-type-label"
-                value={valueNode?.type ?? ""}
-                onChange={(event) => {
-                  const newType: RefinedType = event.target.value as RefinedType;
-                  setValueNode(defaultNodeValue(newType, props.parentNode));
-                }}
-                fullWidth
-              >
-                <MenuItem value={RefinedType.Boolean}>Boolean</MenuItem>
-                <MenuItem value={RefinedType.Date}>Date</MenuItem>
-                <MenuItem value={RefinedType.Number}>Number</MenuItem>
-                <MenuItem value={RefinedType.Object}>Object</MenuItem>
-                <MenuItem value={RefinedType.String}>String</MenuItem>
-              </Select>
-            </FormControl>
+        <DialogContent className={css({ display: "flex" })}>
+          {props.parentNode.children.length === 0 && (
+            <>
+              <FormControl variant="filled" className={css({ minWidth: 120 })}>
+                <InputLabel id="select-type-label">Type</InputLabel>
+                <Select
+                  labelId="select-type-label"
+                  value={draftNode.valueNode?.type ?? ""}
+                  onChange={(event) => {
+                    const newType: RefinedType = event.target.value as RefinedType;
+                    setDraftNode({
+                      valueNode: defaultNodeValue(newType, props.parentNode),
+                    });
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={RefinedType.String}>Text</MenuItem>
+                  <MenuItem value={RefinedType.Number}>Number</MenuItem>
+                  <MenuItem value={RefinedType.Date}>Date</MenuItem>
+                </Select>
+              </FormControl>
+              <HorizontalSpace s1 />
+            </>
           )}
-          <EditValueInput node={valueNode} onChange={setValueNode} />
+          <EditValueInput node={draftNode} onChange={setDraftNode} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsDialogOpen(false)} color="primary">
@@ -134,14 +147,18 @@ function NewListItemDialogButton(props: { parentNode: TListNode }) {
           </Button>
           <Button
             onClick={() => {
-              if (valueNode !== null) {
+              if (draftNode.valueNode !== null) {
                 const newParentnode = {
                   ...props.parentNode,
-                  children: [...props.parentNode.children, valueNode.key],
+                  children: [...props.parentNode.children, draftNode.valueNode.key],
                 };
-                updateNodes([valueNode, newParentnode]);
+                updateNodes([
+                  ...(draftNode.childNodes ?? []),
+                  draftNode.valueNode,
+                  newParentnode,
+                ]);
               }
-              setValueNode(templateNode);
+              setDraftNode({ valueNode: templateNode });
               setIsDialogOpen(false);
             }}
             color="primary"

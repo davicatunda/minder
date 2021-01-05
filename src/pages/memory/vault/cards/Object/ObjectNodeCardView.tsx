@@ -1,26 +1,54 @@
+import { OutlinedInput, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 
+import CardView from "../CardView";
 import FormControl from "@material-ui/core/FormControl";
-import Grid from "@material-ui/core/Grid";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import NewFieldDialogButton from "./NewFieldDialogButton";
 import ObjectFieldNodeCardView from "./ObjectFieldNodeCardView";
-import { OutlinedInput } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import { TObjectNode } from "../../../../../utils/normalization";
 import { VerticalSpace } from "../../../../core/Spacing";
+import { css } from "@emotion/css";
+import { useBreadcrumbsContext } from "../../BreadcrumbsProvider";
+import { useEditingContext } from "../../EditingProvider";
 import useSearchTextOnNodeRecursively from "./useSearchTextOnNodeRecursively";
 
-type Props = { node: TObjectNode };
+type Props = {
+  node: TObjectNode;
+};
 export default function ObjectNodeCardView({ node }: Props) {
+  const { isEditing } = useEditingContext();
+  const { breadcrumbs } = useBreadcrumbsContext();
   const [searchValue, setSearchValue] = useState("");
   const searchMatches = useSearchTextOnNodeRecursively(searchValue);
   const [searchHasFocus, setSearchHasFocus] = useState(false);
+  const expandedField = node.fields.find(
+    (field) => breadcrumbs.findIndex((f) => f.value === field.value) >= 0,
+  );
+  if (expandedField != null) {
+    return (
+      <>
+        <VerticalSpace s1 />
+        <div
+          onClick={(event) => event.stopPropagation()}
+          className={css({
+            display: "flex",
+            flexWrap: "wrap",
+          })}
+        >
+          <CardView nodeKey={expandedField.value} />
+        </div>
+      </>
+    );
+  }
   return (
     <>
-      {node.fields.length > 7 ? (
-        <Grid item xs={12} sm={searchHasFocus ? 6 : 4} md={searchHasFocus ? 4 : 3}>
+      <VerticalSpace s1 />
+      {node.fields.length > 7 && (
+        <>
           <FormControl
+            size="small"
             variant="outlined"
             fullWidth={searchHasFocus || searchValue !== ""}
           >
@@ -46,27 +74,37 @@ export default function ObjectNodeCardView({ node }: Props) {
             />
           </FormControl>
           <VerticalSpace s2 />
-        </Grid>
-      ) : null}
-      <Grid container spacing={1} onClick={(event) => event.stopPropagation()}>
-        {node.fields
-          .filter(
-            (field) =>
-              field.name
-                .toLocaleLowerCase()
-                .includes(searchValue.toLocaleLowerCase()) ||
-              searchMatches(field.value),
-          )
-          .map((field) => (
-            <ObjectFieldNodeCardView
-              name={field.name}
-              value={field.value}
-              parentKey={node.key}
-              key={field.value}
-            />
-          ))}
-        <NewFieldDialogButton parentNode={node} />
-      </Grid>
+        </>
+      )}
+      {!isEditing && node.fields.length === 0 ? (
+        <Typography variant="body1">Folder is empty</Typography>
+      ) : (
+        <div
+          className={css({
+            display: "flex",
+            flexWrap: "wrap",
+            margin: "-6px",
+          })}
+        >
+          {node.fields
+            .filter(
+              (field) =>
+                field.name
+                  .toLocaleLowerCase()
+                  .includes(searchValue.toLocaleLowerCase()) ||
+                searchMatches(field.value),
+            )
+            .map((field, index) => (
+              <ObjectFieldNodeCardView
+                objectField={field}
+                position={index}
+                key={field.value}
+              />
+            ))}
+          {isEditing && <NewFieldDialogButton parentNode={node} />}
+          <span className={css({ flex: "1 0 50%", minWidth: 320 })} />
+        </div>
+      )}
     </>
   );
 }
