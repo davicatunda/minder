@@ -99,7 +99,12 @@ export default function useDragObjectField(
           // we can only drag a field into an object from an object
           return;
         }
-
+        if (
+          sourceParent.fields.filter((f) => f.value !== draggedItem.value).length ===
+          sourceParent.fields.length
+        ) {
+          console.log(sourceParent.fields, draggedItem.value);
+        }
         // remove item from source
         const newSourceParent: TObjectNode = {
           ...sourceParent,
@@ -148,7 +153,7 @@ function insertIntoPlace(
     ...parentNode,
     fields: [
       ...parentNode.fields.slice(0, newPosition),
-      draggedItem,
+      { ...draggedItem, parentKey: parentNode.key },
       ...parentNode.fields.slice(newPosition),
     ],
   };
