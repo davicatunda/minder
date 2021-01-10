@@ -2,14 +2,14 @@
   "files": {
     "static/js/0.f41cfc49.chunk.js": "/minder/static/js/0.f41cfc49.chunk.js",
     "static/js/0.f41cfc49.chunk.js.map": "/minder/static/js/0.f41cfc49.chunk.js.map",
-    "static/js/1.8aa2813c.chunk.js": "/minder/static/js/1.8aa2813c.chunk.js",
-    "static/js/1.8aa2813c.chunk.js.map": "/minder/static/js/1.8aa2813c.chunk.js.map",
+    "static/js/1.8ca69f92.chunk.js": "/minder/static/js/1.8ca69f92.chunk.js",
+    "static/js/1.8ca69f92.chunk.js.map": "/minder/static/js/1.8ca69f92.chunk.js.map",
     "static/js/2.bd9cb5b0.chunk.js": "/minder/static/js/2.bd9cb5b0.chunk.js",
     "static/js/2.bd9cb5b0.chunk.js.map": "/minder/static/js/2.bd9cb5b0.chunk.js.map",
     "main.js": "/minder/static/js/main.fb628c90.chunk.js",
     "main.js.map": "/minder/static/js/main.fb628c90.chunk.js.map",
-    "runtime-main.js": "/minder/static/js/runtime-main.9eb1935c.js",
-    "runtime-main.js.map": "/minder/static/js/runtime-main.9eb1935c.js.map",
+    "runtime-main.js": "/minder/static/js/runtime-main.5ab8fb8a.js",
+    "runtime-main.js.map": "/minder/static/js/runtime-main.5ab8fb8a.js.map",
     "static/css/5.e6bc080f.chunk.css": "/minder/static/css/5.e6bc080f.chunk.css",
     "static/js/5.3c1dff31.chunk.js": "/minder/static/js/5.3c1dff31.chunk.js",
     "static/js/5.3c1dff31.chunk.js.map": "/minder/static/js/5.3c1dff31.chunk.js.map",
@@ -32,7 +32,7 @@
     "static/media/index.css": "/minder/static/media/roboto-vietnamese-400-normal.52cebac0.woff2"
   },
   "entrypoints": [
-    "static/js/runtime-main.9eb1935c.js",
+    "static/js/runtime-main.5ab8fb8a.js",
     "static/css/5.e6bc080f.chunk.css",
     "static/js/5.3c1dff31.chunk.js",
     "static/js/main.fb628c90.chunk.js"
