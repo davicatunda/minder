@@ -8,13 +8,14 @@ import {
 } from "@material-ui/core";
 import React, { useState } from "react";
 
+import { ChevronRight } from "@material-ui/icons";
 import GoogleMemoryCard from "./google-vault/GoogleMemoryCard";
 import LeftNavAddCardItem from "./navbar/LeftNavAddCardItem";
 import LeftNavCardItem from "./navbar/LeftNavCardItem";
 import LeftNavGoogleItem from "./navbar/LeftNavGoogleItem";
 import MemoryCard from "./vault/MemoryCard";
-import { MoreHoriz } from "@material-ui/icons";
 import { VaultData } from "./vault/MemoryVault";
+import { VerticalSpace } from "../core/Spacing";
 import { css } from "@emotion/css";
 import useCardsFromGoogleDrive from "./useCardsFromGoogleDrive";
 import useCardsFromUrl from "./useCardsFromUrl";
@@ -91,8 +92,35 @@ export default function MemoryPage() {
   const [open, setOpen] = useState(true);
   return (
     <>
+      {!leftNavIsFixed && (
+        <>
+          <VerticalSpace s2 />
+          <Button
+            variant="contained"
+            color="secondary"
+            endIcon={<ChevronRight />}
+            onClick={() => setOpen(true)}
+            classes={{
+              root: css({
+                width: "fit-content",
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+              }),
+            }}
+          />
+          <SwipeableDrawer
+            anchor="left"
+            open={open}
+            onClose={() => setOpen(false)}
+            onOpen={() => setOpen(true)}
+            classes={{ paper: css({ minWidth: 250 }) }}
+          >
+            {leftNavSections}
+          </SwipeableDrawer>
+        </>
+      )}
       <div className={css({ display: "flex", flexGrow: 1 })}>
-        {leftNavIsFixed ? (
+        {leftNavIsFixed && (
           <div
             className={css({
               flexBasis: 200,
@@ -104,42 +132,11 @@ export default function MemoryPage() {
           >
             {leftNavSections}
           </div>
-        ) : (
-          <>
-            <Button
-              onClick={() => setOpen(true)}
-              classes={{
-                root: css({
-                  borderRadius: 0,
-                  borderInlineEndWidth: 1,
-                  borderInlineEndStyle: "solid",
-                  borderInlineEndColor: theme.palette.divider,
-                }),
-              }}
-            >
-              <MoreHoriz />
-            </Button>
-            <SwipeableDrawer
-              anchor={"left"}
-              open={open}
-              onClose={() => setOpen(false)}
-              onOpen={() => setOpen(true)}
-              classes={{ paper: css({ minWidth: 250 }) }}
-            >
-              {leftNavSections}
-            </SwipeableDrawer>
-          </>
         )}
         <div className={css({ padding: theme.spacing(2), flexGrow: 1 })}>
           {bodyCards}
         </div>
-        {hasRightNav && (
-          <div
-            className={css({
-              flexBasis: 250,
-            })}
-          ></div>
-        )}
+        {hasRightNav && <div className={css({ flexBasis: 250 })} />}
       </div>
     </>
   );

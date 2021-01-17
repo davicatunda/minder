@@ -1,6 +1,12 @@
-import { AppBar, IconButton, Toolbar, useTheme } from "@material-ui/core";
+import {
+  AppBar,
+  IconButton,
+  Toolbar,
+  useMediaQuery,
+  useTheme,
+} from "@material-ui/core";
+import { Brightness4, Cloud, VerifiedUser } from "@material-ui/icons";
 
-import { Brightness4 } from "@material-ui/icons";
 import { HorizontalSpace } from "../Spacing";
 import Logo from "../Logo";
 import NavBarRouteButton from "./NavBarRouteButton";
@@ -11,6 +17,7 @@ import { useTogglePaletteContext } from "../useTogglePaletteContext";
 export default function NavBar() {
   const theme = useTheme();
   const { togglePalette } = useTogglePaletteContext();
+  const tooSmall = useMediaQuery("(max-width:550px)");
   return (
     <AppBar
       position="static"
@@ -20,10 +27,20 @@ export default function NavBar() {
         <NavBarRouteButton
           startIcon={<Logo size={36} />}
           route="/minder"
-          label="Minder"
+          label={tooSmall ? "" : "Minder"}
         />
-        <NavBarRouteButton route="/minder/memories" label="Memories" />
-        <NavBarRouteButton route="/minder/standard" label="Standard" />
+        <HorizontalSpace s1 />
+        <NavBarRouteButton
+          startIcon={<Cloud fontSize="large" />}
+          route="/minder/memories"
+          label="Memories"
+        />
+        <HorizontalSpace s1 />
+        <NavBarRouteButton
+          startIcon={<VerifiedUser fontSize="large" />}
+          route="/minder/standard"
+          label="Standard"
+        />
         <HorizontalSpace s2 grow />
         <IconButton onClick={togglePalette}>
           <Brightness4 />
