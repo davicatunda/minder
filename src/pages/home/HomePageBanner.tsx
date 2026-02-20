@@ -64,7 +64,7 @@ export default function HomePageBanner({ onTryClick }: Props) {
           <Grid item xs={12} sm={12} md={8}>
             <img
               className={css({ width: "100%", transform: "scale(1.03)" })}
-              src={process.env.PUBLIC_URL + "/Demo.png"}
+              src="/Demo.png"
               alt="demo of the product"
             />
           </Grid>
