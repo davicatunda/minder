@@ -1,22 +1,28 @@
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect } from "react";
 
 import { GoogleCardListItem } from "./MemoryPage";
-import { useGoogleFilesList } from "../../google-integration/useGoogleFilesList";
+import { DriveFile, useDrive } from "../../google-integration/useDrive";
+import { GoogleAuthContext } from "../../google-integration/GoogleAuth";
 
 export default function useCardsFromGoogleDrive(
   setGoogleCards: Dispatch<SetStateAction<GoogleCardListItem[]>>,
 ): void {
-  const onFetch = useCallback(
-    (files: gapi.client.drive.File[]): void => {
-      const listItems = files.map(filetoListItem);
-      setGoogleCards(listItems);
-    },
-    [setGoogleCards],
-  );
-  useGoogleFilesList(onFetch);
+  const { user } = useContext(GoogleAuthContext);
+  const { listAll } = useDrive();
+  const isLoggedIn = user !== null;
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setGoogleCards([]);
+    } else {
+      listAll().then((files) => {
+        setGoogleCards(files.map(filetoListItem));
+      });
+    }
+  }, [listAll, isLoggedIn]);
 }
 
-function filetoListItem(file: gapi.client.drive.File): GoogleCardListItem {
+function filetoListItem(file: DriveFile): GoogleCardListItem {
   return {
     resourceId: file.id ?? "",
     vaultData: {

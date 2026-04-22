@@ -6,16 +6,18 @@ import {
   MenuItem,
   Typography,
 } from "@material-ui/core";
-import React, { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 
 import NavBarButtonLayout from "./NavBarButtonLayout";
 import { css } from "@emotion/css";
-import useLoginLogout from "../../../google-integration/useLoginLogout";
+import { GoogleAuthContext } from "../../../google-integration/GoogleAuth";
 
 export default function NavBarUserButton() {
-  const { logIn, logOut, isLoggedIn, isLoading } = useLoginLogout();
+  const { user, isInitializing, onSignIn, onSignOut } =
+    useContext(GoogleAuthContext);
   const anchorRef = useRef(null);
   const [isShowingPopover, setIsShowingPopover] = useState(false);
+  const isLoggedIn = user !== null;
   return (
     <>
       <span ref={anchorRef}>
@@ -38,9 +40,9 @@ export default function NavBarUserButton() {
           <MenuItem
             onClick={() => {
               setIsShowingPopover(false);
-              logOut();
+              onSignOut();
             }}
-            disabled={isLoading}
+            disabled={isInitializing}
           >
             <ListItemIcon className={css({ minWidth: 36 })}>
               <MeetingRoom fontSize="small" color="action" />
@@ -51,9 +53,9 @@ export default function NavBarUserButton() {
           <MenuItem
             onClick={() => {
               setIsShowingPopover(false);
-              logIn();
+              onSignIn();
             }}
-            disabled={isLoading}
+            disabled={isInitializing}
           >
             <ListItemIcon className={css({ minWidth: 36 })}>
               <MeetingRoom fontSize="small" color="action" />
