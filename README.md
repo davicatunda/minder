@@ -31,3 +31,4 @@ only one way.
 - [ ] build User Voted Standard for the recommend fields everyone should have
 - [ ] create partial copies of your data into shareable units for 3rd parties to consume
 - [ ] Based on standard create a backend backed by graphql for automatization
+- [ ] Mandatory AI features
