@@ -1,7 +1,6 @@
 /**
  * Set of methods used to encrypt and decrypt the data, all operating on base 64
  * TODO: remove redundant conversions for more direct mappings.
- * TODO: consider using a more secure encryption method, such as AES-GCM, and properly handle the IV and key management.
  */
 
 import { Store, TNode, denormalizeRoot, normalizeRoot } from "./normalization";
