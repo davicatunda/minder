@@ -150,8 +150,7 @@ async function workerAuthCallback(): Promise<WorkerResponse | null> {
     body: JSON.stringify({
       code,
       code_verifier: verifier,
-      redirect_uri:
-        window.location.origin + window.location.pathname.replace(/\/$/, ""),
+      redirect_uri: `${import.meta.env.VITE_WORKER_URL}/auth/callback`,
     }),
   }).then((res) => (res.ok ? (res.json() as Promise<WorkerResponse>) : null));
 }
@@ -178,7 +177,7 @@ async function startSignIn(): Promise<void> {
   url.searchParams.set("client_id", import.meta.env.VITE_GOOGLE_CLIENT_ID);
   url.searchParams.set(
     "redirect_uri",
-    window.location.origin + window.location.pathname.replace(/\/$/, ""),
+    `${import.meta.env.VITE_WORKER_URL}/auth/callback`,
   );
   url.searchParams.set(
     "scope",
