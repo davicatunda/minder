@@ -1,7 +1,13 @@
-import { Button, Container, Grid, Typography, useTheme } from "@material-ui/core";
+import {
+  Button,
+  Container,
+  Grid,
+  Typography,
+  useTheme,
+} from "@material-ui/core";
+import demoImage from "./assets/Demo.png";
 
 import { Lock } from "@material-ui/icons";
-import React from "react";
 import { VerticalSpace } from "../core/Spacing";
 import { css } from "@emotion/css";
 
@@ -46,10 +52,10 @@ export default function HomePageBanner({ onTryClick }: Props) {
               display="block"
               gutterBottom
             >
-              Imagine all the things that you need to remember, for example, medical
-              history, previous addresses, favorite restaurants from your home town.
-              Chances are that some are long forgotten. All these things can be
-              safely stored on Minder.
+              Imagine all the things that you need to remember, for example,
+              medical history, previous addresses, favorite restaurants from
+              your home town. Chances are that some are long forgotten. All
+              these things can be safely stored on Minder.
             </Typography>
             <VerticalSpace s2 />
             <Button
@@ -64,7 +70,7 @@ export default function HomePageBanner({ onTryClick }: Props) {
           <Grid item xs={12} sm={12} md={8}>
             <img
               className={css({ width: "100%", transform: "scale(1.03)" })}
-              src="/Demo.png"
+              src={demoImage}
               alt="demo of the product"
             />
           </Grid>
