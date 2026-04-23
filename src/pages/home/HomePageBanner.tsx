@@ -5,8 +5,7 @@ import {
   Typography,
   useTheme,
 } from "@material-ui/core";
-import demoImage from "./assets/Demo.png";
-
+import demoImage from "../../assets/Demo.png";
 import { Lock } from "@material-ui/icons";
 import { VerticalSpace } from "../core/Spacing";
 import { css } from "@emotion/css";
