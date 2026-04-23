@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 
 import { Collapse } from "@material-ui/core";
 import { GoogleCardListItem } from "../MemoryPage";
@@ -7,7 +7,7 @@ import GoogleMemoryVaultCreatingState from "./GoogleMemoryVaultCreatingState";
 import GoogleMemoryVaultLoadingState from "./GoogleMemoryVaultLoadingState";
 import { VaultData } from "../vault/MemoryVault";
 import { VerticalSpace } from "../../core/Spacing";
-import deleteFile from "../../../google-integration/deleteFile";
+import { useDrive } from "../../../google-integration/useDrive";
 
 type GoogleMemoryCardProps = {
   card: GoogleCardListItem;
@@ -17,9 +17,12 @@ export default function GoogleMemoryCard({
   card,
   setGoogleCards,
 }: GoogleMemoryCardProps) {
+  const { deleteFile } = useDrive();
   const deleteCard = () => {
     deleteFile(card.resourceId).then(() => {
-      setGoogleCards((old) => old.filter((c) => card.resourceId !== c.resourceId));
+      setGoogleCards((old) =>
+        old.filter((c) => card.resourceId !== c.resourceId),
+      );
     });
   };
   const createCard = () => {

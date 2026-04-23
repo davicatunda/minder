@@ -11,16 +11,15 @@ import {
 
 import { HorizontalSpace } from "../../../core/Spacing";
 import { Icon } from "@iconify/react";
-import React from "react";
 import { css } from "@emotion/css";
 import { denormalizeRoot } from "../../../../utils/normalization";
 import { encryptData } from "../../../../utils/encryption";
 import googleDrive from "@iconify-icons/mdi/google-drive";
-import updateFileContent from "../../../../google-integration/updateFileContent";
-import uploadFile from "../../../../google-integration/uploadFile";
 import useDecodedDataContext from "../../useDecodedDataContext";
-import { useGoogleAuthContext } from "../../../../google-integration/useGoogleAuthProvider";
 import useGoogleCardContext from "../../google-vault/useGoogleCardContext";
+import { useContext } from "react";
+import { GoogleAuthContext } from "../../../../google-integration/GoogleAuth";
+import { useDrive } from "../../../../google-integration/useDrive";
 
 const listItemIconStyle = css({ minWidth: 36 });
 
@@ -29,13 +28,11 @@ type Props = {
   menuProps: MenuProps;
 };
 export default function MemoryVaultSaveDataMenu({ onClose, menuProps }: Props) {
-  const auth = useGoogleAuthContext();
+  const { user } = useContext(GoogleAuthContext);
   return (
     <Menu {...menuProps}>
       <LoggedOutActions onItemPress={onClose} />
-      {auth?.currentUser.get()?.isSignedIn() === true && (
-        <LoggedInActions onItemPress={onClose} />
-      )}
+      {user != null && <LoggedInActions onItemPress={onClose} />}
     </Menu>
   );
 }
@@ -46,20 +43,21 @@ function LoggedOutActions({ onItemPress }: { onItemPress: () => void }) {
     <>
       {encryptionKey && (
         <MenuItem
-          onClick={(e) => {
+          onClick={async () => {
             onItemPress();
-            encryptData(store, encryptionKey, (data) => {
-              const element = document.createElement("a");
-              element.setAttribute(
-                "href",
-                "data:text/plain;charset=base64," + encodeURIComponent(data),
-              );
-              element.setAttribute("download", "data.ish");
-              element.style.display = "none";
-              document.body.appendChild(element);
-              element.click();
-              document.body.removeChild(element);
-            });
+            const encryptedData = await encryptData(store, encryptionKey);
+
+            const element = document.createElement("a");
+            element.setAttribute(
+              "href",
+              "data:text/plain;charset=base64," +
+                encodeURIComponent(encryptedData),
+            );
+            element.setAttribute("download", "data.ish");
+            element.style.display = "none";
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
           }}
         >
           <ListItemIcon className={listItemIconStyle}>
@@ -71,12 +69,10 @@ function LoggedOutActions({ onItemPress }: { onItemPress: () => void }) {
       <Divider />
       {encryptionKey && (
         <MenuItem
-          onClick={(e) => {
-            encryptData(store, encryptionKey, (data) => {
-              navigator.clipboard.writeText(data).then(() => {
-                onItemPress();
-              });
-            });
+          onClick={async () => {
+            const encryptedData = await encryptData(store, encryptionKey);
+            await navigator.clipboard.writeText(encryptedData);
+            onItemPress();
           }}
         >
           <ListItemIcon className={listItemIconStyle}>
@@ -86,10 +82,9 @@ function LoggedOutActions({ onItemPress }: { onItemPress: () => void }) {
         </MenuItem>
       )}
       <MenuItem
-        onClick={(e) => {
-          navigator.clipboard.writeText(denormalizeRoot(store)).then(() => {
-            onItemPress();
-          });
+        onClick={async () => {
+          await navigator.clipboard.writeText(denormalizeRoot(store));
+          onItemPress();
         }}
       >
         <ListItemIcon className={listItemIconStyle}>
@@ -104,14 +99,16 @@ function LoggedOutActions({ onItemPress }: { onItemPress: () => void }) {
 function LoggedInActions({ onItemPress }: { onItemPress: () => void }) {
   const googleResourceId = useGoogleCardContext();
   const { store, encryptionKey } = useDecodedDataContext();
+  const { create, update } = useDrive();
   return (
     <>
       <Divider />
       {encryptionKey && (
         <MenuItem
-          onClick={(e) => {
+          onClick={async () => {
             onItemPress();
-            uploadFile(store, encryptionKey, { withKey: false });
+            const encryptedData = await encryptData(store, encryptionKey);
+            await create(store.rootNode.title, encryptedData, null);
           }}
         >
           <ListItemIcon className={listItemIconStyle}>
@@ -122,9 +119,10 @@ function LoggedInActions({ onItemPress }: { onItemPress: () => void }) {
       )}
       {encryptionKey && (
         <MenuItem
-          onClick={(e) => {
+          onClick={async () => {
             onItemPress();
-            uploadFile(store, encryptionKey, { withKey: true });
+            const encryptedData = await encryptData(store, encryptionKey);
+            await create(store.rootNode.title, encryptedData, encryptionKey);
           }}
         >
           <ListItemIcon className={listItemIconStyle}>
@@ -144,9 +142,10 @@ function LoggedInActions({ onItemPress }: { onItemPress: () => void }) {
       )}
       {googleResourceId && encryptionKey && (
         <MenuItem
-          onClick={(e) => {
+          onClick={async () => {
             onItemPress();
-            updateFileContent(store, encryptionKey, googleResourceId);
+            const encryptedData = await encryptData(store, encryptionKey);
+            await update(googleResourceId, encryptedData);
           }}
         >
           <ListItemIcon className={listItemIconStyle}>

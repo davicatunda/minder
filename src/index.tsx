@@ -11,9 +11,8 @@ import App from "./pages/App";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { CustomThemeProvider } from "./pages/core/useTogglePaletteContext";
 import DateFnsUtils from "@date-io/date-fns";
-import { GoogleAuthProvider } from "./google-integration/useGoogleAuthProvider";
+import { GoogleAuthProvider } from "./google-integration/GoogleAuth";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import React from "react";
 import ReactDOM from "react-dom";
 import { setContext } from "@apollo/client/link/context";
 

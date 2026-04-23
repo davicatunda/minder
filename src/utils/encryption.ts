@@ -75,7 +75,8 @@ export async function createKey(): Promise<string> {
 }
 
 export function isKeyValid(key: string): boolean {
-  const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+  const base64regex =
+    /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
   return base64regex.test(key) && key.length === 44;
 }
 
@@ -144,16 +145,12 @@ export function useDataDecryption(initialData: string, encryptionKey: string) {
 export function useDataEncryption(store: Store, encryptionKey: string) {
   const [encryptedData, setEncryptedData] = useState<string | null>(null);
   useEffect(() => {
-    encryptData(store, encryptionKey, setEncryptedData);
+    encryptData(store, encryptionKey).then(setEncryptedData);
   }, [store, encryptionKey]);
   return encryptedData;
 }
 
-export function encryptData(
-  store: Store,
-  encryptionKey: string,
-  onComplete: (encryptedData: string) => void,
-) {
+export async function encryptData(store: Store, encryptionKey: string) {
   const plainText = denormalizeRoot(store);
-  encrypt(plainText, encryptionKey).then(onComplete);
+  return encrypt(plainText, encryptionKey);
 }

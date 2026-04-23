@@ -7,5 +7,11 @@ export default defineConfig({
   base: "/minder/",
   server: {
     port: 3000,
+    proxy: {
+      "/auth": {
+        target: "http://localhost:8787",
+        changeOrigin: true,
+      },
+    },
   },
 });
