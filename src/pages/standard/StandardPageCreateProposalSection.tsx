@@ -1,11 +1,17 @@
-import { Button, Paper, TextField, Typography, useTheme } from "@material-ui/core";
-import React, { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+import {
+  Button,
+  Paper,
+  TextField,
+  Typography,
+  useTheme,
+} from "@material-ui/core";
+import { useState } from "react";
 
 import MemoryVault from "../memory/vault/MemoryVault";
 import { VerticalSpace } from "../core/Spacing";
 import { css } from "@emotion/css";
 import { denormalizeRoot } from "../../utils/normalization";
+import { addProposal } from "../mockDB";
 
 const SUGGESTED_PROPOSAL = {
   "?Parent field": {
@@ -16,19 +22,12 @@ const SUGGESTED_PROPOSAL = {
     },
   },
 };
-const ADD_PROPOSAL = gql`
-  mutation Adding($proposal: String!) {
-    addProposal(proposal: $proposal) {
-      uuid
-    }
-  }
-`;
+
 const DUMMY_KEY = "1Qd1fIUBT6KuzgM9mQOIkk8k77mkXz/4BGMnttcdY1c=";
 export default function StandardPageCreateProposalSection() {
   const theme = useTheme();
   const [isCreating, setIsCreating] = useState(false);
   const [title, setTitle] = useState("");
-  const [addProposal] = useMutation(ADD_PROPOSAL);
   if (!isCreating) {
     return (
       <Paper
@@ -81,7 +80,7 @@ export default function StandardPageCreateProposalSection() {
             variant="contained"
             color="primary"
             onClick={() => {
-              addProposal({ variables: { proposal: denormalizeRoot(store) } });
+              addProposal(denormalizeRoot(store));
               setIsCreating(false);
               setTitle("");
             }}

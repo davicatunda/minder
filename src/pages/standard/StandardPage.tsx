@@ -1,49 +1,19 @@
-import React, { FunctionComponent } from "react";
-import { gql, useQuery } from "@apollo/client";
-
 import { Container } from "@material-ui/core";
 import StandardPageAllProposalsSection from "./StandardPageAllProposalsSection";
 import StandardPageCreateProposalSection from "./StandardPageCreateProposalSection";
 import StandardPageProposedAPISection from "./StandardPageProposedAPISection";
 import { VerticalSpace } from "../core/Spacing";
+import { getAllData } from "../mockDB";
 
-type StandardPageResponse = {
-  user?: {
-    uuid: string;
-  };
-  standardProposal: {
-    version: string;
-    data: string;
-  };
-  proposals: Array<{ uuid: string }>;
-};
-const QUERY = gql`
-  query StandardPage {
-    user {
-      uuid
-    }
-    standardProposal {
-      version
-      data
-    }
-    proposals {
-      uuid
-    }
-  }
-`;
-
-const StandardPage: FunctionComponent<{}> = () => {
-  const { data } = useQuery<StandardPageResponse>(QUERY);
-  if (data == null) {
-    return null;
-  }
-  const { standardProposal, proposals } = data;
+export default function StandardPage() {
+  const data = getAllData();
+  const { proposals, user } = data;
   return (
     <Container maxWidth="md">
       <VerticalSpace s2 />
-      <StandardPageProposedAPISection standardProposal={standardProposal} />
+      <StandardPageProposedAPISection />
       <VerticalSpace s2 />
-      {data.user?.uuid != null && (
+      {user.uuid != null && (
         <>
           <StandardPageCreateProposalSection />
           <VerticalSpace s2 />
@@ -52,6 +22,4 @@ const StandardPage: FunctionComponent<{}> = () => {
       <StandardPageAllProposalsSection proposals={proposals} />
     </Container>
   );
-};
-
-export default StandardPage;
+}

@@ -1,6 +1,5 @@
 import { Container, Grid } from "@material-ui/core";
-import React, { useEffect } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useEffect } from "react";
 
 import HomePageBanner from "./HomePageBanner";
 import HomePageProgressCard from "./HomePageProgressCard";
@@ -9,30 +8,15 @@ import { VerticalSpace } from "../core/Spacing";
 import { createKey } from "../../utils/encryption";
 import { css } from "@emotion/css";
 import { useHistory } from "react-router-dom";
+import { STANDARD_PROPOSAL } from "../mockDB";
 
-type HomePageResponse = {
-  standardProposal: {
-    data: string;
-  };
-};
-const QUERY = gql`
-  query HomePage {
-    standardProposal {
-      data
-    }
-  }
-`;
 export default function HomePage() {
   useGithubPagesHasNoRouting();
   const history = useHistory();
-  const { data } = useQuery<HomePageResponse>(QUERY);
   function onTryClick() {
-    const standardProposal =
-      data?.standardProposal?.data ??
-      '{"Personal":{},"Community":{},"Education":{},"Work":{},"Health":{}}';
     createKey().then((key) => {
       history.push(
-        `minder/memories?title=Demo&key=${key}&data=${standardProposal}&readOnly=false`,
+        `minder/memories?title=Demo&key=${key}&data=${STANDARD_PROPOSAL.data}&readOnly=false`,
       );
     });
   }

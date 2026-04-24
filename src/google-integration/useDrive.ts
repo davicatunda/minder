@@ -61,7 +61,7 @@ export function useDrive(): UseDriveReturn {
   );
 
   const load = useCallback(
-    async (id: string): Promise<string | null> => {
+    async (id: string): Promise<string> => {
       setStatus({ type: "loading", message: "Loading Drive…" });
       const token = await getToken();
       setStatus({ type: "loading", message: "Getting file…" });

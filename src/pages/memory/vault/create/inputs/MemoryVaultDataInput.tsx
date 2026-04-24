@@ -10,20 +10,14 @@ import {
   Typography,
   useTheme,
 } from "@material-ui/core";
-import {
-  Done,
-  ExpandLess,
-  ExpandMore,
-  GetApp,
-  HelpOutline,
-} from "@material-ui/icons";
-import React, { useState } from "react";
+import { Done, ExpandLess, ExpandMore, GetApp, HelpOutline } from "@material-ui/icons";
+import { useState } from "react";
 
 import DragAndDrop from "../DragAndDrop";
 import { HorizontalSpace } from "../../../../core/Spacing";
 import { css } from "@emotion/css";
 import readFile from "./readFile";
-import useStandardProposal from "../../../useStandardProposal";
+import { STANDARD_PROPOSAL } from "../../../../mockDB";
 
 enum DataOptions {
   STANDARD = "STANDARD",
@@ -40,11 +34,6 @@ export default function MemoryVaultDataInput({ setInitialData }: Props) {
   const [dataOption, selectDataOption] = useState<DataOptions>(DataOptions.STANDARD);
   const [encryptedData, setEncryptedData] = useState<string | null>(null);
 
-  const standardProposal = useStandardProposal(({ standardProposal }) => {
-    if (dataOption === DataOptions.STANDARD) {
-      setInitialData(standardProposal.data);
-    }
-  });
   return (
     <>
       <div
@@ -69,8 +58,7 @@ export default function MemoryVaultDataInput({ setInitialData }: Props) {
           aria-label="Initial data"
           value={dataOption}
           onChange={(event) => {
-            const dataOption: DataOptions = (event.target as HTMLInputElement)
-              .value as DataOptions;
+            const dataOption: DataOptions = (event.target as HTMLInputElement).value as DataOptions;
             selectDataOption(dataOption);
             switch (dataOption) {
               case DataOptions.CUSTOM:
@@ -78,14 +66,14 @@ export default function MemoryVaultDataInput({ setInitialData }: Props) {
               case DataOptions.EMPTY:
                 return setInitialData("{}");
               case DataOptions.STANDARD:
-                return setInitialData(standardProposal?.data ?? "");
+                return setInitialData(STANDARD_PROPOSAL.data);
             }
           }}
         >
           <FormControlLabel
             value={DataOptions.STANDARD}
             control={<Radio size="small" />}
-            label={`Standard v${standardProposal?.version ?? "*"}`}
+            label={`Standard v${STANDARD_PROPOSAL.version}`}
           />
           <FormControlLabel
             value={DataOptions.EMPTY}
@@ -103,10 +91,7 @@ export default function MemoryVaultDataInput({ setInitialData }: Props) {
                 })}
               >
                 My own <HorizontalSpace s1 />
-                <Tooltip
-                  title="Your encrypted data or a strigfied json"
-                  placement="top"
-                >
+                <Tooltip title="Your encrypted data or a strigfied json" placement="top">
                   <HelpOutline fontSize="inherit" />
                 </Tooltip>
               </span>

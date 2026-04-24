@@ -15,7 +15,7 @@ export default function LeftNavGoogleItem({
   const { load } = useDrive();
 
   const onClick = () => {
-    if (card.vaultData.initialData === "" && !card.isLoading) {
+    if (card.vaultData.initialData === "") {
       setGoogleCards((oldCards) =>
         oldCards.map((oldCard) =>
           card.resourceId === oldCard.resourceId

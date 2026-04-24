@@ -30,7 +30,6 @@ function filetoListItem(file: DriveFile): GoogleCardListItem {
       encryptionKey: file.appProperties?.encryptionKey ?? "",
       initialData: "",
     },
-    isLoading: false,
     isCreating: false,
     isOpen: false,
   };

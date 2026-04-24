@@ -1,10 +1,9 @@
 import MemoryVault, { VaultData } from "./MemoryVault";
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import { CardListItem } from "../MemoryPage";
 import { Collapse } from "@material-ui/core";
 import MemoryVaultCreatingState from "./create/MemoryVaultCreatingState";
-import MemoryVaultLoadingState from "./MemoryVaultLoadingState";
 import { VerticalSpace } from "../../core/Spacing";
 
 type MemoryCardProps = {
@@ -26,26 +25,8 @@ export default function MemoryCard({ card, setCards }: MemoryCardProps) {
       ),
     );
   };
-  const onDataLoaded = (data: string) =>
-    setCards((old) =>
-      old.map((oldCard) =>
-        oldCard.id === card.id
-          ? {
-              ...oldCard,
-              vaultData: { ...oldCard.vaultData, initialData: data },
-              isLoading: false,
-            }
-          : oldCard,
-      ),
-    );
-  if (card.isLoading) {
-    return (
-      <Collapse in={card.isOpen}>
-        <MemoryVaultLoadingState onDataLoaded={onDataLoaded} />
-        <VerticalSpace s2 />
-      </Collapse>
-    );
-  } else if (card.isCreating) {
+
+  if (card.isCreating) {
     return (
       <Collapse in={card.isOpen}>
         <MemoryVaultCreatingState

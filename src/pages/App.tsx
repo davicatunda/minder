@@ -1,7 +1,6 @@
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
 import NavBar from "./core/nav-bar/NavBar";
-import React from "react";
 import loadable from "@loadable/component";
 
 const HomePage = loadable(() => import("./home/HomePage"));
